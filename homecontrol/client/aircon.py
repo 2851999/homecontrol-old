@@ -1,8 +1,7 @@
 from typing import List, Optional
 from homecontrol.aircon.structs import ACState
-from homecontrol.api.structs import ResponseStatus
 from homecontrol.client.exceptions import APIError
-from homecontrol.helpers import dataclass_from_dict
+from homecontrol.helpers import ResponseStatus, dataclass_from_dict
 from homecontrol.client.session import APISession
 
 

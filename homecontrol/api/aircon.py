@@ -8,9 +8,8 @@ from homecontrol.api.helpers import (
     response_message,
 )
 from homecontrol.aircon.manager import ACManager
-from homecontrol.api.structs import ResponseStatus
 from homecontrol.exceptions import DeviceNotRegisteredError
-from homecontrol.helpers import dataclass_from_dict
+from homecontrol.helpers import dataclass_from_dict, ResponseStatus
 
 
 aircon_api = Blueprint("aircon_api", __name__)

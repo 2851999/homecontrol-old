@@ -1,6 +1,8 @@
 from typing import Optional
+from homecontrol.hue.grouped_light import GroupedLight
+from homecontrol.hue.room import Room
 
-from homecontrol.hue.bridge_structs import HueBridgeAuthInfo, HueBridgeConnectionInfo
+from homecontrol.hue.structs import HueBridgeAuthInfo, HueBridgeConnectionInfo
 from homecontrol.hue.session import HueBridgeSession
 
 
@@ -10,6 +12,9 @@ class HueBridgeConnection:
     """
 
     session: HueBridgeSession
+
+    room: Room
+    grouped_light: GroupedLight
 
     def __init__(
         self,
@@ -27,6 +32,8 @@ class HueBridgeConnection:
 
     def __enter__(self):
         self.session.start()
+        self.room = Room(self.session)
+        self.grouped_light = GroupedLight(self.session)
 
         return self
 

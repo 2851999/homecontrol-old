@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from typing import Optional
 
 
 @dataclass
@@ -20,3 +21,13 @@ class HueBridgeAuthInfo:
 
     username: str
     clientkey: str
+
+
+@dataclass
+class HueRoom:
+    """
+    For storing information about a room
+    """
+
+    identifier: str
+    light_group: Optional[str]

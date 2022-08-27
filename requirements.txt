@@ -1,3 +1,4 @@
 msmart
 flask
+flask-cors
 requests-toolbelt

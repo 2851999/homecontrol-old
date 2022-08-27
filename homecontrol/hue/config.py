@@ -1,7 +1,7 @@
 from typing import Dict
 
 from homecontrol.config import Config
-from homecontrol.hue.bridge_structs import HueBridgeAuthInfo, HueBridgeConnectionInfo
+from homecontrol.hue.structs import HueBridgeAuthInfo, HueBridgeConnectionInfo
 
 
 class HueConfig:

@@ -1,6 +1,6 @@
 from typing import List, Optional
 import requests
-from homecontrol.hue.bridge_structs import HueBridgeAuthInfo, HueBridgeConnectionInfo
+from homecontrol.hue.structs import HueBridgeAuthInfo, HueBridgeConnectionInfo
 from homecontrol.hue.connection import HueBridgeConnection
 
 

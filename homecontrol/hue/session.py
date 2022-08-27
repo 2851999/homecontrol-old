@@ -2,7 +2,7 @@ from typing import Optional
 import requests
 from requests_toolbelt.adapters import host_header_ssl
 
-from homecontrol.hue.bridge_structs import HueBridgeAuthInfo, HueBridgeConnectionInfo
+from homecontrol.hue.structs import HueBridgeAuthInfo, HueBridgeConnectionInfo
 
 
 class HueBridgeSession:

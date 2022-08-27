@@ -2,7 +2,8 @@ from functools import wraps
 from typing import Any, Dict, List
 from flask import current_app, request, jsonify
 
-from homecontrol.api.structs import APIAuthInfo, ResponseStatus
+from homecontrol.api.structs import APIAuthInfo
+from homecontrol.helpers import ResponseStatus
 
 
 def response(data: Dict, code: int):

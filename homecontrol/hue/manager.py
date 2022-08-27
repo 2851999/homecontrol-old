@@ -1,7 +1,7 @@
 import sys
 from typing import Dict
 from homecontrol.exceptions import DeviceNotRegisteredError
-from homecontrol.hue.bridge_structs import HueBridgeConnectionInfo
+from homecontrol.hue.structs import HueBridgeConnectionInfo
 from homecontrol.hue.config import HueConfig
 from homecontrol.hue.hue import HueBridge
 
