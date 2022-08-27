@@ -15,7 +15,7 @@ class HueColour:
     @staticmethod
     def from_dict(data: Dict):
         """
-        Returns a colour from its dictionary value (if it has the correct values)
+        Returns a colour from its dictionary value
         """
         return HueColour(data["x"], data["y"])
 

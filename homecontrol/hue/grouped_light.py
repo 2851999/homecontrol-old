@@ -20,7 +20,7 @@ class GroupedLightState:
     colour_temp: Optional[int] = None
 
     @staticmethod
-    def from_dict(data: Dict):
+    def from_hue_dict(data: Dict):
         """
         Returns an instance of this class from the dictionary obtained
         from the Hue API
@@ -60,6 +60,31 @@ class GroupedLightState:
             )
         return payload
 
+    def to_dict(self) -> Dict:
+        """
+        Returns the dictionary represnetation of this object
+        """
+        return {
+            "power": self.power,
+            "brightness": self.brightness,
+            "colour": self.colour.__dict__ if self.colour is not None else None,
+            "colour_temp": self.colour_temp,
+        }
+
+    @staticmethod
+    def from_dict(dictionary):
+        """
+        Returns an instance of GroupedLightState from its dictionary representation
+        """
+        return GroupedLightState(
+            power=dictionary["power"],
+            brightness=dictionary["brightness"],
+            colour=HueColour.from_dict(dictionary["colour"])
+            if dictionary["colour"] is not None
+            else None,
+            colour_temp=dictionary["colour_temp"],
+        )
+
 
 class GroupedLight:
     """
@@ -84,7 +109,7 @@ class GroupedLight:
             )
 
         data = response.json()["data"][0]
-        return GroupedLightState.from_dict(data)
+        return GroupedLightState.from_hue_dict(data)
 
     def set_state(self, identifier: str, state: GroupedLightState):
         """

@@ -1,4 +1,5 @@
 from homecontrol.client.aircon import Aircon
+from homecontrol.client.hue import Hue
 from homecontrol.client.session import APISession
 
 from homecontrol.client.structs import APIConnectionInfo
@@ -11,6 +12,7 @@ class APIConnection:
 
     _session: APISession
     aircon: Aircon
+    hue: Hue
 
     def __init__(self, connection_info: APIConnectionInfo) -> None:
         self._session = APISession(connection_info)
@@ -19,6 +21,7 @@ class APIConnection:
         self._session.start()
 
         self.aircon = Aircon(self._session)
+        self.hue = Hue(self._session)
 
         return self
 
