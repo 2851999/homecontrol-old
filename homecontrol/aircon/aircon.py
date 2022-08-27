@@ -134,6 +134,10 @@ class ACDevice:
             # Only looked for one anyway
             found_device = list(found_devices)[0]
 
+            # Validate auth data was obtained correctly
+            if found_device.key is None or found_device.token is None:
+                raise ACConnectionError("Unabled to obtain authentication info")
+
             # Package the required info
             return ACConnectionInfo(
                 name=name,

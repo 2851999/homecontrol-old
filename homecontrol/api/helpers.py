@@ -1,7 +1,7 @@
-from typing import Dict
+from typing import Any, Dict, List
 from flask import current_app, request, jsonify
 
-from homecontrol.api.structs import APIAuthInfo
+from homecontrol.api.structs import APIAuthInfo, ResponseStatus
 
 
 def response(data: Dict, code: int):
@@ -18,6 +18,13 @@ def response_message(message: str, code: int):
     return response({"messsage": message}, code)
 
 
+def check_required_params(data: Dict[str, Any], params: List[str]):
+    """
+    Returns whether all the params are found as keys in the data
+    """
+    return all(param in data for param in params)
+
+
 def authenticated(func):
     """
     Decorator function for adding authentication to an endpoint
@@ -30,7 +37,7 @@ def authenticated(func):
             auth_key = headers.get("X-Api-Key")
             if auth_key == auth_config.key:
                 return func()
-            return response_message("ERROR: Unauthorized", 401)
+            return response_message("ERROR: Unauthorized", ResponseStatus.UNAUTHORIZED)
         return func()
 
     # Rename the function name (fixes "AssertionError: View function
