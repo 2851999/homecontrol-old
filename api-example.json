@@ -1,0 +1,6 @@
+{
+    "auth": {
+        "required": true,
+        "key": "INSERT_KEY"
+    }
+}

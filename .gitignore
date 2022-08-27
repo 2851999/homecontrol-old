@@ -21,5 +21,8 @@ var/
 *.egg
 
 aircon.json
+api.json
+client.json
+hue.json
 test.py
 TODO

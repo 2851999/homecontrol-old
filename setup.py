@@ -15,5 +15,5 @@ setuptools.setup(
         "Operating System :: OS Independent",
     ],
     packages=setuptools.find_packages(),
-    install_requires=["flask", "msmart", "requests-toolbelt"],
+    install_requires=["flask", "flask-cors", "msmart", "requests-toolbelt"],
 )

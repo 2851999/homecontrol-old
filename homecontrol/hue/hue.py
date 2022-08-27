@@ -1,11 +1,7 @@
-from enum import Enum
-import sys
 from typing import List, Optional
 import requests
 from requests_toolbelt.adapters import host_header_ssl
 from homecontrol.hue.bridge_structs import HueBridgeAuthInfo, HueBridgeConnectionInfo
-
-from homecontrol.hue.config import HueConfig
 
 
 HUE_BRIDGE_DISCOVERY_URL = "https://discovery.meethue.com/"

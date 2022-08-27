@@ -1,0 +1,10 @@
+{
+    "api": {
+        "auth": {
+            "required": true,
+            "key": "INSERT_KEY"
+        },
+        "ip": "localhost",
+        "port": 5000
+    }
+}
