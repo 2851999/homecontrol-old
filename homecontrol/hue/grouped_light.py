@@ -15,7 +15,7 @@ class GroupedLightState:
     """
 
     power: Optional[bool] = None
-    dimming_brightness: Optional[int] = None
+    brightness: Optional[int] = None
     colour: Optional[HueColour] = None
     colour_temp: Optional[int] = None
 
@@ -26,7 +26,7 @@ class GroupedLightState:
         from the Hue API
         """
         power = data["on"]["on"]
-        dimming_brightness = data["dimming"]["brightness"]
+        brightness = data["dimming"]["brightness"]
         colour = None
         colour_temp = None
 
@@ -38,7 +38,7 @@ class GroupedLightState:
 
         return GroupedLightState(
             power=power,
-            dimming_brightness=dimming_brightness,
+            brightness=brightness,
             colour=colour,
             colour_temp=colour_temp,
         )
@@ -50,8 +50,8 @@ class GroupedLightState:
         payload = {}
         if self.power is not None:
             payload.update({"on": {"on": self.power}})
-        if self.dimming_brightness is not None:
-            payload.update({"dimming": {"brightness": self.dimming_brightness}})
+        if self.brightness is not None:
+            payload.update({"dimming": {"brightness": self.brightness}})
         if self.colour is not None:
             payload.update({"color": {"xy": self.colour.__dict__}})
         if self.colour_temp is not None:
