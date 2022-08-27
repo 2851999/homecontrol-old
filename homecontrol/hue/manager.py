@@ -82,7 +82,7 @@ class HueManager:
             )
 
         if not self._config.is_bridge_waiting_for_button(name):
-            connection_info = self._config.get_bridge(name=name)
+            connection_info = self._config.get_bridge_connection_info(name=name)
             auth_info = self._config.get_bridge_auth_info(name=name)
             bridge = HueBridge(
                 ca_cert=self._config.get_ca_cert(),

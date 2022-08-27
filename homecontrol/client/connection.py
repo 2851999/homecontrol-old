@@ -1,4 +1,3 @@
-import requests
 from homecontrol.client.aircon import Aircon
 from homecontrol.client.session import APISession
 

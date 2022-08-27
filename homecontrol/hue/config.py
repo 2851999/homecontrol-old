@@ -97,7 +97,7 @@ class HueConfig:
         bridge_info = self.get_bridge(name)
         return HueBridgeConnectionInfo(
             identifier=bridge_info["identifier"],
-            ip_address=bridge_info["ip_address"],
+            ip_address=bridge_info["ip"],
             port=bridge_info["port"],
         )
 
