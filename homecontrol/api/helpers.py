@@ -1,3 +1,4 @@
+from functools import wraps
 from typing import Any, Dict, List
 from flask import current_app, request, jsonify
 
@@ -30,13 +31,14 @@ def authenticated(func):
     Decorator function for adding authentication to an endpoint
     """
 
-    def wrapper():
+    @wraps(func)
+    def wrapper(*args, **kwargs):
         auth_config: APIAuthInfo = current_app.config["APIAuthInfo"]
         if auth_config.required:
             headers = request.headers
             auth_key = headers.get("X-Api-Key")
             if auth_key == auth_config.key:
-                return func()
+                return func(*args, **kwargs)
             return response_message("ERROR: Unauthorized", ResponseStatus.UNAUTHORIZED)
         return func()
 

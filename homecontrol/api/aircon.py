@@ -1,5 +1,5 @@
 from flask import Blueprint, request
-from homecontrol.aircon.structs import ACConnectionError
+from homecontrol.aircon.structs import ACConnectionError, ACInvalidState, ACState
 
 from homecontrol.api.helpers import (
     authenticated,
@@ -9,6 +9,8 @@ from homecontrol.api.helpers import (
 )
 from homecontrol.aircon.manager import ACManager
 from homecontrol.api.structs import ResponseStatus
+from homecontrol.exceptions import DeviceNotRegisteredError
+from homecontrol.helpers import dataclass_from_dict
 
 
 aircon_api = Blueprint("aircon_api", __name__)
@@ -42,3 +44,41 @@ def register_device():
         return response_message(str(err), ResponseStatus.BAD_REQUEST)
 
     return response(None, ResponseStatus.CREATED)
+
+
+@aircon_api.route("/ac/devices/<name>", methods=["GET"])
+@authenticated
+def get_device(name):
+    """
+    Returns the current status of a device given its name
+    """
+    try:
+        device = device_manager.get_device(name)
+        try:
+            return response(device.get_state().__dict__, ResponseStatus.OK)
+        except ACConnectionError as err:
+            return response_message(str(err), ResponseStatus.BAD_REQUEST)
+    except DeviceNotRegisteredError as err:
+        return response_message(str(err), ResponseStatus.BAD_REQUEST)
+
+
+@aircon_api.route("/ac/devices/<name>", methods=["PUT"])
+@authenticated
+def set_device(name):
+    """
+    Assigns the state of a device and returns it
+    """
+
+    try:
+        device = device_manager.get_device(name)
+
+        # Should have a full new state in the data given
+        new_state = dataclass_from_dict(ACState, request.get_json())
+
+        try:
+            device.set_state(new_state)
+            return response(device.get_state().__dict__, ResponseStatus.OK)
+        except (ACConnectionError, ACInvalidState) as err:
+            return response_message(str(err), ResponseStatus.BAD_REQUEST)
+    except DeviceNotRegisteredError as err:
+        return response_message(str(err), ResponseStatus.BAD_REQUEST)

@@ -1,6 +1,6 @@
 import sys
 from typing import Dict
-from homecontrol.exceptions import DeviceNotRegistered
+from homecontrol.exceptions import DeviceNotRegisteredError
 from homecontrol.hue.bridge_structs import HueBridgeConnectionInfo
 from homecontrol.hue.config import HueConfig
 from homecontrol.hue.hue import HueBridge
@@ -74,10 +74,10 @@ class HueManager:
         """
         Loads a bridge from the config
 
-        :raises: DeviceNotRegistered if the device has not been registered
+        :raises: DeviceNotRegisteredError if the device has not been registered
         """
         if not self._config.has_bridge(name):
-            raise DeviceNotRegistered(
+            raise DeviceNotRegisteredError(
                 f"The device with name '{name}' has not been registered"
             )
 
@@ -108,4 +108,4 @@ class HueManager:
         """
         if name in self._loaded_bridges:
             return self._loaded_bridges[name]
-        raise DeviceNotRegistered("Device is not registered")
+        raise DeviceNotRegisteredError("Device is not registered")

@@ -2,7 +2,7 @@ from typing import Dict, List
 
 from homecontrol.aircon.aircon import ACDevice
 from homecontrol.aircon.config import ACConfig
-from homecontrol.exceptions import DeviceNotRegistered
+from homecontrol.exceptions import DeviceNotRegisteredError
 
 
 class ACManager:
@@ -42,10 +42,10 @@ class ACManager:
         """
         Loads a device from the config
 
-        :raises: ACDeviceNotRegistered if the device has not been registered
+        :raises: ACDeviceNotRegisteredError if the device has not been registered
         """
         if not self._config.has_device(name):
-            raise DeviceNotRegistered(
+            raise DeviceNotRegisteredError(
                 f"The device with name '{name}' has not been registered"
             )
         connection_info = self._config.get_device(name=name)
@@ -69,4 +69,4 @@ class ACManager:
         """
         if name in self._loaded_devices:
             return self._loaded_devices[name]
-        raise DeviceNotRegistered("Device is not registered")
+        raise DeviceNotRegisteredError("Device is not registered")

@@ -26,6 +26,13 @@ class ACDevice:
         Creates the msmart device instance and authenticates it
         """
         self.connection_info = connection_info
+        self.device = air_conditioning(
+            self.connection_info.ip_address,
+            self.connection_info.identifier,
+            self.connection_info.port,
+        )
+        self.device.authenticate(self.connection_info.key, self.connection_info.token)
+        self.device.get_capabilities()
 
     def _get_state_from_device(self) -> ACState:
         """
@@ -49,7 +56,7 @@ class ACDevice:
         """
         Assigns the state of the device (but does not update it)
         """
-        self.device.power_state = state.power_state
+        self.device.power_state = state.power
         self.device.prompt_tone = state.prompt_tone
         self.device.target_temperature = state.target
         self.device.operational_mode = state.mode
@@ -65,11 +72,9 @@ class ACDevice:
 
         TODO: Take account of fahrenheit
         """
-        if state.eco_mode and state.turbo_mode:
-            raise ACInvalidState(
-                "Cannot have both eco_mode and turbo_mode true at the same time"
-            )
-        if not 16 <= state.target_temp <= 30:
+        if state.eco and state.turbo:
+            raise ACInvalidState("Cannot have both eco and turbo true at the same time")
+        if not 16 <= state.target <= 30:
             raise ACInvalidState("target_temp must be between 16 and 30")
 
     def get_state(self) -> ACState:
