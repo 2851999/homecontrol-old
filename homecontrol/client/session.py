@@ -1,54 +1,27 @@
 import requests
 
 from homecontrol.client.structs import APIConnectionInfo
+from homecontrol.session import SessionWrapper
 
 
-class APISession:
+class APISession(SessionWrapper):
     """
     For handling a session for communicating with the api
     """
 
     _connection_info: APIConnectionInfo
     _session: requests.Session
-    _url: str
 
     def __init__(self, connection_info: APIConnectionInfo) -> None:
+        super().__init__(f"http://{connection_info.ip_address}:{connection_info.port}")
         self._connection_info = connection_info
-        self._url = (
-            f"http://{self._connection_info.ip_address}:{self._connection_info.port}"
-        )
 
-    def start(self):
+    def _handle_start(self):
         """
-        Assigns and sets up a session
+        Sets up a session
         """
-        self._session = requests.Session()
         # Add api key if required
         if self._connection_info.auth_required:
             self._session.headers.update({"X-Api-Key": self._connection_info.auth_key})
 
         return self
-
-    def close(self):
-        """
-        Closes a session
-        """
-        self._session.close()
-
-    def get(self, endpoint: str, **kwargs):
-        """
-        Returns the result of a get request
-        """
-        return self._session.get(f"{self._url}{endpoint}", **kwargs)
-
-    def put(self, endpoint: str, **kwargs):
-        """
-        Returns the result of a put request
-        """
-        return self._session.put(f"{self._url}{endpoint}", **kwargs)
-
-    def post(self, endpoint: str, **kwargs):
-        """
-        Returns the result of a post request
-        """
-        return self._session.post(f"{self._url}{endpoint}", **kwargs)

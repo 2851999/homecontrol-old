@@ -3,9 +3,10 @@ import requests
 from requests_toolbelt.adapters import host_header_ssl
 
 from homecontrol.hue.structs import HueBridgeAuthInfo, HueBridgeConnectionInfo
+from homecontrol.session import SessionWrapper
 
 
-class HueBridgeSession:
+class HueBridgeSession(SessionWrapper):
     """
     For handling a session for communicating with a hue bridge
     """
@@ -14,7 +15,6 @@ class HueBridgeSession:
     _ca_cert: str
     _auth_info: Optional[HueBridgeAuthInfo]
     _session: requests.Session
-    _url: str
 
     def __init__(
         self,
@@ -22,18 +22,18 @@ class HueBridgeSession:
         ca_cert: str,
         auth_info: Optional[HueBridgeAuthInfo] = None,
     ) -> None:
-        self._connection_info = connection_info
-        self._ca_cert = ca_cert
-        self._auth_info = auth_info
-        self._url = (
+        super().__init__(
             f"https://{self._connection_info.ip_address}:{self._connection_info.port}"
         )
 
-    def start(self):
+        self._connection_info = connection_info
+        self._ca_cert = ca_cert
+        self._auth_info = auth_info
+
+    def _handle_start(self):
         """
-        Assigns and sets up a session
+        Sets up a session
         """
-        self._session = requests.Session()
         # Solve SSLCertVerificationError due to difference in hostname
         self._session.mount("https://", host_header_ssl.HostHeaderSSLAdapter())
         self._session.headers.update({"Host": f"{self._connection_info.identifier}"})
@@ -45,27 +45,3 @@ class HueBridgeSession:
         self._session.verify = self._ca_cert
 
         return self
-
-    def close(self):
-        """
-        Closes a session
-        """
-        self._session.close()
-
-    def get(self, endpoint: str, **kwargs):
-        """
-        Returns the result of a get request
-        """
-        return self._session.get(f"{self._url}{endpoint}", **kwargs)
-
-    def put(self, endpoint: str, **kwargs):
-        """
-        Returns the result of a put request
-        """
-        return self._session.put(f"{self._url}{endpoint}", **kwargs)
-
-    def post(self, endpoint: str, **kwargs):
-        """
-        Returns the result of a post request
-        """
-        return self._session.post(f"{self._url}{endpoint}", **kwargs)

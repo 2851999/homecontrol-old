@@ -4,13 +4,13 @@ from homecontrol.hue.structs import HueBridgeAuthInfo, HueBridgeConnectionInfo
 from homecontrol.hue.connection import HueBridgeConnection
 
 
-HUE_BRIDGE_DISCOVERY_URL = "https://discovery.meethue.com/"
-
-
 class HueBridge:
     """
     Refers to a hue bridge
     """
+
+    # URL for discovering bridges
+    DISCOVERY_URL: str = "https://discovery.meethue.com/"
 
     _ca_cert: str
     _connection_info: HueBridgeConnectionInfo
@@ -48,7 +48,7 @@ class HueBridge:
         :raises ConnectionError: When there is a connection issue
         """
 
-        response = requests.get(url=HUE_BRIDGE_DISCOVERY_URL)
+        response = requests.get(url=HueBridge.DISCOVERY_URL)
         if response.status_code == 200:
             bridges = response.json()
             bridges_conn_info = []

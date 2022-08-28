@@ -25,6 +25,7 @@ class HueBridgeConnection:
         """
         :param connection_info: HueBridgeConnectionInfo instance for the bridge
         :param ca_cert: Path to the CA certificate for authenticating with the bridge
+        :param auth_info: Authentication info for the bridge (may be None if not registered yet)
         """
         self.session = HueBridgeSession(
             connection_info=connection_info, ca_cert=ca_cert, auth_info=auth_info

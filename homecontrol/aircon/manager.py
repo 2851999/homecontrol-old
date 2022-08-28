@@ -7,7 +7,7 @@ from homecontrol.exceptions import DeviceNotRegisteredError
 
 class ACManager:
     """
-    Handles a set of aircon units
+    Handles a set of aircon devices
     """
 
     _config: ACConfig

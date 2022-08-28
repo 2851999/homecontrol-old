@@ -17,8 +17,8 @@ class HueManager:
     def __init__(self) -> None:
         self._config = HueConfig()
 
-        # Load all registered devices immediately
-        self.load_devices()
+        # Load all registered bridges immediately
+        self.load_bridges()
 
     def register_bridge(self, name: str, connection_info: HueBridgeConnectionInfo):
         """
@@ -31,12 +31,12 @@ class HueManager:
                 ca_cert=self._config.get_ca_cert(), connection_info=connection_info
             )
 
-            with bridge.start_session() as session:
+            with bridge.start_session() as conn:
                 payload = {
                     "devicetype": "homecontrol#python_app",
                     "generateclientkey": True,
                 }
-                response = session.post("/api", json=payload)
+                response = conn.session.post("/api", json=payload)
 
                 if response.status_code == 200:
                     response_json = response.json()[0]
@@ -91,7 +91,7 @@ class HueManager:
             )
             self._loaded_bridges.update({name: bridge})
 
-    def load_devices(self):
+    def load_bridges(self):
         """
         Loads all registered devices from config
         """
