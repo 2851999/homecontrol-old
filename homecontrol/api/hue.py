@@ -1,13 +1,11 @@
 from flask import Blueprint, request
-from homecontrol.aircon.structs import ACConnectionError, ACInvalidState, ACState
 
 from homecontrol.api.helpers import (
     authenticated,
-    check_required_params,
     response,
     response_message,
 )
-from homecontrol.helpers import ResponseStatus, dataclass_from_dict
+from homecontrol.helpers import ResponseStatus
 from homecontrol.hue.exceptions import HueAPIError
 from homecontrol.hue.grouped_light import GroupedLightState
 from homecontrol.hue.manager import HueManager

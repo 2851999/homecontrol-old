@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from enum import Enum
+from enum import IntEnum
 from msmart.device import air_conditioning
 
 
@@ -17,7 +17,7 @@ class ACConnectionInfo:
     token: str
 
 
-class ACMode(Enum):
+class ACMode(IntEnum):
     """
     Wrapper for air conditioning modes
     """
@@ -29,7 +29,7 @@ class ACMode(Enum):
     FAN = air_conditioning.operational_mode_enum.fan_only  # 5
 
 
-class ACFanSpeed(Enum):
+class ACFanSpeed(IntEnum):
     """
     Wrapper for air conditioning fan speeds
     """
@@ -41,7 +41,7 @@ class ACFanSpeed(Enum):
     SILENT = air_conditioning.fan_speed_enum.Silent  # 20
 
 
-class ACSwingMode(Enum):
+class ACSwingMode(IntEnum):
     """
     Wrapper for air conditioning fan speeds
     """
