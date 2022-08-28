@@ -5,10 +5,40 @@ from typing import Any, Dict
 
 class Config:
     """
-    Handles config files
+    Handles a config file
     """
 
     CONFIG_FILEPATH: str = "/homecontrol"
+
+    # Path to the config file this class manages
+    _path: str
+
+    # Current loaded data of this config
+    data: Dict
+
+    def __init__(self, path) -> None:
+        """
+        Constructor - loads the config from the given path, following the format
+        ~/CONFIG_FILEPATH/path
+        """
+        self._path = path
+
+        self.load()
+
+    def save(self):
+        """
+        Saves the config
+        """
+        Config.save_to_json(self._path, self.data)
+
+    def load(self):
+        """
+        Load the config (if it exists)
+        """
+        if Config.does_exist(self._path):
+            self.data = Config.load_from_json(self._path)
+        else:
+            self.data = {}
 
     @staticmethod
     def get_filepath(path: str) -> str:

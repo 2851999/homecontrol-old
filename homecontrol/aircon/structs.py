@@ -69,15 +69,3 @@ class ACState:
     fahrenheit: bool
     indoor: float
     outdoor: float
-
-
-class ACConnectionError(Exception):
-    """
-    Raised when fetching/updating some device state fails
-    """
-
-
-class ACInvalidState(Exception):
-    """
-    Raised when an invalid state is given
-    """

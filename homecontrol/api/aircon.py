@@ -1,5 +1,7 @@
 from flask import Blueprint, request
-from homecontrol.aircon.structs import ACConnectionError, ACInvalidState, ACState
+
+from homecontrol.aircon.exceptions import ACConnectionError, ACInvalidStateError
+from homecontrol.aircon.structs import ACState
 
 from homecontrol.api.helpers import (
     authenticated,
@@ -77,7 +79,7 @@ def set_device(name):
         try:
             device.set_state(new_state)
             return response(device.get_state().__dict__, ResponseStatus.OK)
-        except (ACConnectionError, ACInvalidState) as err:
+        except (ACConnectionError, ACInvalidStateError) as err:
             return response_message(str(err), ResponseStatus.BAD_REQUEST)
     except DeviceNotRegisteredError as err:
         return response_message(str(err), ResponseStatus.BAD_REQUEST)

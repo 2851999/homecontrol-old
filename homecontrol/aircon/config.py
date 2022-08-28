@@ -4,15 +4,13 @@ from homecontrol.aircon.structs import ACConnectionInfo
 from homecontrol.config import Config
 
 
-class ACConfig:
+class ACConfig(Config):
     """
     Handles the aircon.json config
     """
 
-    data: Dict
-
     def __init__(self) -> None:
-        self.load()
+        super().__init__("aircon.json")
 
     def has_devices(self):
         """
@@ -66,18 +64,3 @@ class ACConfig:
             }
         )
         self.data.update({"devices": devices})
-
-    def save(self):
-        """
-        Saves the config
-        """
-        Config.save_to_json("aircon.json", self.data)
-
-    def load(self):
-        """
-        Load the config (if it exists)
-        """
-        if Config.does_exist("aircon.json"):
-            self.data = Config.load_from_json("aircon.json")
-        else:
-            self.data = {}

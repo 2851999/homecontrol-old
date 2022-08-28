@@ -1,18 +1,14 @@
-from typing import Dict
-
 from homecontrol.config import Config
 from homecontrol.hue.structs import HueBridgeAuthInfo, HueBridgeConnectionInfo
 
 
-class HueConfig:
+class HueConfig(Config):
     """
     Handles the hue.json config
     """
 
-    data: Dict
-
     def __init__(self) -> None:
-        self.load()
+        super().__init__("hue.json")
 
     def has_bridges(self) -> bool:
         """
@@ -115,15 +111,3 @@ class HueConfig:
         Returns the ca_cert parameter from the config
         """
         return self.data["ca_cert"]
-
-    def save(self):
-        """
-        Saves the config
-        """
-        Config.save_to_json("hue.json", self.data)
-
-    def load(self):
-        """
-        Load the config
-        """
-        self.data = Config.load_from_json("hue.json")

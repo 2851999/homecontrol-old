@@ -4,15 +4,13 @@ from homecontrol.client.structs import APIConnectionInfo
 from homecontrol.config import Config
 
 
-class ClientConfig:
+class ClientConfig(Config):
     """
-    Handles the hue.json config
+    Handles the client.json config
     """
-
-    data: Dict
 
     def __init__(self) -> None:
-        self.load()
+        super().__init__("client.json")
 
     def get_api_connection_info(self) -> APIConnectionInfo:
         """
@@ -24,15 +22,3 @@ class ClientConfig:
             ip_address=self.data["api"]["ip"],
             port=self.data["api"]["port"],
         )
-
-    def save(self):
-        """
-        Saves the config
-        """
-        Config.save_to_json("client.json", self.data)
-
-    def load(self):
-        """
-        Load the config
-        """
-        self.data = Config.load_from_json("client.json")

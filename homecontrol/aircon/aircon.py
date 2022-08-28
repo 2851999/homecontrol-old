@@ -5,10 +5,9 @@ from msmart.device import air_conditioning
 from msmart.scanner import MideaDiscovery
 from msmart.const import OPEN_MIDEA_APP_ACCOUNT, OPEN_MIDEA_APP_PASSWORD
 
+from homecontrol.aircon.exceptions import ACConnectionError, ACInvalidStateError
 from homecontrol.aircon.structs import (
-    ACConnectionError,
     ACConnectionInfo,
-    ACInvalidState,
     ACState,
 )
 
@@ -73,9 +72,11 @@ class ACDevice:
         TODO: Take account of fahrenheit
         """
         if state.eco and state.turbo:
-            raise ACInvalidState("Cannot have both eco and turbo true at the same time")
+            raise ACInvalidStateError(
+                "Cannot have both eco and turbo true at the same time"
+            )
         if not 16 <= state.target <= 30:
-            raise ACInvalidState("target_temp must be between 16 and 30")
+            raise ACInvalidStateError("target_temp must be between 16 and 30")
 
     def get_state(self) -> ACState:
         """
