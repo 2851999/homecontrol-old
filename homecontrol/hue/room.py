@@ -42,9 +42,17 @@ class Room:
             for service in room["services"]:
                 if service["rtype"] == "grouped_light":
                     light_group = service["rid"]
+            devices = []
+            for child in room["children"]:
+                if child["rtype"] == "device":
+                    devices.append(child["rid"])
 
             room_dict.update(
-                {room_name: HueRoom(identifier=room_id, light_group=light_group)}
+                {
+                    room_name: HueRoom(
+                        identifier=room_id, light_group=light_group, devices=devices
+                    )
+                }
             )
 
         return room_dict

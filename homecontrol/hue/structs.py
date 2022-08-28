@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Optional
+from typing import List, Optional
 
 
 @dataclass
@@ -31,3 +31,4 @@ class HueRoom:
 
     identifier: str
     light_group: Optional[str]
+    devices: List[str]

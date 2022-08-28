@@ -22,9 +22,7 @@ class HueBridgeSession(SessionWrapper):
         ca_cert: str,
         auth_info: Optional[HueBridgeAuthInfo] = None,
     ) -> None:
-        super().__init__(
-            f"https://{self._connection_info.ip_address}:{self._connection_info.port}"
-        )
+        super().__init__(f"https://{connection_info.ip_address}:{connection_info.port}")
 
         self._connection_info = connection_info
         self._ca_cert = ca_cert
