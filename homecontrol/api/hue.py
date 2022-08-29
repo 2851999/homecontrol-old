@@ -69,7 +69,7 @@ def set_grouped_light_state(bridge_name, group_id):
 @authenticated
 def get_scenes(bridge_name):
     """
-    Returns a dictionary of rooms a bridge has access to
+    Returns a list of scenes a bridge has access to
     """
 
     filters_param = request.args.get("filters") if "filters" in request.args else None
@@ -84,5 +84,20 @@ def get_scenes(bridge_name):
                     # Apply the parameter
                     scenes = [scene for scene in scenes if scene[key] == value]
             return response(scenes, ResponseStatus.OK)
+        except HueAPIError as err:
+            return response_message(str(err), ResponseStatus.BAD_REQUEST)
+
+
+@hue_api.route("/hue/<bridge_name>/scenes/<scene_id>", methods=["PUT"])
+@authenticated
+def recall_scene(bridge_name, scene_id):
+    """
+    Recalls a scene
+    """
+    bridge = device_manager.get_bridge(bridge_name)
+    with bridge.start_session() as conn:
+        try:
+            conn.scene.recall_scene(scene_id)
+            return response("Success", ResponseStatus.OK)
         except HueAPIError as err:
             return response_message(str(err), ResponseStatus.BAD_REQUEST)

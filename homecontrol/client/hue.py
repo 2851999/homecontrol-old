@@ -77,3 +77,11 @@ class Hue:
             scenes.append(dataclass_from_dict(HueScene, scene))
 
         return scenes
+
+    def recall_scene(self, bridge_name: str, scene_id: str):
+        """
+        Returns a list of scenes
+        """
+        response = self._session.put(f"/hue/{bridge_name}/scenes/{scene_id}")
+        if response.status_code != ResponseStatus.OK:
+            raise APIError("An error occured when recalling a scene")

@@ -45,3 +45,20 @@ class Scene:
             )
 
         return scenes
+
+    def recall_scene(self, identifier: str):
+        """
+        Attempts to recall a scene
+        """
+
+        # TODO: Allow dynamic_palette instead of active
+        payload = {"recall": {"action": "active"}}
+        response = self._session.put(
+            f"/clip/v2/resource/scene/{identifier}", json=payload
+        )
+
+        if response.status_code != ResponseStatus.OK:
+            raise HueAPIError(
+                f"An error occurred trying to recall a scene. "
+                f"Status code: {response.status_code}. Content {response.content}."
+            )
