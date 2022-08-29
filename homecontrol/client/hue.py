@@ -4,7 +4,7 @@ from homecontrol.client.exceptions import APIError
 from homecontrol.helpers import ResponseStatus, dataclass_from_dict
 from homecontrol.client.session import APISession
 from homecontrol.hue.grouped_light import GroupedLightState
-from homecontrol.hue.structs import HueRoom
+from homecontrol.hue.structs import HueRoom, HueScene
 
 
 class Hue:
@@ -56,3 +56,17 @@ class Hue:
             raise APIError("An error occured assigning a grouped light state")
 
         return True
+
+    def get_scenes(self, bridge_name: str) -> List[HueScene]:
+        """
+        Returns a list of scenes
+        """
+        response = self._session.get(f"/hue/{bridge_name}/scenes")
+        if response.status_code != ResponseStatus.OK:
+            raise APIError("An error occured getting a list of rooms")
+
+        scenes = []
+        for scene in response.json():
+            scenes.append(dataclass_from_dict(HueScene, scene))
+
+        return scenes

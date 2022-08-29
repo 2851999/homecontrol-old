@@ -62,3 +62,17 @@ def set_grouped_light_state(bridge_name, group_id):
             return response("Success", ResponseStatus.OK)
         except HueAPIError as err:
             return response_message(str(err), ResponseStatus.BAD_REQUEST)
+
+
+@hue_api.route("/hue/<bridge_name>/scenes", methods=["GET"])
+@authenticated
+def get_scenes(bridge_name):
+    """
+    Returns a dictionary of rooms a bridge has access to
+    """
+    bridge = device_manager.get_bridge(bridge_name)
+    with bridge.start_session() as conn:
+        try:
+            return response(conn.scene.get_scenes(), ResponseStatus.OK)
+        except HueAPIError as err:
+            return response_message(str(err), ResponseStatus.BAD_REQUEST)

@@ -32,3 +32,14 @@ class HueRoom:
     identifier: str
     light_group: Optional[str]
     devices: List[str]
+
+
+@dataclass
+class HueScene:
+    """
+    For storing information about a scene
+    """
+
+    identifier: str
+    name: str
+    room: Optional[str]
