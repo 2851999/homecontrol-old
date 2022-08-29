@@ -1,3 +1,4 @@
+import json
 from flask import Blueprint, request
 
 from homecontrol.api.helpers import (
@@ -70,9 +71,18 @@ def get_scenes(bridge_name):
     """
     Returns a dictionary of rooms a bridge has access to
     """
+
+    filters_param = request.args.get("filters") if "filters" in request.args else None
+
     bridge = device_manager.get_bridge(bridge_name)
     with bridge.start_session() as conn:
         try:
-            return response(conn.scene.get_scenes(), ResponseStatus.OK)
+            scenes = conn.scene.get_scenes()
+            if filters_param:
+                filters = json.loads(filters_param)
+                for key, value in filters.items():
+                    # Apply the parameter
+                    scenes = [scene for scene in scenes if scene[key] == value]
+            return response(scenes, ResponseStatus.OK)
         except HueAPIError as err:
             return response_message(str(err), ResponseStatus.BAD_REQUEST)

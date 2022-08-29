@@ -1,3 +1,4 @@
+import json
 from typing import Dict, List, Optional
 from homecontrol.aircon.structs import ACState
 from homecontrol.client.exceptions import APIError
@@ -57,11 +58,17 @@ class Hue:
 
         return True
 
-    def get_scenes(self, bridge_name: str) -> List[HueScene]:
+    def get_scenes(
+        self, bridge_name: str, filters: Optional[Dict] = None
+    ) -> List[HueScene]:
         """
         Returns a list of scenes
         """
-        response = self._session.get(f"/hue/{bridge_name}/scenes")
+        url = f"/hue/{bridge_name}/scenes"
+        if filters:
+            url = f"{url}?filters={json.dumps(filters)}"
+
+        response = self._session.get(url)
         if response.status_code != ResponseStatus.OK:
             raise APIError("An error occured getting a list of rooms")
 
