@@ -1,8 +1,11 @@
 import json
 from flask import Blueprint, request
+from homecontrol.api.filters import Filters
 
 from homecontrol.api.helpers import (
+    apply_filters,
     authenticated,
+    get_filters,
     response,
     response_message,
 )
@@ -27,7 +30,9 @@ def get_rooms(bridge_name):
     bridge = device_manager.get_bridge(bridge_name)
     with bridge.start_session() as conn:
         try:
-            return response(conn.room.get_rooms(), ResponseStatus.OK)
+            rooms = conn.room.get_rooms()
+            rooms = apply_filters(rooms)
+            return response(rooms, ResponseStatus.OK)
         except HueAPIError as err:
             return response_message(str(err), ResponseStatus.BAD_REQUEST)
 
@@ -72,17 +77,11 @@ def get_scenes(bridge_name):
     Returns a list of scenes a bridge has access to
     """
 
-    filters_param = request.args.get("filters") if "filters" in request.args else None
-
     bridge = device_manager.get_bridge(bridge_name)
     with bridge.start_session() as conn:
         try:
             scenes = conn.scene.get_scenes()
-            if filters_param:
-                filters = json.loads(filters_param)
-                for key, value in filters.items():
-                    # Apply the parameter
-                    scenes = [scene for scene in scenes if scene[key] == value]
+            scenes = apply_filters(scenes)
             return response(scenes, ResponseStatus.OK)
         except HueAPIError as err:
             return response_message(str(err), ResponseStatus.BAD_REQUEST)

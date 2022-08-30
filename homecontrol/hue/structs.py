@@ -1,6 +1,8 @@
 from dataclasses import dataclass
 from typing import List, Optional
 
+from homecontrol.helpers import SubscriptableClass
+
 
 @dataclass
 class HueBridgeConnectionInfo:
@@ -24,7 +26,7 @@ class HueBridgeAuthInfo:
 
 
 @dataclass
-class HueRoom:
+class HueRoom(SubscriptableClass):
     """
     For storing information about a room
     """
@@ -35,7 +37,7 @@ class HueRoom:
 
 
 @dataclass
-class HueScene:
+class HueScene(SubscriptableClass):
     """
     For storing information about a scene
     """
@@ -43,6 +45,3 @@ class HueScene:
     identifier: str
     name: str
     room: Optional[str]
-
-    def __getitem__(self, item):
-        return getattr(self, item)

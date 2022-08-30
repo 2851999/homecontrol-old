@@ -1,4 +1,3 @@
-from typing import Dict
 from homecontrol.client.structs import APIConnectionInfo
 
 from homecontrol.config import Config

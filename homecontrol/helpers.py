@@ -21,3 +21,12 @@ class ResponseStatus:
     BAD_REQUEST = 400
     UNAUTHORIZED = 401
     NOT_FOUND = 404
+
+
+class SubscriptableClass:
+    """
+    Useful for making classes subscriptable
+    """
+
+    def __getitem__(self, item):
+        return getattr(self, item)

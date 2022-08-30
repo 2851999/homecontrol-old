@@ -1,9 +1,8 @@
-import json
-from typing import Dict, List
+from typing import List
 from homecontrol.helpers import ResponseStatus
 from homecontrol.hue.exceptions import HueAPIError
 from homecontrol.hue.session import HueBridgeSession
-from homecontrol.hue.structs import HueRoom, HueScene
+from homecontrol.hue.structs import HueScene
 
 
 class Scene:

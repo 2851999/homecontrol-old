@@ -1,4 +1,3 @@
-from typing import Dict
 from homecontrol.api.structs import APIAuthInfo
 
 from homecontrol.config import Config
