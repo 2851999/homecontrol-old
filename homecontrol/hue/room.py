@@ -1,8 +1,39 @@
-from typing import Dict
+from typing import List
 from homecontrol.helpers import ResponseStatus
 from homecontrol.hue.exceptions import HueAPIError
+from homecontrol.hue.helpers import HueAPIObject, dicts_to_list
 from homecontrol.hue.session import HueBridgeSession
-from homecontrol.hue.structs import HueRoom
+
+
+class ResourceIdentifierGet(HueAPIObject):
+    """
+    Object returned by the Hue API
+    """
+
+    rid: str
+    rtype: str
+
+
+class Metadata(HueAPIObject):
+    """
+    Object returned by the Hue API
+    """
+
+    archetype: str
+    name: str
+
+
+class RoomGet(HueAPIObject):
+    """
+    Object returned by the Hue API
+    """
+
+    type: str
+    id: str
+    id_v1: str
+    metadata: Metadata
+    services: List[ResourceIdentifierGet]
+    children: List[ResourceIdentifierGet]
 
 
 class Room:
@@ -15,12 +46,11 @@ class Room:
     def __init__(self, session: HueBridgeSession) -> None:
         self._session = session
 
-    def get_rooms(self) -> Dict[str, HueRoom]:
+    def get_rooms(self) -> List[RoomGet]:
         """
         Returns a dictionary of rooms where keys represent the room name
         and the values their id
         """
-        room_dict = {}
         response = self._session.get("/clip/v2/resource/room")
 
         if response.status_code != ResponseStatus.OK:
@@ -31,28 +61,4 @@ class Room:
 
         # Obtain the data
         data = response.json()["data"]
-
-        # Data should be a list of rooms
-        for room in data:
-            room_id = room["id"]
-            room_name = room["metadata"]["name"]
-
-            # Attempt to get a light group
-            light_group = None
-            for service in room["services"]:
-                if service["rtype"] == "grouped_light":
-                    light_group = service["rid"]
-            devices = []
-            for child in room["children"]:
-                if child["rtype"] == "device":
-                    devices.append(child["rid"])
-
-            room_dict.update(
-                {
-                    room_name: HueRoom(
-                        identifier=room_id, light_group=light_group, devices=devices
-                    )
-                }
-            )
-
-        return room_dict
+        return dicts_to_list(RoomGet, data)

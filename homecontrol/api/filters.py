@@ -51,7 +51,7 @@ class Filters:
     # List of all possible filters
     FILTERS: Dict[str, Type[Filter]] = {"eq": EqualsFilter}
 
-    _filters: List[Filter] = []
+    _filters: List[Filter]
 
     def __init__(self, filters_json: str):
         """
@@ -61,6 +61,8 @@ class Filters:
 
         :param filters: JSON representing the filters from the URL
         """
+        self._filters = []
+
         filters = json.loads(filters_json)
 
         for key, value in filters.items():
@@ -74,7 +76,7 @@ class Filters:
                 raise ValueError(f"No filter found with the operator '{operator}'")
             self._filters.append(Filters.FILTERS[operator](param=param, value=value))
 
-    def apply(self, items: List[SubscriptableClass]):
+    def apply(self, items: List[SubscriptableClass]) -> List[SubscriptableClass]:
         """
         Applies the filters to a list of items and returns the result
         """

@@ -1,6 +1,6 @@
-import json
 from typing import Dict, List, Optional
 from homecontrol.client.exceptions import APIError
+from homecontrol.client.helpers import get_url_search_params
 from homecontrol.helpers import ResponseStatus, dataclass_from_dict
 from homecontrol.client.session import APISession
 from homecontrol.hue.grouped_light import GroupedLightState
@@ -17,17 +17,21 @@ class Hue:
     def __init__(self, session: APISession) -> None:
         self._session = session
 
-    def get_rooms(self, bridge_name: str) -> Dict[str, HueRoom]:
+    def get_rooms(
+        self, bridge_name: str, filters: Optional[Dict] = None
+    ) -> List[HueRoom]:
         """
         Returns a dictionary of rooms handled by a bridge
         """
-        response = self._session.get(f"/hue/{bridge_name}/rooms")
+        response = self._session.get(
+            f"/hue/{bridge_name}/rooms{get_url_search_params(filters)}"
+        )
         if response.status_code != ResponseStatus.OK:
             raise APIError("An error occured getting a list of rooms")
 
-        rooms = {}
-        for key, value in response.json().items():
-            rooms.update({key: dataclass_from_dict(HueRoom, value)})
+        rooms = []
+        for room in response.json():
+            rooms.append(dataclass_from_dict(HueRoom, room))
 
         return rooms
 
@@ -63,9 +67,7 @@ class Hue:
         """
         Returns a list of scenes
         """
-        url = f"/hue/{bridge_name}/scenes"
-        if filters:
-            url = f"{url}?filters={json.dumps(filters)}"
+        url = f"/hue/{bridge_name}/scenes{get_url_search_params(filters)}"
 
         response = self._session.get(url)
         if response.status_code != ResponseStatus.OK:
