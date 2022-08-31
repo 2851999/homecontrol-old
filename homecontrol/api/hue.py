@@ -10,7 +10,6 @@ from homecontrol.helpers import ResponseStatus
 from homecontrol.hue.exceptions import HueAPIError
 from homecontrol.hue.grouped_light import GroupedLightState
 from homecontrol.hue.manager import HueManager
-from homecontrol.hue.structs import HueRoom, HueScene
 
 
 hue_api = Blueprint("hue_api", __name__)
@@ -29,33 +28,9 @@ def get_rooms(bridge_name):
     with bridge.start_session() as conn:
         try:
             rooms = conn.room.get_rooms()
+            rooms = apply_filters(rooms)
 
-            # Convert to the room structure we actually want to return
-            room_list = []
-            # Data should be a list of rooms
-            for room in rooms:
-
-                # Attempt to get a light group
-                light_group = None
-                for service in room.services:
-                    if service.rtype == "grouped_light":
-                        light_group = service.rid
-                devices = []
-                for child in room.children:
-                    if child.rtype == "device":
-                        devices.append(child.rid)
-
-                room_list.append(
-                    HueRoom(
-                        identifier=room.id,
-                        name=room.metadata.name,
-                        light_group=light_group,
-                        devices=devices,
-                    )
-                )
-
-            room_list = apply_filters(room_list)
-            return response(room_list, ResponseStatus.OK)
+            return response(rooms, ResponseStatus.OK)
         except HueAPIError as err:
             return response_message(str(err), ResponseStatus.BAD_REQUEST)
 
@@ -88,6 +63,7 @@ def set_grouped_light_state(bridge_name, group_id):
     with bridge.start_session() as conn:
         try:
             conn.grouped_light.set_state(group_id, state)
+
             return response("Success", ResponseStatus.OK)
         except HueAPIError as err:
             return response_message(str(err), ResponseStatus.BAD_REQUEST)
@@ -104,24 +80,9 @@ def get_scenes(bridge_name):
     with bridge.start_session() as conn:
         try:
             scenes = conn.scene.get_scenes()
+            scenes = apply_filters(scenes)
 
-            scene_list = []
-            for scene in scenes:
-                room = None
-
-                if scene.group.rtype == "room":
-                    room = scene.group.rid
-
-                scene_list.append(
-                    HueScene(
-                        identifier=scene.id,
-                        name=scene.metadata.name,
-                        room=room,
-                    )
-                )
-
-            scene_list = apply_filters(scene_list)
-            return response(scene_list, ResponseStatus.OK)
+            return response(scenes, ResponseStatus.OK)
         except HueAPIError as err:
             return response_message(str(err), ResponseStatus.BAD_REQUEST)
 
@@ -136,6 +97,7 @@ def recall_scene(bridge_name, scene_id):
     with bridge.start_session() as conn:
         try:
             conn.scene.recall_scene(scene_id)
+
             return response("Success", ResponseStatus.OK)
         except HueAPIError as err:
             return response_message(str(err), ResponseStatus.BAD_REQUEST)

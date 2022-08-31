@@ -1,9 +1,6 @@
 from typing import List
-from homecontrol.helpers import ResponseStatus
-from homecontrol.hue.api import RoomGet
-from homecontrol.hue.exceptions import HueAPIError
-from homecontrol.hue.helpers import dicts_to_list
-from homecontrol.hue.session import HueBridgeSession
+from homecontrol.hue.api.api import HueBridgeAPI
+from homecontrol.hue.structs import HueRoom
 
 
 class Room:
@@ -11,24 +8,38 @@ class Room:
     Handles Philips Hue Room endpoints
     """
 
-    _session: HueBridgeSession
+    _api: HueBridgeAPI
 
-    def __init__(self, session: HueBridgeSession) -> None:
-        self._session = session
+    def __init__(self, api: HueBridgeAPI) -> None:
+        self._api = api
 
-    def get_rooms(self) -> List[RoomGet]:
+    def get_rooms(self) -> List[HueRoom]:
         """
         Returns a dictionary of rooms where keys represent the room name
         and the values their id
         """
-        response = self._session.get("/clip/v2/resource/room")
+        rooms = self._api.room.get_rooms()
+        # Convert to the room structure we actually want to return
+        room_list = []
+        # Data should be a list of rooms
+        for room in rooms:
 
-        if response.status_code != ResponseStatus.OK:
-            raise HueAPIError(
-                f"An error occurred trying to get rooms. "
-                f"Status code: {response.status_code}. Content {response.content}."
+            # Attempt to get a light group
+            light_group = None
+            for service in room.services:
+                if service.rtype == "grouped_light":
+                    light_group = service.rid
+            devices = []
+            for child in room.children:
+                if child.rtype == "device":
+                    devices.append(child.rid)
+
+            room_list.append(
+                HueRoom(
+                    identifier=room.id,
+                    name=room.metadata.name,
+                    light_group=light_group,
+                    devices=devices,
+                )
             )
-
-        # Obtain the data
-        data = response.json()["data"]
-        return dicts_to_list(RoomGet, data)
+        return room_list

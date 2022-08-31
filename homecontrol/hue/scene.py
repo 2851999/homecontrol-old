@@ -1,10 +1,8 @@
-import json
 from typing import List
-from homecontrol.helpers import ResponseStatus
-from homecontrol.hue.api import SceneGet
-from homecontrol.hue.exceptions import HueAPIError
-from homecontrol.hue.helpers import dicts_to_list
-from homecontrol.hue.session import HueBridgeSession
+
+from homecontrol.hue.api.api import HueBridgeAPI
+from homecontrol.hue.api.structs import ScenePut
+from homecontrol.hue.structs import HueScene
 
 
 class Scene:
@@ -12,27 +10,32 @@ class Scene:
     Handles Philips Hue Scene endpoints
     """
 
-    _session: HueBridgeSession
+    _api: HueBridgeAPI
 
-    def __init__(self, session: HueBridgeSession) -> None:
-        self._session = session
+    def __init__(self, api: HueBridgeAPI) -> None:
+        self._api = api
 
-    def get_scenes(self) -> List[SceneGet]:
+    def get_scenes(self) -> List[HueScene]:
         """
         Returns a list of available scenes
         """
-        response = self._session.get("/clip/v2/resource/scene")
+        scenes = self._api.scene.get_scenes()
+        scene_list = []
+        for scene in scenes:
+            room = None
 
-        if response.status_code != ResponseStatus.OK:
-            raise HueAPIError(
-                f"An error occurred trying to get scenes. "
-                f"Status code: {response.status_code}. Content {response.content}."
+            if scene.group.rtype == "room":
+                room = scene.group.rid
+
+            scene_list.append(
+                HueScene(
+                    identifier=scene.id,
+                    name=scene.metadata.name,
+                    room=room,
+                )
             )
 
-        # Obtain the data
-        data = response.json()["data"]
-
-        return dicts_to_list(SceneGet, data)
+        return scene_list
 
     def recall_scene(self, identifier: str):
         """
@@ -40,13 +43,5 @@ class Scene:
         """
 
         # TODO: Allow dynamic_palette instead of active
-        payload = {"recall": {"action": "active"}}
-        response = self._session.put(
-            f"/clip/v2/resource/scene/{identifier}", json=payload
-        )
-
-        if response.status_code != ResponseStatus.OK:
-            raise HueAPIError(
-                f"An error occurred trying to recall a scene. "
-                f"Status code: {response.status_code}. Content {response.content}."
-            )
+        payload = ScenePut({"recall": {"action": "active"}})
+        self._api.scene.put(identifier=identifier, scene_put=payload)

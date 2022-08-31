@@ -22,7 +22,7 @@ class HueAPIObject:
 
 class ResourceIdentifierGet(HueAPIObject):
     """
-    Object returned by the Hue API
+    Object for the Hue API
     """
 
     rid: str
@@ -31,7 +31,7 @@ class ResourceIdentifierGet(HueAPIObject):
 
 class RoomMetadata(HueAPIObject):
     """
-    Object returned by the Hue API
+    Object for the Hue API
     """
 
     archetype: str
@@ -40,7 +40,7 @@ class RoomMetadata(HueAPIObject):
 
 class RoomGet(HueAPIObject):
     """
-    Object returned by the Hue API
+    Object for the Hue API
     """
 
     type: str
@@ -53,16 +53,16 @@ class RoomGet(HueAPIObject):
 
 class SceneImage(HueAPIObject):
     """
-    Object returned by the Hue API
+    Object for the Hue API
     """
 
     rid: str
     rtype: str
 
 
-class SceneMetadata(HueAPIObject):
+class SceneGetMetadata(HueAPIObject):
     """
-    Object returned by the Hue API
+    Object for the Hue API
     """
 
     name: str
@@ -71,7 +71,7 @@ class SceneMetadata(HueAPIObject):
 
 class SceneGroup(HueAPIObject):
     """
-    Object returned by the Hue API
+    Object for the Hue API
     """
 
     rid: str
@@ -80,7 +80,7 @@ class SceneGroup(HueAPIObject):
 
 class ActionTarget(HueAPIObject):
     """
-    Object returned by the Hue API
+    Object for the Hue API
     """
 
     rid: str
@@ -89,7 +89,7 @@ class ActionTarget(HueAPIObject):
 
 class On(HueAPIObject):
     """
-    Object returned by the Hue API
+    Object for the Hue API
     """
 
     on: bool
@@ -97,7 +97,7 @@ class On(HueAPIObject):
 
 class Dimming(HueAPIObject):
     """
-    Object returned by the Hue API
+    Object for the Hue API
     """
 
     brightness: int
@@ -105,7 +105,7 @@ class Dimming(HueAPIObject):
 
 class ColorXY(HueAPIObject):
     """
-    Object returned by the Hue API
+    Object for the Hue API
     """
 
     x: float
@@ -114,7 +114,7 @@ class ColorXY(HueAPIObject):
 
 class Color(HueAPIObject):
     """
-    Object returned by the Hue API
+    Object for the Hue API
     """
 
     xy: ColorXY
@@ -122,7 +122,7 @@ class Color(HueAPIObject):
 
 class ColorTemperature(HueAPIObject):
     """
-    Object returned by the Hue API
+    Object for the Hue API
     """
 
     mirek: int
@@ -130,7 +130,7 @@ class ColorTemperature(HueAPIObject):
 
 class GradientPointGet(HueAPIObject):
     """
-    Object returned by the Hue API
+    Object for the Hue API
     """
 
     color: Color
@@ -138,7 +138,7 @@ class GradientPointGet(HueAPIObject):
 
 class Gradient(HueAPIObject):
     """
-    Object returned by the Hue API
+    Object for the Hue API
     """
 
     points: List[GradientPointGet]
@@ -146,7 +146,7 @@ class Gradient(HueAPIObject):
 
 class Effects(HueAPIObject):
     """
-    Object returned by the Hue API
+    Object for the Hue API
     """
 
     effect: str
@@ -154,7 +154,7 @@ class Effects(HueAPIObject):
 
 class Dynamics(HueAPIObject):
     """
-    Object returned by the Hue API
+    Object for the Hue API
     """
 
     duration: int
@@ -162,7 +162,7 @@ class Dynamics(HueAPIObject):
 
 class Action(HueAPIObject):
     """
-    Object returned by the Hue API
+    Object for the Hue API
     """
 
     on: On
@@ -176,7 +176,7 @@ class Action(HueAPIObject):
 
 class Target(HueAPIObject):
     """
-    Object returned by the Hue API
+    Object for the Hue API
     """
 
     rid: str
@@ -185,7 +185,7 @@ class Target(HueAPIObject):
 
 class ActionGet(HueAPIObject):
     """
-    Object returned by the Hue API
+    Object for the Hue API
     """
 
     target: Target
@@ -194,7 +194,7 @@ class ActionGet(HueAPIObject):
 
 class ColorPaletteGet(HueAPIObject):
     """
-    Object returned by the Hue API
+    Object for the Hue API
     """
 
     color: Color
@@ -203,7 +203,7 @@ class ColorPaletteGet(HueAPIObject):
 
 class DimmingFeatureBasicGet(HueAPIObject):
     """
-    Object returned by the Hue API
+    Object for the Hue API
     """
 
     brightness: int
@@ -211,7 +211,7 @@ class DimmingFeatureBasicGet(HueAPIObject):
 
 class ColorTemperaturePaletteGet(HueAPIObject):
     """
-    Object returned by the Hue API
+    Object for the Hue API
     """
 
     color_temperature: ColorTemperature
@@ -220,7 +220,7 @@ class ColorTemperaturePaletteGet(HueAPIObject):
 
 class Palette(HueAPIObject):
     """
-    Object returned by the Hue API
+    Object for the Hue API
     """
 
     color: List[ColorPaletteGet]
@@ -230,13 +230,13 @@ class Palette(HueAPIObject):
 
 class SceneGet(HueAPIObject):
     """
-    Object returned by the Hue API
+    Object for the Hue API
     """
 
     type: str
     id: str
     id_v1: str
-    metadata: SceneMetadata
+    metadata: SceneGetMetadata
     group: SceneGroup
     actions: List[ActionGet]
     palette: Palette
@@ -246,13 +246,13 @@ class SceneGet(HueAPIObject):
 
 class AlertEffectType(HueAPIObject):
     """
-    Object returned by the Hue API
+    Object for the Hue API
     """
 
 
 class Alert(HueAPIObject):
     """
-    Object returned by the Hue API
+    Object for the Hue API
     """
 
     action_values: AlertEffectType
@@ -260,7 +260,7 @@ class Alert(HueAPIObject):
 
 class GroupedLightGet(HueAPIObject):
     """
-    Object returned by the Hue API
+    Object for the Hue API
     """
 
     type: str
@@ -272,7 +272,7 @@ class GroupedLightGet(HueAPIObject):
 
 class DimmingDelta(HueAPIObject):
     """
-    Object returned by the Hue API
+    Object for the Hue API
     """
 
     action: str
@@ -281,7 +281,7 @@ class DimmingDelta(HueAPIObject):
 
 class ColorTemperatureDelta(HueAPIObject):
     """
-    Object returned by the Hue API
+    Object for the Hue API
     """
 
     action: str
@@ -290,7 +290,7 @@ class ColorTemperatureDelta(HueAPIObject):
 
 class GroupedLightPut(HueAPIObject):
     """
-    Object returned by the Hue API
+    Object for the Hue API
     """
 
     type: str
@@ -302,3 +302,44 @@ class GroupedLightPut(HueAPIObject):
     color: Color
     alert: Alert
     dynamics: Dynamics
+
+
+class ScenePutMetadata(HueAPIObject):
+    """
+    Object for the Hue API
+    """
+
+    name: str
+
+
+class ActionPut(HueAPIObject):
+    """
+    Object for the Hue API
+    """
+
+    target: Target
+    action: Action
+
+
+class Recall(HueAPIObject):
+    """
+    Object for the Hue API
+    """
+
+    action: str
+    status: str
+    duration: str
+    dimming: Dimming
+
+
+class ScenePut(HueAPIObject):
+    """
+    Object for the Hue API
+    """
+
+    type: str
+    metadata: ScenePutMetadata
+    actions: List[ActionPut]
+    recall: Recall
+    palette: Palette
+    speed: float

@@ -1,11 +1,16 @@
 from dataclasses import dataclass
 from typing import Dict, Optional
-from homecontrol.hue.api.api import HueBridgeAPI
+from homecontrol.helpers import ResponseStatus
 from homecontrol.hue.api.structs import GroupedLightGet, GroupedLightPut
 from homecontrol.hue.color import HueColour
+from homecontrol.hue.exceptions import HueAPIError
 from homecontrol.hue.helpers import (
+    dicts_to_list,
     kelvin_to_mirek,
+    mirek_to_kelvin,
+    object_to_dict,
 )
+from homecontrol.hue.session import HueBridgeSession
 
 
 @dataclass
@@ -21,20 +26,30 @@ class GroupedLightState:
     colour_temp: Optional[int] = None
 
     @staticmethod
-    def from_api(data: GroupedLightGet):
+    def from_hue_dict(data: Dict):
         """
         Returns an instance of this class from the dictionary obtained
         from the Hue API
         """
+        power = data["on"]["on"]
+        brightness = data["dimming"]["brightness"]
+        colour = None
+        colour_temp = None
+
+        if "xy" in data["color"]:
+            colour = HueColour.from_dict(data["color"])
+
+        if "mirek" in data["color_temperature"]:
+            colour_temp = mirek_to_kelvin(data["color_temperature"]["mirek"])
 
         return GroupedLightState(
-            power=data.on.on,
-            brightness=None,
-            colour=None,
-            colour_temp=None,
+            power=power,
+            brightness=brightness,
+            colour=colour,
+            colour_temp=colour_temp,
         )
 
-    def to_update_payload(self) -> GroupedLightPut:
+    def to_update_payload(self) -> Dict:
         """
         Returns a payload for updating this light state
         """
@@ -49,7 +64,7 @@ class GroupedLightState:
             payload.update(
                 {"color_temperature": {"mirek": kelvin_to_mirek(self.colour_temp)}}
             )
-        return GroupedLightPut(payload)
+        return payload
 
     def to_dict(self) -> Dict:
         """
@@ -79,27 +94,41 @@ class GroupedLightState:
 
 class GroupedLight:
     """
-    Handles Philips grouped light endpoints
+    Handles Philips Hue Room endpoints
     """
 
-    _api: HueBridgeAPI
+    _session: HueBridgeSession
 
-    def __init__(self, api: HueBridgeAPI) -> None:
-        self._api = api
+    def __init__(self, session: HueBridgeSession) -> None:
+        self._session = session
 
-    def get_state(self, identifier: str) -> GroupedLightGet:
+    def get(self, identifier: str) -> GroupedLightGet:
         """
         Returns the current state of a group of lights
         """
-        state = self._api.grouped_light.get(identifier=identifier)
+        response = self._session.get(f"/clip/v2/resource/grouped_light/{identifier}")
 
-        return GroupedLightState.from_api(state)
+        if response.status_code != ResponseStatus.OK:
+            raise HueAPIError(
+                f"An error occurred trying to change the power state of a room. "
+                f"Status code: {response.status_code}. Content {response.content}."
+            )
 
-    def set_state(self, identifier: str, state: GroupedLightState):
+        data = response.json()["data"][0]
+        return dicts_to_list(GroupedLightGet, data)
+
+    def put(self, identifier: str, grouped_light_put: GroupedLightPut):
         """
         Attempts to assign the state of a group of lights
         """
 
-        self._api.grouped_light.put(
-            identifier=identifier, grouped_light_put=state.to_update_payload()
+        response = self._session.put(
+            f"/clip/v2/resource/grouped_light/{identifier}",
+            json=object_to_dict(grouped_light_put),
         )
+
+        if response.status_code != ResponseStatus.OK:
+            raise HueAPIError(
+                f"An error occurred trying to change the state of a light group "
+                f"Status code: {response.status_code}. Content {response.content}."
+            )
