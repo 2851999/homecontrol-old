@@ -1,8 +1,10 @@
+import json
 from typing import List
 from homecontrol.helpers import ResponseStatus
+from homecontrol.hue.api import SceneGet
 from homecontrol.hue.exceptions import HueAPIError
+from homecontrol.hue.helpers import dicts_to_list
 from homecontrol.hue.session import HueBridgeSession
-from homecontrol.hue.structs import HueScene
 
 
 class Scene:
@@ -15,11 +17,10 @@ class Scene:
     def __init__(self, session: HueBridgeSession) -> None:
         self._session = session
 
-    def get_scenes(self) -> List[HueScene]:
+    def get_scenes(self) -> List[SceneGet]:
         """
         Returns a list of available scenes
         """
-        scenes = []
         response = self._session.get("/clip/v2/resource/scene")
 
         if response.status_code != ResponseStatus.OK:
@@ -31,19 +32,7 @@ class Scene:
         # Obtain the data
         data = response.json()["data"]
 
-        for scene in data:
-            room = None
-
-            if scene["group"]["rtype"] == "room":
-                room = scene["group"]["rid"]
-
-            scenes.append(
-                HueScene(
-                    identifier=scene["id"], name=scene["metadata"]["name"], room=room
-                )
-            )
-
-        return scenes
+        return dicts_to_list(SceneGet, data)
 
     def recall_scene(self, identifier: str):
         """

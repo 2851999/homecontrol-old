@@ -1,4 +1,5 @@
-from typing import Dict, List, Type, get_args, get_origin, get_type_hints
+import json
+from typing import Dict, List, Type
 
 
 def kelvin_to_mirek(kelvin: int):
@@ -25,18 +26,8 @@ def dicts_to_list(class_type: Type, list_of_dicts: List[Dict]):
     return result
 
 
-class HueAPIObject:
+def object_to_dict(obj):
     """
-    Useful for creating class structures for the responses from
-    the Hue API
+    Converts an object to a dictionary
     """
-
-    def __init__(self, dictionary: Dict):
-        types = get_type_hints(self)
-        for key, value in dictionary.items():
-            current_type = types[key]
-            if get_origin(current_type) == list:
-                list_type = get_args(current_type)[0]
-                setattr(self, key, dicts_to_list(list_type, dictionary[key]))
-            else:
-                setattr(self, key, current_type(value))
+    return json.loads(json.dumps(obj, default=lambda o: o.__dict__))

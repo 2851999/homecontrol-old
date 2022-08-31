@@ -1,9 +1,15 @@
 from dataclasses import dataclass
 from typing import Dict, Optional
 from homecontrol.helpers import ResponseStatus
+from homecontrol.hue.api import GroupedLightGet, GroupedLightPut
 from homecontrol.hue.color import HueColour
 from homecontrol.hue.exceptions import HueAPIError
-from homecontrol.hue.helpers import kelvin_to_mirek, mirek_to_kelvin
+from homecontrol.hue.helpers import (
+    dicts_to_list,
+    kelvin_to_mirek,
+    mirek_to_kelvin,
+    object_to_dict,
+)
 from homecontrol.hue.session import HueBridgeSession
 
 
@@ -96,7 +102,7 @@ class GroupedLight:
     def __init__(self, session: HueBridgeSession) -> None:
         self._session = session
 
-    def get_state(self, identifier: str) -> GroupedLightState:
+    def get_state(self, identifier: str) -> GroupedLightGet:
         """
         Returns the current state of a group of lights
         """
@@ -109,16 +115,16 @@ class GroupedLight:
             )
 
         data = response.json()["data"][0]
-        return GroupedLightState.from_hue_dict(data)
+        return dicts_to_list(GroupedLightGet, data)
 
-    def set_state(self, identifier: str, state: GroupedLightState):
+    def set_state(self, identifier: str, state: GroupedLightPut):
         """
         Attempts to assign the state of a group of lights
         """
 
         response = self._session.put(
             f"/clip/v2/resource/grouped_light/{identifier}",
-            json=state.to_update_payload(),
+            json=object_to_dict(state),
         )
 
         if response.status_code != ResponseStatus.OK:

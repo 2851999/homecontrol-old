@@ -1,39 +1,9 @@
 from typing import List
 from homecontrol.helpers import ResponseStatus
+from homecontrol.hue.api import RoomGet
 from homecontrol.hue.exceptions import HueAPIError
-from homecontrol.hue.helpers import HueAPIObject, dicts_to_list
+from homecontrol.hue.helpers import dicts_to_list
 from homecontrol.hue.session import HueBridgeSession
-
-
-class ResourceIdentifierGet(HueAPIObject):
-    """
-    Object returned by the Hue API
-    """
-
-    rid: str
-    rtype: str
-
-
-class Metadata(HueAPIObject):
-    """
-    Object returned by the Hue API
-    """
-
-    archetype: str
-    name: str
-
-
-class RoomGet(HueAPIObject):
-    """
-    Object returned by the Hue API
-    """
-
-    type: str
-    id: str
-    id_v1: str
-    metadata: Metadata
-    services: List[ResourceIdentifierGet]
-    children: List[ResourceIdentifierGet]
 
 
 class Room:

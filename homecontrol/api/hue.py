@@ -10,7 +10,7 @@ from homecontrol.helpers import ResponseStatus
 from homecontrol.hue.exceptions import HueAPIError
 from homecontrol.hue.grouped_light import GroupedLightState
 from homecontrol.hue.manager import HueManager
-from homecontrol.hue.structs import HueRoom
+from homecontrol.hue.structs import HueRoom, HueScene
 
 
 hue_api = Blueprint("hue_api", __name__)
@@ -104,8 +104,24 @@ def get_scenes(bridge_name):
     with bridge.start_session() as conn:
         try:
             scenes = conn.scene.get_scenes()
-            scenes = apply_filters(scenes)
-            return response(scenes, ResponseStatus.OK)
+
+            scene_list = []
+            for scene in scenes:
+                room = None
+
+                if scene.group.rtype == "room":
+                    room = scene.group.rid
+
+                scene_list.append(
+                    HueScene(
+                        identifier=scene.id,
+                        name=scene.metadata.name,
+                        room=room,
+                    )
+                )
+
+            scene_list = apply_filters(scene_list)
+            return response(scene_list, ResponseStatus.OK)
         except HueAPIError as err:
             return response_message(str(err), ResponseStatus.BAD_REQUEST)
 
