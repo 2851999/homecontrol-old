@@ -12,12 +12,18 @@ class HueAPIObject:
     def __init__(self, dictionary: Dict):
         types = get_type_hints(self)
         for key, value in dictionary.items():
-            current_type = types[key]
-            if get_origin(current_type) == list:
-                list_type = get_args(current_type)[0]
-                setattr(self, key, dicts_to_list(list_type, dictionary[key]))
-            else:
-                setattr(self, key, current_type(value))
+            # Sometimes values are returned when with emtpy values and are not specefied
+            # in the API, so ignore them here
+            # Note: This may cause things to go missing if structure is not correct
+            if key in types:
+                current_type = types[key]
+                if get_origin(current_type) == list:
+                    list_type = get_args(current_type)[0]
+                    setattr(self, key, dicts_to_list(list_type, dictionary[key]))
+                else:
+                    # Don't bother if value non-existent
+                    if value is not None:
+                        setattr(self, key, current_type(value))
 
 
 class ResourceIdentifierGet(HueAPIObject):
@@ -29,7 +35,7 @@ class ResourceIdentifierGet(HueAPIObject):
     rtype: str
 
 
-class RoomMetadata(HueAPIObject):
+class Metadata(HueAPIObject):
     """
     Object for the Hue API
     """
@@ -46,7 +52,7 @@ class RoomGet(HueAPIObject):
     type: str
     id: str
     id_v1: str
-    metadata: RoomMetadata
+    metadata: Metadata
     services: List[ResourceIdentifierGet]
     children: List[ResourceIdentifierGet]
 
@@ -244,10 +250,10 @@ class SceneGet(HueAPIObject):
     auto_dynamic: bool
 
 
-class AlertEffectType(HueAPIObject):
-    """
-    Object for the Hue API
-    """
+# class AlertEffectType(HueAPIObject):
+#     """
+#     Object for the Hue API
+#     """
 
 
 class Alert(HueAPIObject):
@@ -255,7 +261,7 @@ class Alert(HueAPIObject):
     Object for the Hue API
     """
 
-    action_values: AlertEffectType
+    action_values: List[str]
 
 
 class GroupedLightGet(HueAPIObject):
@@ -343,3 +349,182 @@ class ScenePut(HueAPIObject):
     recall: Recall
     palette: Palette
     speed: float
+
+
+class Owner(HueAPIObject):
+    """
+    Object for the Hue API
+    """
+
+    rid: str
+    rtype: str
+
+
+class LightGetDimming(HueAPIObject):
+    """
+    Object for the Hue API
+    """
+
+    brightness: int
+    min_dim_level: int
+
+
+class MirekSchema(HueAPIObject):
+    """
+    Object for the Hue API
+    """
+
+    mirek_minimum: int
+    mirek_maximum: int
+
+
+class LightGetColorTemperature(HueAPIObject):
+    """
+    Object for the Hue API
+    """
+
+    mirek: int
+    mirek_valid: bool
+    mirek_schema: MirekSchema
+
+
+class Gamut(HueAPIObject):
+    """
+    Object for the Hue API
+    """
+
+    red: ColorXY
+    green: ColorXY
+    blue: ColorXY
+
+
+class LightGetColor(HueAPIObject):
+    """
+    Object for the Hue API
+    """
+
+    xy: ColorXY
+    gamut: Gamut
+    gamut_type: str
+
+
+# class SupportedDynamicStatus(HueAPIObject):
+#     """
+#     Object for the Hue API
+#     """
+
+
+class LightGetDynamics(HueAPIObject):
+    """
+    Object for the Hue API
+    """
+
+    status: str
+    status_values: List[str]
+    speed: float
+    speed_valid: bool
+
+
+class LightGetGradient(Gradient):
+    """
+    Object for the Hue API
+    """
+
+    points_capable: int
+
+
+# class SupportedEffects(HueAPIObject):
+#     """
+#     Object for the Hue API
+#     """
+
+
+class LightGetEffects(HueAPIObject):
+    """
+    Object for the Hue API
+    """
+
+    effect: str
+    status_values: List[str]
+    status: str
+    effect_values: List[str]
+
+
+class LightGetTimedEffects(HueAPIObject):
+    """
+    Object for the Hue API
+    """
+
+    effect: str
+    duration: int
+    status_values: List[str]
+    status: str
+    effect_values: List[str]
+
+
+class LightGet(HueAPIObject):
+    """
+    Object for the Hue API
+    """
+
+    type: str
+    id: str
+    id_v1: str
+    owner: Owner
+    metadata: Metadata
+    on: On
+    dimming: LightGetDimming
+    color_temperature: LightGetColorTemperature
+    color: LightGetColor
+    dynamics: LightGetDynamics
+    alert: Alert
+    mode: str
+    gradient: LightGetGradient
+    effects: LightGetEffects
+    timed_effects: LightGetTimedEffects
+
+
+class LightPutDynamics(HueAPIObject):
+    """
+    Object for the Hue API
+    """
+
+    duration: int
+    speed: int
+
+
+class LightPutAlert(HueAPIObject):
+    """
+    Object for the Hue API
+    """
+
+    action: str
+
+
+class LightPutTimedEffects(HueAPIObject):
+    """
+    Object for the Hue API
+    """
+
+    effect: str
+    duration: int
+
+
+class LightPut(HueAPIObject):
+    """
+    Object for the Hue API
+    """
+
+    type: str
+    # metadata: Metadata  # Depreciated
+    on: On
+    dimming: Dimming
+    dimming_delta: DimmingDelta
+    color_temperature: ColorTemperature
+    color_temperature_delta: ColorTemperatureDelta
+    color: Color
+    dynamics: LightPutDynamics
+    alert: LightPutAlert
+    gradient: Gradient
+    effects: Effects
+    timed_effect: LightPutTimedEffects

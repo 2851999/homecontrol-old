@@ -1,95 +1,11 @@
-from dataclasses import dataclass
-from typing import Dict, Optional
 from homecontrol.helpers import ResponseStatus
 from homecontrol.hue.api.structs import GroupedLightGet, GroupedLightPut
-from homecontrol.hue.color import HueColour
 from homecontrol.hue.exceptions import HueAPIError
 from homecontrol.hue.helpers import (
     dicts_to_list,
-    kelvin_to_mirek,
-    mirek_to_kelvin,
     object_to_dict,
 )
 from homecontrol.hue.session import HueBridgeSession
-
-
-@dataclass
-class GroupedLightState:
-    """
-    Stores information about the state of a light group,
-    values are optional so only certain ones can be updated
-    """
-
-    power: Optional[bool] = None
-    brightness: Optional[int] = None
-    colour: Optional[HueColour] = None
-    colour_temp: Optional[int] = None
-
-    @staticmethod
-    def from_hue_dict(data: Dict):
-        """
-        Returns an instance of this class from the dictionary obtained
-        from the Hue API
-        """
-        power = data["on"]["on"]
-        brightness = data["dimming"]["brightness"]
-        colour = None
-        colour_temp = None
-
-        if "xy" in data["color"]:
-            colour = HueColour.from_dict(data["color"])
-
-        if "mirek" in data["color_temperature"]:
-            colour_temp = mirek_to_kelvin(data["color_temperature"]["mirek"])
-
-        return GroupedLightState(
-            power=power,
-            brightness=brightness,
-            colour=colour,
-            colour_temp=colour_temp,
-        )
-
-    def to_update_payload(self) -> Dict:
-        """
-        Returns a payload for updating this light state
-        """
-        payload = {}
-        if self.power is not None:
-            payload.update({"on": {"on": self.power}})
-        if self.brightness is not None:
-            payload.update({"dimming": {"brightness": self.brightness}})
-        if self.colour is not None:
-            payload.update({"color": {"xy": self.colour.__dict__}})
-        if self.colour_temp is not None:
-            payload.update(
-                {"color_temperature": {"mirek": kelvin_to_mirek(self.colour_temp)}}
-            )
-        return payload
-
-    def to_dict(self) -> Dict:
-        """
-        Returns the dictionary represnetation of this object
-        """
-        return {
-            "power": self.power,
-            "brightness": self.brightness,
-            "colour": self.colour.__dict__ if self.colour is not None else None,
-            "colour_temp": self.colour_temp,
-        }
-
-    @staticmethod
-    def from_dict(dictionary):
-        """
-        Returns an instance of GroupedLightState from its dictionary representation
-        """
-        return GroupedLightState(
-            power=dictionary["power"],
-            brightness=dictionary["brightness"],
-            colour=HueColour.from_dict(dictionary["colour"])
-            if dictionary["colour"] is not None
-            else None,
-            colour_temp=dictionary["colour_temp"],
-        )
 
 
 class GroupedLight:
@@ -102,7 +18,7 @@ class GroupedLight:
     def __init__(self, session: HueBridgeSession) -> None:
         self._session = session
 
-    def get(self, identifier: str) -> GroupedLightGet:
+    def get_group(self, identifier: str) -> GroupedLightGet:
         """
         Returns the current state of a group of lights
         """
@@ -114,10 +30,10 @@ class GroupedLight:
                 f"Status code: {response.status_code}. Content {response.content}."
             )
 
-        data = response.json()["data"][0]
-        return dicts_to_list(GroupedLightGet, data)
+        data = response.json()["data"]
+        return dicts_to_list(GroupedLightGet, data)[0]
 
-    def put(self, identifier: str, grouped_light_put: GroupedLightPut):
+    def put_group(self, identifier: str, grouped_light_put: GroupedLightPut):
         """
         Attempts to assign the state of a group of lights
         """

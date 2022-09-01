@@ -44,4 +44,4 @@ class Scene:
 
         # TODO: Allow dynamic_palette instead of active
         payload = ScenePut({"recall": {"action": "active"}})
-        self._api.scene.put(identifier=identifier, scene_put=payload)
+        self._api.scene.put_scene(identifier=identifier, scene_put=payload)

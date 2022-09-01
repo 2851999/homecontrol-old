@@ -91,7 +91,7 @@ class GroupedLight:
         """
         Returns the current state of a group of lights
         """
-        state = self._api.grouped_light.get(identifier=identifier)
+        state = self._api.grouped_light.get_group(identifier=identifier)
 
         return GroupedLightState.from_api(state)
 
@@ -100,6 +100,6 @@ class GroupedLight:
         Attempts to assign the state of a group of lights
         """
 
-        self._api.grouped_light.put(
+        self._api.grouped_light.put_group(
             identifier=identifier, grouped_light_put=state.to_update_payload()
         )

@@ -35,7 +35,7 @@ class Scene:
 
         return dicts_to_list(SceneGet, data)
 
-    def put(self, identifier: str, scene_put: ScenePut):
+    def put_scene(self, identifier: str, scene_put: ScenePut):
         """
         Put request for a scene
         """
