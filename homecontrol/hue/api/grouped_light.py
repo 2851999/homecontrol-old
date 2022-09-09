@@ -1,3 +1,5 @@
+from typing import List
+
 from homecontrol.helpers import ResponseStatus
 from homecontrol.hue.api.structs import GroupedLightGet, GroupedLightPut
 from homecontrol.hue.exceptions import HueAPIError
@@ -18,6 +20,21 @@ class GroupedLight:
     def __init__(self, session: HueBridgeSession) -> None:
         self._session = session
 
+    def get_groups(self) -> List[GroupedLightGet]:
+        """
+        Returns a list of grouped lights
+        """
+        response = self._session.get("/clip/v2/resource/grouped_light")
+
+        if response.status_code != ResponseStatus.OK:
+            raise HueAPIError(
+                f"An error occurred trying to get a list of light groups. "
+                f"Status code: {response.status_code}. Content {response.content}."
+            )
+
+        data = response.json()["data"]
+        return dicts_to_list(GroupedLightGet, data)
+
     def get_group(self, identifier: str) -> GroupedLightGet:
         """
         Returns the current state of a group of lights
@@ -26,7 +43,7 @@ class GroupedLight:
 
         if response.status_code != ResponseStatus.OK:
             raise HueAPIError(
-                f"An error occurred trying to change the power state of a room. "
+                f"An error occurred trying to get the state of the light group with id {identifier}. "
                 f"Status code: {response.status_code}. Content {response.content}."
             )
 
@@ -45,6 +62,6 @@ class GroupedLight:
 
         if response.status_code != ResponseStatus.OK:
             raise HueAPIError(
-                f"An error occurred trying to change the state of a light group "
+                f"An error occurred trying to change the state of the light group with id {identifier} "
                 f"Status code: {response.status_code}. Content {response.content}."
             )

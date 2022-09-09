@@ -62,6 +62,6 @@ class Light:
 
         if response.status_code != ResponseStatus.OK:
             raise HueAPIError(
-                f"An error occurred trying to change the state of a light "
+                f"An error occurred trying to change the state of the light with id {identifier} "
                 f"Status code: {response.status_code}. Content {response.content}."
             )

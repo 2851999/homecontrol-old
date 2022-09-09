@@ -528,3 +528,13 @@ class LightPut(HueAPIObject):
     gradient: Gradient
     effects: Effects
     timed_effect: LightPutTimedEffects
+
+
+class RoomPut(HueAPIObject):
+    """
+    Object for the Hue API
+    """
+
+    type: str
+    metadata: Metadata
+    children: List[ResourceIdentifierGet]

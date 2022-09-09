@@ -46,6 +46,6 @@ class Scene:
 
         if response.status_code != ResponseStatus.OK:
             raise HueAPIError(
-                f"An error occurred trying to assign a scene's state. "
+                f"An error occurred trying to assign the state of the scene with id {identifier}"
                 f"Status code: {response.status_code}. Content {response.content}."
             )
