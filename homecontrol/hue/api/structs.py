@@ -1,6 +1,6 @@
 from typing import Dict, List, get_args, get_origin, get_type_hints
 
-from homecontrol.hue.helpers import dicts_to_list
+from homecontrol.helpers import dicts_to_list
 
 
 class HueAPIObject:

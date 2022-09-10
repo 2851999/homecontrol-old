@@ -1,7 +1,11 @@
 from typing import Dict, List, Optional
 from homecontrol.client.exceptions import APIError
 from homecontrol.client.helpers import get_url_search_params
-from homecontrol.helpers import ResponseStatus, dataclass_from_dict
+from homecontrol.helpers import (
+    ResponseStatus,
+    dataclass_from_dict,
+    dataclass_list_from_dict,
+)
 from homecontrol.client.session import APISession
 from homecontrol.hue.grouped_light import GroupedLightState
 from homecontrol.hue.structs import HueRoom, HueScene
@@ -73,11 +77,7 @@ class Hue:
         if response.status_code != ResponseStatus.OK:
             raise APIError("An error occured getting a list of rooms")
 
-        scenes = []
-        for scene in response.json():
-            scenes.append(dataclass_from_dict(HueScene, scene))
-
-        return scenes
+        return dataclass_list_from_dict(HueScene, response.json())
 
     def recall_scene(self, bridge_name: str, scene_id: str):
         """

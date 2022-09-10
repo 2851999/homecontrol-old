@@ -6,6 +6,7 @@ from homecontrol.api.config import APIConfig
 from homecontrol.api.helpers import authenticated, response_message
 from homecontrol.api.aircon import aircon_api
 from homecontrol.api.hue import hue_api
+from homecontrol.api.home import home_api
 
 app = Flask(__name__)
 cors = CORS(app)
@@ -20,6 +21,7 @@ app.config["APIAuthInfo"] = auth_config
 # Register blueprints
 app.register_blueprint(aircon_api)
 app.register_blueprint(hue_api)
+app.register_blueprint(home_api)
 
 
 @app.route("/")

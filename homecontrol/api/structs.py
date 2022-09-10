@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from typing import Optional
 
 
 @dataclass
@@ -9,3 +10,14 @@ class APIAuthInfo:
 
     required: bool
     key: str
+
+
+@dataclass
+class Room:
+    """
+    Stores information about a room
+    """
+
+    name: str
+    ac_device_name: Optional[str] = None
+    hue_room_id: Optional[str] = None
