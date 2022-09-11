@@ -21,3 +21,4 @@ class Room:
     name: str
     ac_device_name: Optional[str] = None
     hue_room_id: Optional[str] = None
+    hue_light_group: Optional[str] = None

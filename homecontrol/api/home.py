@@ -40,7 +40,11 @@ def get_rooms():
     rooms_dict = {}
 
     for hue_room in hue_rooms:
-        room = Room(name=hue_room.name, hue_room_id=hue_room.identifier)
+        room = Room(
+            name=hue_room.name,
+            hue_room_id=hue_room.identifier,
+            hue_light_group=hue_room.light_group,
+        )
         rooms_dict[hue_room.name] = room
 
     for ac_device_name in ac_devices:
