@@ -23,3 +23,12 @@ class Home:
         if response.status_code != ResponseStatus.OK:
             raise APIError("An error occured listing rooms in the house")
         return dataclass_list_from_dict(Room, response.json())
+
+    def get_outdoor_temp(self) -> str:
+        """
+        Returns the outdoor temperature (or N/A if there are no AC units available)
+        """
+        response = self._session.get("/home/outdoor_temp")
+        if response.status_code != ResponseStatus.OK:
+            raise APIError("An error occured obtaining the outdoor temperature")
+        return response.json()

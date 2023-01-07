@@ -3,7 +3,7 @@ import setuptools
 
 setuptools.setup(
     name="homecontrol",
-    version="0.0.5",
+    version="0.0.6",
     author="2851999",
     author_email="2851999@users.noreply.github.com",
     description="A library and flask API for controlling home appliances",
