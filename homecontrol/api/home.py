@@ -59,3 +59,21 @@ def get_rooms():
     rooms = list(rooms_dict.values())
 
     return response(object_to_dict(rooms), ResponseStatus.OK)
+
+
+@home_api.route("/home/outdoor_temp", methods=["GET"])
+@authenticated
+def get_outdoor_temp():
+    """
+    Returns the current outdoor temp as measured by AC units (for now
+    just selecting the result of the first unit)
+    """
+
+    ac_devices = ac_device_manager.list_devices()
+
+    outdoor_temp = "N/A"
+
+    if len(ac_devices) > 0:
+        outdoor_temp = ac_device_manager.get_device(ac_devices[0]).get_state().outdoor
+
+    return response(outdoor_temp, ResponseStatus.OK)
