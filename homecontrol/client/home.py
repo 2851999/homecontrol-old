@@ -21,7 +21,7 @@ class Home:
         """
         response = self._session.get("/home/rooms", params={"bridge_name": hue_bridge})
         if response.status_code != ResponseStatus.OK:
-            raise APIError("An error occured listing rooms in the house")
+            raise APIError("An error occurred listing rooms in the house")
         return dataclass_list_from_dict(Room, response.json())
 
     def get_outdoor_temp(self) -> str:
@@ -30,5 +30,5 @@ class Home:
         """
         response = self._session.get("/home/outdoor_temp")
         if response.status_code != ResponseStatus.OK:
-            raise APIError("An error occured obtaining the outdoor temperature")
+            raise APIError("An error occurred obtaining the outdoor temperature")
         return response.json()

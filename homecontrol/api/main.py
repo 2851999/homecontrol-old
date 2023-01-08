@@ -7,7 +7,7 @@ from homecontrol.api.helpers import authenticated, response_message
 from homecontrol.api.aircon import aircon_api, device_manager as ac_device_manager
 from homecontrol.api.hue import hue_api
 from homecontrol.api.home import home_api
-from homecontrol.api.monitoring import Monitor
+from homecontrol.api.monitoring import Monitor, construct_monitor_api_blueprint
 
 app = Flask(__name__)
 cors = CORS(app)
@@ -26,6 +26,8 @@ app.register_blueprint(home_api)
 
 # Monitoring
 monitor = Monitor(ac_device_manager, config.get_monitoring())
+
+app.register_blueprint(construct_monitor_api_blueprint(monitor))
 
 
 @app.route("/")
