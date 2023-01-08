@@ -27,3 +27,6 @@ hue.json
 test.py
 TODO
 ReleaseNotes.txt
+
+# For storing temps from monitoring
+temps/*
