@@ -72,7 +72,7 @@ class Monitor:
         loaded_devices = self.ac_manager.list_devices()
 
         # Obtain current date and time
-        timestamp = datetime.now().strftime("%d-%m-%Y %H:%M:%S")
+        timestamp = datetime.now().strftime("%Y-%m-%dT%H:%M:%S")
 
         # Outdoor temp (for now will only take first one)
         outdoor_temp = None
