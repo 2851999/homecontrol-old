@@ -3,7 +3,6 @@ from datetime import datetime
 from apscheduler.schedulers.blocking import BlockingScheduler
 from apscheduler.triggers.cron import CronTrigger
 
-from homecontrol.api.structs import APIMonitoringInfo
 from homecontrol.client.client import Client
 from homecontrol.scheduling.config import SchedulerConfig
 from homecontrol.scheduling.structs import SchedulerMonitoringInfo
@@ -14,7 +13,7 @@ class Monitor:
     client: Client
 
     # Config for monitoring
-    monitoring_info: APIMonitoringInfo
+    monitoring_info: SchedulerMonitoringInfo
 
     def __init__(
         self, scheduler: BlockingScheduler, monitoring_info: SchedulerMonitoringInfo

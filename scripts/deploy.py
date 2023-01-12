@@ -20,7 +20,7 @@ DEPLOY_HOMECONTROL_CONFIG_FILES = [
     "scheduler.json",
 ]
 
-VERBOSE = True
+VERBOSE = False
 
 
 def get_ssh_dest():
