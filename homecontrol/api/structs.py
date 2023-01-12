@@ -13,15 +13,6 @@ class APIAuthInfo:
 
 
 @dataclass
-class APIMonitoringInfo:
-    """
-    Stores monitoring config for the API
-    """
-
-    temperature_log_path: Optional[str]
-
-
-@dataclass
 class Room:
     """
     Stores information about a room

@@ -1,4 +1,4 @@
-from homecontrol.api.structs import APIAuthInfo, APIMonitoringInfo
+from homecontrol.api.structs import APIAuthInfo
 
 from homecontrol.config import Config
 
@@ -17,14 +17,3 @@ class APIConfig(Config):
         """
         auth = self.data["auth"]
         return APIAuthInfo(required=auth["required"], key=auth["key"])
-
-    def get_monitoring(self) -> APIMonitoringInfo:
-        """
-        Returns a APIMonitoringInfo from the loaded config
-        """
-        monitoring = self.data["monitoring"]
-        monitoring_info = APIMonitoringInfo(
-            temperature_log_path=monitoring.get("temperature_log_path"),
-        )
-
-        return monitoring_info

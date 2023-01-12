@@ -25,7 +25,7 @@ app.register_blueprint(hue_api)
 app.register_blueprint(home_api)
 
 # Monitoring
-app.register_blueprint(construct_monitor_api_blueprint(config.get_monitoring()))
+app.register_blueprint(construct_monitor_api_blueprint())
 
 
 @app.route("/")

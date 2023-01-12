@@ -1,14 +1,10 @@
 from dataclasses import dataclass
-from datetime import datetime
 from typing import List
 from flask import Blueprint, request
-from apscheduler.schedulers.background import BackgroundScheduler
-from apscheduler.triggers.cron import CronTrigger
 
-from homecontrol.aircon.manager import ACManager
 from homecontrol.api.helpers import authenticated, response
-from homecontrol.api.structs import APIMonitoringInfo
 from homecontrol.helpers import ResponseStatus
+from homecontrol.scheduling.config import SchedulerConfig
 
 
 @dataclass
@@ -21,12 +17,16 @@ class TempDataPoint:
     temp: float
 
 
-def construct_monitor_api_blueprint(monitoring_info: APIMonitoringInfo):
+def construct_monitor_api_blueprint():
     """
     Creates a blueprint for the monitoring API
     """
 
     monitor_api = Blueprint("monitor_api", __name__)
+
+    # Obtain the scheduling config (so can obtain monitoring log paths)
+    scheduler_config = SchedulerConfig()
+    monitoring_info = scheduler_config.get_monitoring()
 
     def get_temp_data(device_name) -> List[TempDataPoint]:
         """
