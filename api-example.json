@@ -2,10 +2,5 @@
     "auth": {
         "required": true,
         "key": "INSERT_KEY"
-    },
-    "monitoring": {
-        "enabled": false,
-        "temperature_log_path": "/home/user/homecontrol",
-        "temperature_log_frequency": "0 * * * *"
     }
 }

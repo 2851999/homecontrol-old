@@ -4,3 +4,26 @@ requires = [
     "wheel"
 ]
 build-backend = "setuptools.build_meta"
+
+[project]
+name="homecontrol"
+version="0.0.6"
+authors=[{name="2851999", email="2851999@users.noreply.github.com"}]
+description="A library and flask API for controlling home appliances"
+license={text="Apache License 2.0"}
+urls={source="https://github.com/2851999"}
+classifiers=[
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: Apache License 2.0",
+    "Operating System :: OS Independent",
+]
+dependencies=[
+    "flask",
+    "flask-cors",
+    "msmart",
+    "requests-toolbelt",
+    "APScheduler",
+]
+
+[project.scripts]
+homecontrol-scheduler = "homecontrol.scheduling.scheduler:start"

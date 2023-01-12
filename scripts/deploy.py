@@ -12,7 +12,15 @@ DEPLOY_HOMECONTROL_DIR = "~/homecontrol"
 DEPLOY_HOMECONTROL_UI_BUILD_TEMP_DIR = "~/homecontrol-ui-build"
 DEPLOY_HOMECONTROL_UI_DIR = "/var/www/html/"
 
-VERBOSE = False
+DEPLOY_HOMECONTROL_CONFIG_FILES = [
+    "aircon.json",
+    # "hue.json", # Don't always do this as changes path to cert
+    "api.json",
+    "client.json",
+    "scheduler.json",
+]
+
+VERBOSE = True
 
 
 def get_ssh_dest():
@@ -62,6 +70,15 @@ def build_and_deploy():
     print("Building homecontrol-ui...")
     run_command("yarn build", LOCAL_HOMECONTROL_UI_DIR)
 
+    # Disable scheduler (uninstalling gives permission denied otherwise)
+    print("Disabling homecontrol-scheduler")
+    run_ssh_command(
+        [
+            "sudo systemctl stop homecontrol-scheduler",
+            "sudo systemctl disable homecontrol-scheduler",
+        ]
+    )
+
     # Remove existing installation
     print("Removing existing installation...")
     run_ssh_command(
@@ -93,9 +110,23 @@ def build_and_deploy():
     print("Installing homecontrol...")
     run_ssh_command(f"sudo pip install {DEPLOY_HOMECONTROL_DIR}")
 
+    # Copying new config
+    print("Updating config...")
+    run_ssh_command(
+        [
+            f"sudo cp {DEPLOY_HOMECONTROL_DIR}/{file} /etc/homecontrol/{file}"
+            for file in DEPLOY_HOMECONTROL_CONFIG_FILES
+        ]
+    )
+
     # Restart apache service
     print("Restarting apache...")
     run_ssh_command("sudo systemctl restart apache2")
+
+    # Restart scheduler
+    print("Enabling homecontrol-scheduler...")
+    run_ssh_command("sudo systemctl enable homecontrol-scheduler")
+    run_ssh_command("sudo systemctl start homecontrol-scheduler")
 
 
 if __name__ == "__main__":

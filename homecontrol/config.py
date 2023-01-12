@@ -8,8 +8,6 @@ class Config:
     Handles a config file
     """
 
-    CONFIG_FILEPATH: str = "/homecontrol"
-
     # Path to the config file this class manages
     _path: str
 
@@ -43,12 +41,15 @@ class Config:
     @staticmethod
     def get_filepath(path: str) -> str:
         """
-        Returns the full path to a config file given its path in the config
-        directory e.g. ~/CONFIG_FILEPATH/path
+        Returns the path to a config file - prefers ones in the current
+        working directory
         """
-        # Obtain the home directory
-        home_path = expanduser("~")
-        return f"{home_path}{Config.CONFIG_FILEPATH}/{path}"
+        if exists(path):
+            # Current working dir
+            return path
+        else:
+            # TODO: Modify for other platforms
+            return f"/etc/homecontrol/{path}"
 
     @staticmethod
     def load_from_json(path: str) -> Any:

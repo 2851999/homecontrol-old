@@ -1,0 +1,7 @@
+{
+    "monitoring": {
+        "enabled": true,
+        "temperature_log_path": "/home/joel/homecontrol-temps",
+        "temperature_log_frequency": "0 * * * *"
+    }
+}

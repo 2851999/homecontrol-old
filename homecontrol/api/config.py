@@ -24,22 +24,7 @@ class APIConfig(Config):
         """
         monitoring = self.data["monitoring"]
         monitoring_info = APIMonitoringInfo(
-            enabled=monitoring["enabled"],
             temperature_log_path=monitoring.get("temperature_log_path"),
-            temperature_log_frequency=monitoring.get("temperature_log_frequency"),
         )
-
-        # Check validity
-        if monitoring_info.enabled:
-            if monitoring_info.temperature_log_path is None:
-                raise ValueError(
-                    "Invalid API config, must specify 'temperature_log_path' "
-                    "when monitoring is enabled"
-                )
-            if monitoring_info.temperature_log_frequency is None:
-                raise ValueError(
-                    "Invalid API config, must specify 'temperature_log_frequency' "
-                    "when monitoring is enabled"
-                )
 
         return monitoring_info
