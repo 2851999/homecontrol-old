@@ -30,3 +30,6 @@ ReleaseNotes.txt
 
 # For storing temps from monitoring
 temps/*
+
+# For build mkdocs site
+docs/site/
