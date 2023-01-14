@@ -71,7 +71,7 @@ def build_and_deploy():
     run_command("yarn build", LOCAL_HOMECONTROL_UI_DIR)
 
     # Disable scheduler (uninstalling gives permission denied otherwise)
-    print("Disabling homecontrol-scheduler")
+    print("Disabling homecontrol-scheduler...")
     run_ssh_command(
         [
             "sudo systemctl stop homecontrol-scheduler",

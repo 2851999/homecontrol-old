@@ -10,7 +10,7 @@ following [this](https://learn.microsoft.com/en-us/windows/dev-environment/javas
 Now install yarn with
 
 ```bash
-npx install yarn
+npm install yarn
 ```
 
 Clone the source with
