@@ -40,6 +40,7 @@ This will build the site producing a folder `/build` containing the built site.
 sudo apt-get update
 sudo apt-get install apache2
 sudo apt-get install libapache2-mod-wsgi-py3
+sudo apt-get install sqlite3
 ```
 
 ## Installing `homecontrol`
@@ -119,7 +120,7 @@ sudo systemctl restart apache2
 
 ## Setup the scheduler
 
-For monitoring setup the scheduler as a systemd service. This can be done by creating a
+For monitoring, setup the scheduler as a systemd service. This can be done by creating a
 file at `/etc/systemd/system/homecontrol-scheduler.service` with the following contents
 
 ```ini
@@ -132,6 +133,7 @@ User=www-data
 Group=www-data
 Type=simple
 Restart=always
+ExecStartPre=homecontrol-scheduler init-db
 ExecStart=homecontrol-scheduler
 
 [Install]
@@ -139,8 +141,9 @@ WantedBy=multi-user.target
 ```
 
 !!! note
-    The `temperature_log_path` parameter in `scheduler.json` must exist and have permissions
-    for the users that `homecontrol-scheduler` and `homecontrol.api` runs with.
+    The `database.path` parameter in `scheduler.json` must exist and the folder that will
+    contain the database must have permissions for the users that `homecontrol-scheduler`
+    and `homecontrol.api` runs with.
 
     This can be achieved using
 

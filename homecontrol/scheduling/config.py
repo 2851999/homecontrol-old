@@ -20,17 +20,11 @@ class SchedulerConfig(Config):
         monitoring = self.data["monitoring"]
         monitoring_config = SchedulerMonitoringConfig(
             enabled=monitoring["enabled"],
-            temperature_log_path=monitoring.get("temperature_log_path"),
             temperature_log_frequency=monitoring.get("temperature_log_frequency"),
         )
 
         # Check validity
         if monitoring_config.enabled:
-            if monitoring_config.temperature_log_path is None:
-                raise ValueError(
-                    "Invalid scheduler config, must specify 'temperature_log_path' "
-                    "when monitoring is enabled"
-                )
             if monitoring_config.temperature_log_frequency is None:
                 raise ValueError(
                     "Invalid scheduler config, must specify 'temperature_log_frequency' "

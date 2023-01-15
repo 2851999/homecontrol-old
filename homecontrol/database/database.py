@@ -1,3 +1,4 @@
+import re
 from homecontrol.database.connection import DatabaseConnection
 from homecontrol.scheduling.structs import SchedulerDatabaseConfig
 
@@ -19,3 +20,11 @@ class Database:
         e.g. 'with database.start_session() as session'
         """
         return DatabaseConnection(self.config.path)
+
+    @staticmethod
+    def clean_string(value):
+        """
+        Convert string into a valid variable name
+        """
+        # https://stackoverflow.com/questions/3303312/how-do-i-convert-a-string-to-a-valid-variable-name-in-python
+        return re.sub(r"\W|^(?=\d)", "_", value)

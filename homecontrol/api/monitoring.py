@@ -2,9 +2,9 @@ from dataclasses import dataclass
 import os
 from typing import List, Optional
 from flask import Blueprint, request
-from homecontrol.api.data_utils import read_all_lines, read_last_lines
 
 from homecontrol.api.helpers import authenticated, response
+from homecontrol.database.database import Database
 from homecontrol.helpers import ResponseStatus
 from homecontrol.scheduling.config import SchedulerConfig
 
@@ -30,9 +30,7 @@ def construct_monitor_api_blueprint():
     scheduler_config = SchedulerConfig()
     monitoring_config = scheduler_config.get_monitoring()
 
-    def _temp_data_parse_func(line: str):
-        split = line.split(",")
-        return TempDataPoint(timestamp=split[0], temp=float(split[1]))
+    database = Database(scheduler_config.get_database())
 
     def _get_temp_data(
         device_name: str, count: Optional[int], step: Optional[int]
@@ -40,13 +38,31 @@ def construct_monitor_api_blueprint():
         """
         Returns logged temperature data for a device
         """
-        log_path = f"{monitoring_config.temperature_log_path}/{device_name}.csv"
+        table_name = f"{Database.clean_string(device_name)}_temps"
+        limit = count if count is not None else None
+        # Need more data if taking step
+        if step is not None and limit:
+            limit *= step
 
         # Obtain the data
-        if count is None:
-            return read_all_lines(log_path, step, _temp_data_parse_func)
-        else:
-            return read_last_lines(log_path, count, step, _temp_data_parse_func)
+        with database.start_session() as db_conn:
+            data = db_conn.select_values(
+                table_name,
+                ["timestamp", "temp"],
+                limit=limit
+                # where="timestamp BETWEEN '2023-01-12 22:00:00' AND '2023-01-13 00:00:00'",
+            )
+
+            # Apply step
+            if step is not None:
+                data = data[::step]
+
+            # Convert to expected structs
+            struct_data = []
+            for data_value in data:
+                struct_data.append(TempDataPoint(data_value[0], data_value[1]))
+
+            return struct_data
 
     @monitor_api.route("/monitoring/temps", methods=["GET"])
     @authenticated
@@ -60,7 +76,7 @@ def construct_monitor_api_blueprint():
         device_name = args.get("device_name")
 
         # Could use filters here to modify data returned, but for now will do
-        # separately as want to hijack and modify how data is loaded in the
+        # separately as want to hijack and modify how data obtained in the
         # first place rather than modify it afterwards
         count = request.args.get("count", None, type=int)
         step = request.args.get("step", None, type=int)

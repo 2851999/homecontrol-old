@@ -9,7 +9,6 @@ class SchedulerMonitoringConfig:
     """
 
     enabled: bool
-    temperature_log_path: Optional[str]
     temperature_log_frequency: Optional[str]
 
 

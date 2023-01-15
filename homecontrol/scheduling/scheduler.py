@@ -1,9 +1,10 @@
 from datetime import datetime
-import re
 import sys
+import logging
 
 from apscheduler.schedulers.blocking import BlockingScheduler
 from apscheduler.triggers.cron import CronTrigger
+from homecontrol.aircon.config import ACConfig
 
 from homecontrol.client.client import Client
 from homecontrol.database.database import Database
@@ -18,9 +19,13 @@ class Monitor:
     # Config for monitoring
     monitoring_config: SchedulerMonitoringConfig
 
-    def __init__(self, monitoring_config: SchedulerMonitoringConfig):
+    # Database for storage
+    database: Database
+
+    def __init__(self, scheduler_config: SchedulerConfig):
         self.client = Client()
-        self.monitoring_config = monitoring_config
+        self.monitoring_config = scheduler_config.get_monitoring()
+        self.database = Database(scheduler_config.get_database())
 
     def add_jobs(self, scheduler: BlockingScheduler):
         if self.monitoring_config.enabled:
@@ -31,80 +36,68 @@ class Monitor:
                 ),
             )
 
-    def clean_string(self, value):
-        """
-        Convert string into a valid variable name
-        """
-        # https://stackoverflow.com/questions/3303312/how-do-i-convert-a-string-to-a-valid-variable-name-in-python
-        return re.sub(r"\W|^(?=\d)", "_", value)
-
-    def init_db(self, database: Database):
+    def init_db(self):
         """
         Initialises a database with the required tables for storing data
         """
 
-        # Want list of AC for the tables
-        with self.client.start_session() as hc_conn:
-            loaded_devices = hc_conn.aircon.list_devices()
+        # Load AC device config
+        ac_config = ACConfig()
 
-            # Connect to database
-            with database.start_session() as db_conn:
-                for device in loaded_devices:
-                    db_conn.create_table(
-                        self.clean_string(device), "timestamp TEXT, temp REAL"
-                    )
-                db_conn.commit()
+        # Want list of AC devices for the tables
+        devices = list(ac_config.get_devices().keys())
+        devices.append("outdoor")
 
-    def append_to_file(self, filepath: str, value: str):
-        """
-        Appends a line onto a given file
-        """
-        with open(filepath, "a", encoding="utf-8") as file:
-            file.write(f"{value}\n")
+        # Connect to database
+        with self.database.start_session() as db_conn:
+            for device in devices:
+                db_conn.create_table(
+                    Database.clean_string(device) + "_temps",
+                    ["timestamp TEXT", "temp REAL"],
+                )
+
+            db_conn.commit()
 
     def log_temps(self):
         """
         Logs temperatures from the air conditioning devices
         """
-        with self.client.start_session() as conn:
-            loaded_devices = conn.aircon.list_devices()
+
+        with self.client.start_session() as hc_conn:
+            loaded_devices = hc_conn.aircon.list_devices()
 
             # Obtain current date and time
-            timestamp = datetime.now().strftime("%Y-%m-%dT%H:%M:%S")
+            timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
-            # Outdoor temp (for now will only take first one)
-            outdoor_temp = None
+            # Open connection to the database
+            with self.database.start_session() as db_conn:
+                # Outdoor temp (for now will only take first one)
+                outdoor_temp = None
 
-            for loaded_device in loaded_devices:
-                state = conn.aircon.get_device(loaded_device)
+                for loaded_device in loaded_devices:
+                    state = hc_conn.aircon.get_device(loaded_device)
 
-                # Log path
-                log_path = (
-                    f"{self.monitoring_config.temperature_log_path}/{loaded_device}.csv"
-                )
+                    db_conn.insert_values(
+                        f"{Database.clean_string(loaded_device)}_temps",
+                        [(timestamp, state.indoor)],
+                    )
 
-                log_value = f"{timestamp},{state.indoor}"
-                self.append_to_file(log_path, log_value)
+                    if outdoor_temp is None:
+                        outdoor_temp = state.outdoor
 
-                if outdoor_temp is None:
-                    outdoor_temp = state.outdoor
+                # Output outdoor temp
+                db_conn.insert_values("outdoor_temps", [(timestamp, outdoor_temp)])
 
-            # Output outdoor temp
-            log_path = f"{self.monitoring_config.temperature_log_path}/outdoor.csv"
-            log_value = f"{timestamp},{outdoor_temp}"
-            self.append_to_file(log_path, log_value)
+                db_conn.commit()
 
 
 def main():
     scheduler_config = SchedulerConfig()
-    monitoring_config = scheduler_config.get_monitoring()
-    monitor = Monitor(monitoring_config)
-
-    database = Database(scheduler_config.get_database())
+    monitor = Monitor(scheduler_config)
 
     # Check if just being told to create any needed databases
     if len(sys.argv) == 2 and sys.argv[1] == "init-db":
-        monitor.init_db(database)
+        monitor.init_db()
     else:
         scheduler = BlockingScheduler()
         monitor.add_jobs(scheduler)
