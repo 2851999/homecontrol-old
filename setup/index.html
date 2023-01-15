@@ -465,7 +465,7 @@ on a linux machine follow the below steps.</p>
 <p>First we will build the website from source. To do this first ensure you have node.js e.g. by
 following <a href="https://learn.microsoft.com/en-us/windows/dev-environment/javascript/nodejs-on-wsl">this</a>.</p>
 <p>Now install yarn with</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>npx<span class="w"> </span>install<span class="w"> </span>yarn
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>npm<span class="w"> </span>install<span class="w"> </span>yarn
 </code></pre></div>
 <p>Clone the source with</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/2851999/homecontrol-ui.git
@@ -482,6 +482,7 @@ following <a href="https://learn.microsoft.com/en-us/windows/dev-environment/jav
 <div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>sudo<span class="w"> </span>apt-get<span class="w"> </span>update
 <a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>sudo<span class="w"> </span>apt-get<span class="w"> </span>install<span class="w"> </span>apache2
 <a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>sudo<span class="w"> </span>apt-get<span class="w"> </span>install<span class="w"> </span>libapache2-mod-wsgi-py3
+<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>sudo<span class="w"> </span>apt-get<span class="w"> </span>install<span class="w"> </span>sqlite3
 </code></pre></div>
 <h2 id="installing-homecontrol">Installing <code>homecontrol</code></h2>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/2851999/homecontrol.git
@@ -544,7 +545,7 @@ following <a href="https://learn.microsoft.com/en-us/windows/dev-environment/jav
 </code></pre></div></p>
 </div>
 <h2 id="setup-the-scheduler">Setup the scheduler</h2>
-<p>For monitoring setup the scheduler as a systemd service. This can be done by creating a
+<p>For monitoring, setup the scheduler as a systemd service. This can be done by creating a
 file at <code>/etc/systemd/system/homecontrol-scheduler.service</code> with the following contents</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="k">[Unit]</span>
 <a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="na">Description</span><span class="o">=</span><span class="s">homecontrol-scheduler</span>
@@ -555,15 +556,17 @@ file at <code>/etc/systemd/system/homecontrol-scheduler.service</code> with the 
 <a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a><span class="na">Group</span><span class="o">=</span><span class="s">www-data</span>
 <a id="__codelineno-10-8" name="__codelineno-10-8" href="#__codelineno-10-8"></a><span class="na">Type</span><span class="o">=</span><span class="s">simple</span>
 <a id="__codelineno-10-9" name="__codelineno-10-9" href="#__codelineno-10-9"></a><span class="na">Restart</span><span class="o">=</span><span class="s">always</span>
-<a id="__codelineno-10-10" name="__codelineno-10-10" href="#__codelineno-10-10"></a><span class="na">ExecStart</span><span class="o">=</span><span class="s">homecontrol-scheduler</span>
-<a id="__codelineno-10-11" name="__codelineno-10-11" href="#__codelineno-10-11"></a>
-<a id="__codelineno-10-12" name="__codelineno-10-12" href="#__codelineno-10-12"></a><span class="k">[Install]</span>
-<a id="__codelineno-10-13" name="__codelineno-10-13" href="#__codelineno-10-13"></a><span class="na">WantedBy</span><span class="o">=</span><span class="s">multi-user.target</span>
+<a id="__codelineno-10-10" name="__codelineno-10-10" href="#__codelineno-10-10"></a><span class="na">ExecStartPre</span><span class="o">=</span><span class="s">homecontrol-scheduler init-db</span>
+<a id="__codelineno-10-11" name="__codelineno-10-11" href="#__codelineno-10-11"></a><span class="na">ExecStart</span><span class="o">=</span><span class="s">homecontrol-scheduler</span>
+<a id="__codelineno-10-12" name="__codelineno-10-12" href="#__codelineno-10-12"></a>
+<a id="__codelineno-10-13" name="__codelineno-10-13" href="#__codelineno-10-13"></a><span class="k">[Install]</span>
+<a id="__codelineno-10-14" name="__codelineno-10-14" href="#__codelineno-10-14"></a><span class="na">WantedBy</span><span class="o">=</span><span class="s">multi-user.target</span>
 </code></pre></div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>The <code>temperature_log_path</code> parameter in <code>scheduler.json</code> must exist and have permissions
-for the users that <code>homecontrol-scheduler</code> and <code>homecontrol.api</code> runs with.</p>
+<p>The <code>database.path</code> parameter in <code>scheduler.json</code> must exist and the folder that will
+contain the database must have permissions for the users that <code>homecontrol-scheduler</code>
+and <code>homecontrol.api</code> runs with.</p>
 <p>This can be achieved using</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>sudo<span class="w"> </span>chown<span class="w"> </span>-R<span class="w"> </span>www-data:www-data<span class="w"> </span>&lt;folder&gt;
 </code></pre></div>
