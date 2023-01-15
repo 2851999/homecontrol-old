@@ -3,7 +3,7 @@ from typing import Optional
 
 
 @dataclass
-class SchedulerMonitoringInfo:
+class SchedulerMonitoringConfig:
     """
     Stores monitoring config for the scheduler
     """
@@ -14,7 +14,7 @@ class SchedulerMonitoringInfo:
 
 
 @dataclass
-class SchedulerDatabaseInfo:
+class SchedulerDatabaseConfig:
     """
     Stores database config for the scheduler
     """

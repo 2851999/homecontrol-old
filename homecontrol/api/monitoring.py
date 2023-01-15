@@ -28,7 +28,7 @@ def construct_monitor_api_blueprint():
 
     # Obtain the scheduling config (so can obtain monitoring log paths)
     scheduler_config = SchedulerConfig()
-    monitoring_info = scheduler_config.get_monitoring()
+    monitoring_config = scheduler_config.get_monitoring()
 
     def _temp_data_parse_func(line: str):
         split = line.split(",")
@@ -40,7 +40,7 @@ def construct_monitor_api_blueprint():
         """
         Returns logged temperature data for a device
         """
-        log_path = f"{monitoring_info.temperature_log_path}/{device_name}.csv"
+        log_path = f"{monitoring_config.temperature_log_path}/{device_name}.csv"
 
         # Obtain the data
         if count is None:

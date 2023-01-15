@@ -4,7 +4,7 @@ from homecontrol.client.hue import Hue
 from homecontrol.client.monitoring import Monitoring
 from homecontrol.client.session import APISession
 
-from homecontrol.client.structs import APIConnectionInfo
+from homecontrol.client.structs import APIConnectionConfig
 
 
 class APIConnection:
@@ -18,8 +18,8 @@ class APIConnection:
     home: Home
     monitoring: Monitoring
 
-    def __init__(self, connection_info: APIConnectionInfo) -> None:
-        self._session = APISession(connection_info)
+    def __init__(self, connection_config: APIConnectionConfig) -> None:
+        self._session = APISession(connection_config)
 
     def __enter__(self):
         self._session.start()

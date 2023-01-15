@@ -1,5 +1,5 @@
 from homecontrol.database.connection import DatabaseConnection
-from homecontrol.scheduling.structs import SchedulerDatabaseInfo
+from homecontrol.scheduling.structs import SchedulerDatabaseConfig
 
 
 class Database:
@@ -7,10 +7,10 @@ class Database:
     Handles info for connecting to an sqlite3 database
     """
 
-    # Path of this database
-    config: SchedulerDatabaseInfo
+    # Config for this database
+    config: SchedulerDatabaseConfig
 
-    def __init__(self, config: SchedulerDatabaseInfo):
+    def __init__(self, config: SchedulerDatabaseConfig):
         self.config = config
 
     def start_session(self) -> DatabaseConnection:

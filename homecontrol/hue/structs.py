@@ -5,7 +5,7 @@ from homecontrol.helpers import SubscriptableClass
 
 
 @dataclass
-class HueBridgeConnectionInfo:
+class HueBridgeConnectionConfig:
     """
     For storing information required to connect to a hue bridge
     """
@@ -16,7 +16,7 @@ class HueBridgeConnectionInfo:
 
 
 @dataclass
-class HueBridgeAuthInfo:
+class HueBridgeAuthConfig:
     """
     For storing information required to authenticate a connection to a hue bridge
     """

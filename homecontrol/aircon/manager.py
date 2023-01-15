@@ -48,8 +48,8 @@ class ACManager:
             raise DeviceNotRegisteredError(
                 f"The device with name '{name}' has not been registered"
             )
-        connection_info = self._config.get_device(name=name)
-        device = ACDevice(connection_info)
+        connection_config = self._config.get_device(name=name)
+        device = ACDevice(connection_config)
         self._loaded_devices.update({name: device})
 
     def load_devices(self):

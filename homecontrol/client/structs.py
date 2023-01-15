@@ -2,7 +2,7 @@ from dataclasses import dataclass
 
 
 @dataclass
-class APIConnectionInfo:
+class APIConnectionConfig:
     """
     For storing information required to connect to the homecontrol api
     """

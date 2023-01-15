@@ -1,5 +1,5 @@
 from homecontrol.config import Config
-from homecontrol.hue.structs import HueBridgeAuthInfo, HueBridgeConnectionInfo
+from homecontrol.hue.structs import HueBridgeAuthConfig, HueBridgeConnectionConfig
 
 
 class HueConfig(Config):
@@ -48,7 +48,9 @@ class HueConfig(Config):
         """
         return "waiting" in self.data["bridges"][name]
 
-    def add_bridge_waiting(self, name: str, connection_info: HueBridgeConnectionInfo):
+    def add_bridge_waiting(
+        self, name: str, connection_config: HueBridgeConnectionConfig
+    ):
         """
         Adds a bridge to the config in the waiting state
         """
@@ -58,9 +60,9 @@ class HueConfig(Config):
             {
                 name: {
                     "waiting": True,
-                    "identifier": connection_info.identifier,
-                    "ip": connection_info.ip_address,
-                    "port": connection_info.port,
+                    "identifier": connection_config.identifier,
+                    "ip": connection_config.ip_address,
+                    "port": connection_config.port,
                 }
             }
         )
@@ -86,23 +88,23 @@ class HueConfig(Config):
         del bridge_config["waiting"]
         self.data["bridges"].update({name: bridge_config})
 
-    def get_bridge_connection_info(self, name: str) -> HueBridgeConnectionInfo:
+    def get_bridge_connection_config(self, name: str) -> HueBridgeConnectionConfig:
         """
-        Returns HueBridgeAuthInfo given the bridge
+        Returns HueBridgeAuthConfig given the bridge
         """
         bridge_info = self.get_bridge(name)
-        return HueBridgeConnectionInfo(
+        return HueBridgeConnectionConfig(
             identifier=bridge_info["identifier"],
             ip_address=bridge_info["ip"],
             port=bridge_info["port"],
         )
 
-    def get_bridge_auth_info(self, name: str) -> HueBridgeAuthInfo:
+    def get_bridge_auth_config(self, name: str) -> HueBridgeAuthConfig:
         """
-        Returns HueBridgeAuthInfo given the bridge
+        Returns HueBridgeAuthConfig given the bridge
         """
         bridge_info = self.get_bridge(name)
-        return HueBridgeAuthInfo(
+        return HueBridgeAuthConfig(
             username=bridge_info["username"], clientkey=bridge_info["clientkey"]
         )
 

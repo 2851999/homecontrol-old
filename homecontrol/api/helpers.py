@@ -3,7 +3,7 @@ from typing import Any, Dict, List, Optional
 from flask import current_app, request, jsonify
 from homecontrol.api.filters import Filters
 
-from homecontrol.api.structs import APIAuthInfo
+from homecontrol.api.structs import APIAuthConfig
 from homecontrol.helpers import ResponseStatus, SubscriptableClass
 
 
@@ -55,7 +55,7 @@ def authenticated(func):
 
     @wraps(func)
     def wrapper(*args, **kwargs):
-        auth_config: APIAuthInfo = current_app.config["APIAuthInfo"]
+        auth_config: APIAuthConfig = current_app.config["APIAuthConfig"]
         if auth_config.required:
             headers = request.headers
             auth_key = headers.get("X-Api-Key")

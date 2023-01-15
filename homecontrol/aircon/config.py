@@ -1,5 +1,5 @@
 from typing import Dict
-from homecontrol.aircon.structs import ACConnectionInfo
+from homecontrol.aircon.structs import ACConnectionConfig
 
 from homecontrol.config import Config
 
@@ -32,13 +32,13 @@ class ACConfig(Config):
         """
         return self.has_devices() and (name in self.data["devices"])
 
-    def get_device(self, name: str) -> ACConnectionInfo:
+    def get_device(self, name: str) -> ACConnectionConfig:
         """
-        Returns an ACConnectionInfo instance from loaded config given the
+        Returns an ACConnectionConfig instance from loaded config given the
         name of the device
         """
         device_data = self.data["devices"][name]
-        return ACConnectionInfo(
+        return ACConnectionConfig(
             name=name,
             ip_address=device_data["ip"],
             identifier=device_data["id"],
@@ -47,19 +47,19 @@ class ACConfig(Config):
             token=device_data["token"],
         )
 
-    def register_device(self, connection_info: ACConnectionInfo):
+    def register_device(self, connection_config: ACConnectionConfig):
         """
         Registers a device by updating the config
         """
         devices = self.data["devices"] if self.has_devices() else {}
         devices.update(
             {
-                connection_info.name: {
-                    "ip": connection_info.ip_address,
-                    "id": connection_info.identifier,
-                    "port": connection_info.port,
-                    "key": connection_info.key,
-                    "token": connection_info.token,
+                connection_config.name: {
+                    "ip": connection_config.ip_address,
+                    "id": connection_config.identifier,
+                    "port": connection_config.port,
+                    "key": connection_config.key,
+                    "token": connection_config.token,
                 }
             }
         )

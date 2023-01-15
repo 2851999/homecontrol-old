@@ -7,7 +7,7 @@ from msmart.const import OPEN_MIDEA_APP_ACCOUNT, OPEN_MIDEA_APP_PASSWORD
 
 from homecontrol.aircon.exceptions import ACConnectionError, ACInvalidStateError
 from homecontrol.aircon.structs import (
-    ACConnectionInfo,
+    ACConnectionConfig,
     ACState,
 )
 
@@ -18,19 +18,21 @@ class ACDevice:
     """
 
     device: air_conditioning
-    connection_info: ACConnectionInfo
+    connection_config: ACConnectionConfig
 
-    def __init__(self, connection_info: ACConnectionInfo) -> None:
+    def __init__(self, connection_config: ACConnectionConfig) -> None:
         """
         Creates the msmart device instance and authenticates it
         """
-        self.connection_info = connection_info
+        self.connection_config = connection_config
         self.device = air_conditioning(
-            self.connection_info.ip_address,
-            self.connection_info.identifier,
-            self.connection_info.port,
+            self.connection_config.ip_address,
+            self.connection_config.identifier,
+            self.connection_config.port,
         )
-        self.device.authenticate(self.connection_info.key, self.connection_info.token)
+        self.device.authenticate(
+            self.connection_config.key, self.connection_config.token
+        )
         self.device.get_capabilities()
 
     def _get_state_from_device(self) -> ACState:
@@ -115,7 +117,7 @@ class ACDevice:
             ) from exc
 
     @staticmethod
-    def discover(name: str, ip_address: str) -> ACConnectionInfo:
+    def discover(name: str, ip_address: str) -> ACConnectionConfig:
         """
         Obtains connection information for air conditioning unit given its ip address
 
@@ -145,7 +147,7 @@ class ACDevice:
                 raise ACConnectionError("Unabled to obtain authentication info")
 
             # Package the required info
-            return ACConnectionInfo(
+            return ACConnectionConfig(
                 name=name,
                 ip_address=found_device.ip,
                 port=found_device.port,

@@ -1,4 +1,4 @@
-from homecontrol.client.structs import APIConnectionInfo
+from homecontrol.client.structs import APIConnectionConfig
 
 from homecontrol.config import Config
 
@@ -11,11 +11,11 @@ class ClientConfig(Config):
     def __init__(self) -> None:
         super().__init__("client.json")
 
-    def get_api_connection_info(self) -> APIConnectionInfo:
+    def get_api_connection_config(self) -> APIConnectionConfig:
         """
-        Returns APIConnectionInfo from the config
+        Returns APIConnectionConfig from the config
         """
-        return APIConnectionInfo(
+        return APIConnectionConfig(
             auth_required=self.data["api"]["auth"]["required"],
             auth_key=self.data["api"]["auth"]["key"],
             ip_address=self.data["api"]["ip"],

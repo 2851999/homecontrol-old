@@ -1,4 +1,4 @@
-from homecontrol.api.structs import APIAuthInfo
+from homecontrol.api.structs import APIAuthConfig
 
 from homecontrol.config import Config
 
@@ -11,9 +11,9 @@ class APIConfig(Config):
     def __init__(self) -> None:
         super().__init__("api.json")
 
-    def get_auth(self) -> APIAuthInfo:
+    def get_auth(self) -> APIAuthConfig:
         """
-        Returns a APIAuthInfo from the loaded config
+        Returns a APIAuthConfig from the loaded config
         """
         auth = self.data["auth"]
-        return APIAuthInfo(required=auth["required"], key=auth["key"])
+        return APIAuthConfig(required=auth["required"], key=auth["key"])

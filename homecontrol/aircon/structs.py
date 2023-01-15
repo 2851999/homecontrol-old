@@ -4,7 +4,7 @@ from msmart.device import air_conditioning
 
 
 @dataclass
-class ACConnectionInfo:
+class ACConnectionConfig:
     """
     For storing information required to connect to a device
     """

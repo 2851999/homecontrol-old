@@ -3,7 +3,7 @@ from typing import Optional
 
 
 @dataclass
-class APIAuthInfo:
+class APIAuthConfig:
     """
     Stores auth config for the API
     """

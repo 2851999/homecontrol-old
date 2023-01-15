@@ -17,7 +17,7 @@ app.config["CORS_HEADERS"] = "Content-Type"
 config = APIConfig()
 auth_config = config.get_auth()
 
-app.config["APIAuthInfo"] = auth_config
+app.config["APIAuthConfig"] = auth_config
 
 # Register blueprints
 app.register_blueprint(aircon_api)
