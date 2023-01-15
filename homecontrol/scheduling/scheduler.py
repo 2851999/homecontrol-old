@@ -1,9 +1,12 @@
 from datetime import datetime
+import re
+import sys
 
 from apscheduler.schedulers.blocking import BlockingScheduler
 from apscheduler.triggers.cron import CronTrigger
 
 from homecontrol.client.client import Client
+from homecontrol.database.database import Database
 from homecontrol.scheduling.config import SchedulerConfig
 from homecontrol.scheduling.structs import SchedulerMonitoringInfo
 
@@ -15,19 +18,44 @@ class Monitor:
     # Config for monitoring
     monitoring_info: SchedulerMonitoringInfo
 
-    def __init__(
-        self, scheduler: BlockingScheduler, monitoring_info: SchedulerMonitoringInfo
-    ):
+    def __init__(self, monitoring_info: SchedulerMonitoringInfo):
         self.client = Client()
         self.monitoring_info = monitoring_info
 
-        if monitoring_info.enabled:
+    def add_jobs(self, scheduler: BlockingScheduler):
+        if self.monitoring_info.enabled:
             scheduler.add_job(
                 self.log_temps,
-                CronTrigger.from_crontab(monitoring_info.temperature_log_frequency),
+                CronTrigger.from_crontab(
+                    self.monitoring_info.temperature_log_frequency
+                ),
             )
 
-    def append_to_file(self, filepath, value):
+    def clean_string(self, value):
+        """
+        Convert string into a valid variable name
+        """
+        # https://stackoverflow.com/questions/3303312/how-do-i-convert-a-string-to-a-valid-variable-name-in-python
+        return re.sub(r"\W|^(?=\d)", "_", value)
+
+    def init_db(self, database: Database):
+        """
+        Initialises a database with the required tables for storing data
+        """
+
+        # Want list of AC for the tables
+        with self.client.start_session() as hc_conn:
+            loaded_devices = hc_conn.aircon.list_devices()
+
+            # Connect to database
+            with database.start_session() as db_conn:
+                for device in loaded_devices:
+                    db_conn.create_table(
+                        self.clean_string(device), "timestamp TEXT, temp REAL"
+                    )
+                db_conn.commit()
+
+    def append_to_file(self, filepath: str, value: str):
         """
         Appends a line onto a given file
         """
@@ -67,15 +95,21 @@ class Monitor:
             self.append_to_file(log_path, log_value)
 
 
-def start():
+def main():
     scheduler_config = SchedulerConfig()
     monitoring_info = scheduler_config.get_monitoring()
+    monitor = Monitor(monitoring_info)
 
-    scheduler = BlockingScheduler()
+    database = Database(scheduler_config.get_database())
 
-    _monitor = Monitor(scheduler, monitoring_info)
+    # Check if just being told to create any needed databases
+    if len(sys.argv) == 2 and sys.argv[1] == "init-db":
+        monitor.init_db(database)
+    else:
+        scheduler = BlockingScheduler()
+        monitor.add_jobs(scheduler)
 
-    try:
-        scheduler.start()
-    except (KeyboardInterrupt, SystemExit):
-        pass
+        try:
+            scheduler.start()
+        except (KeyboardInterrupt, SystemExit):
+            pass

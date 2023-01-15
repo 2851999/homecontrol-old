@@ -3,5 +3,8 @@
         "enabled": true,
         "temperature_log_path": "/home/joel/homecontrol-temps",
         "temperature_log_frequency": "0 * * * *"
+    },
+    "database": {
+        "path": "/home/joel/homecontrol.db"
     }
 }

@@ -12,7 +12,7 @@ class Client:
     def __init__(self) -> None:
         self._config = ClientConfig()
 
-    def start_session(self):
+    def start_session(self) -> APIConnection:
         """
         Returns an APIConnection instance for contacting the homecontrol API
         e.g. 'with client.start_session() as session'

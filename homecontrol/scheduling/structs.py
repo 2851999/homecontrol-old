@@ -11,3 +11,12 @@ class SchedulerMonitoringInfo:
     enabled: bool
     temperature_log_path: Optional[str]
     temperature_log_frequency: Optional[str]
+
+
+@dataclass
+class SchedulerDatabaseInfo:
+    """
+    Stores database config for the scheduler
+    """
+
+    path: str

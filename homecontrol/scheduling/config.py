@@ -1,5 +1,8 @@
 from homecontrol.config import Config
-from homecontrol.scheduling.structs import SchedulerMonitoringInfo
+from homecontrol.scheduling.structs import (
+    SchedulerDatabaseInfo,
+    SchedulerMonitoringInfo,
+)
 
 
 class SchedulerConfig(Config):
@@ -12,7 +15,7 @@ class SchedulerConfig(Config):
 
     def get_monitoring(self) -> SchedulerMonitoringInfo:
         """
-        Returns a APIMonitoringInfo from the loaded config
+        Returns a SchedulerMonitoringInfo from the loaded config
         """
         monitoring = self.data["monitoring"]
         monitoring_info = SchedulerMonitoringInfo(
@@ -35,3 +38,10 @@ class SchedulerConfig(Config):
                 )
 
         return monitoring_info
+
+    def get_database(self) -> SchedulerDatabaseInfo:
+        """
+        Returns a SchedulerDatabaseInfo from the loaded config
+        """
+        database = self.data["database"]
+        return SchedulerDatabaseInfo(path=database["path"])
