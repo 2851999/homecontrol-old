@@ -8,6 +8,9 @@ class Database:
     Handles info for connecting to an sqlite3 database
     """
 
+    # Datetime format to use
+    DATETIME_FORMAT = "%Y-%m-%d %H:%M:%S"
+
     # Config for this database
     config: SchedulerDatabaseConfig
 
@@ -26,5 +29,6 @@ class Database:
         """
         Convert string into a valid variable name
         """
+
         # https://stackoverflow.com/questions/3303312/how-do-i-convert-a-string-to-a-valid-variable-name-in-python
         return re.sub(r"\W|^(?=\d)", "_", value)

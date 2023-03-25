@@ -1,6 +1,5 @@
 from datetime import datetime
 import sys
-import logging
 
 from apscheduler.schedulers.blocking import BlockingScheduler
 from apscheduler.triggers.cron import CronTrigger
@@ -67,7 +66,7 @@ class Monitor:
             loaded_devices = hc_conn.aircon.list_devices()
 
             # Obtain current date and time
-            timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            timestamp = datetime.now().strftime(Database.DATETIME_FORMAT)
 
             # Open connection to the database
             with self.database.start_session() as db_conn:

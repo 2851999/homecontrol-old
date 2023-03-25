@@ -7,7 +7,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name="homecontrol"
-version="0.0.7"
+version="0.0.8"
 authors=[{name="2851999", email="2851999@users.noreply.github.com"}]
 description="A library and flask API for controlling home appliances"
 license={text="Apache License 2.0"}

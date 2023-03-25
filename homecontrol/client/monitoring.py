@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import List, Optional
 from homecontrol.api.monitoring import TempDataPoint
 from homecontrol.client.exceptions import APIError
@@ -19,14 +20,25 @@ class Monitoring:
         self._session = session
 
     def get_temps(
-        self, device_name: str, count: Optional[int] = None, step: Optional[int] = None
+        self,
+        device_name: str,
+        count: Optional[int] = None,
+        step: Optional[int] = None,
+        start: Optional[datetime] = None,
+        end: Optional[datetime] = None,
     ) -> List[TempDataPoint]:
         """
         Returns a list of scenes
         """
         response = self._session.get(
             "/monitoring/temps",
-            params={"device_name": device_name, "count": count, "step": step},
+            params={
+                "device_name": device_name,
+                "count": count,
+                "step": step,
+                "start": start,
+                "end": end,
+            },
         )
         if response.status_code != ResponseStatus.OK:
             raise APIError(
