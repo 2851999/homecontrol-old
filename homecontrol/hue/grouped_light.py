@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from typing import Dict, Optional
 from homecontrol.hue.api.api import HueBridgeAPI
 from homecontrol.hue.api.structs import GroupedLightGet, GroupedLightPut
-from homecontrol.hue.color import HueColour
+from homecontrol.hue.colour import HueColour
 from homecontrol.hue.helpers import (
     kelvin_to_mirek,
 )
