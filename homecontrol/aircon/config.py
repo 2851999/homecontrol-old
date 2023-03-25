@@ -1,6 +1,6 @@
 from typing import Dict
-from homecontrol.aircon.structs import ACConnectionConfig
 
+from homecontrol.aircon.structs import ACAccountConfig, ACConnectionConfig
 from homecontrol.config import Config
 
 
@@ -11,6 +11,16 @@ class ACConfig(Config):
 
     def __init__(self) -> None:
         super().__init__("aircon.json")
+
+    def get_account(self) -> ACAccountConfig:
+        """
+        Returns an ACAccountConfig instance from loaded config
+        """
+        account_data = self.data["account"]
+
+        return ACAccountConfig(
+            username=account_data["username"], password=account_data["password"]
+        )
 
     def has_devices(self):
         """

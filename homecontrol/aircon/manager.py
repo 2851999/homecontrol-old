@@ -31,7 +31,9 @@ class ACManager:
 
         :raises ACConnectionError: When there is a connection issue
         """
-        result = ACDevice.discover(name=name, ip_address=ip_address)
+        result = ACDevice.discover(
+            name=name, ip_address=ip_address, account_config=self._config.get_account()
+        )
         if result:
             self._config.register_device(result)
             self._config.save()

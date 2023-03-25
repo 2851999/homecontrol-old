@@ -4,6 +4,17 @@ from msmart.device import air_conditioning
 
 
 @dataclass
+class ACAccountConfig:
+    """
+    For storing information required to connect to a Midea
+    account (for discovering devices)
+    """
+
+    username: str
+    password: str
+
+
+@dataclass
 class ACConnectionConfig:
     """
     For storing information required to connect to a device

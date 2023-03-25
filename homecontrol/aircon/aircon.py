@@ -3,10 +3,10 @@ from typing import Optional
 
 from msmart.device import air_conditioning
 from msmart.scanner import MideaDiscovery
-from msmart.const import OPEN_MIDEA_APP_ACCOUNT, OPEN_MIDEA_APP_PASSWORD
 
 from homecontrol.aircon.exceptions import ACConnectionError, ACInvalidStateError
 from homecontrol.aircon.structs import (
+    ACAccountConfig,
     ACConnectionConfig,
     ACState,
 )
@@ -117,7 +117,9 @@ class ACDevice:
             ) from exc
 
     @staticmethod
-    def discover(name: str, ip_address: str) -> ACConnectionConfig:
+    def discover(
+        name: str, ip_address: str, account_config: ACAccountConfig
+    ) -> ACConnectionConfig:
         """
         Obtains connection information for air conditioning unit given its ip address
 
@@ -126,8 +128,8 @@ class ACDevice:
         found_devices = None
         try:
             discovery = MideaDiscovery(
-                account=OPEN_MIDEA_APP_ACCOUNT,
-                password=OPEN_MIDEA_APP_PASSWORD,
+                account=account_config.username,
+                password=account_config.password,
                 amount=1,
             )
             loop = asyncio.new_event_loop()

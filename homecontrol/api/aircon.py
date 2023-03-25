@@ -29,7 +29,7 @@ def list_devices():
     return response(device_manager.list_devices(), ResponseStatus.OK)
 
 
-@aircon_api.route("/ac/devices/state", methods=["PUT"])
+@aircon_api.route("/ac/devices/register", methods=["PUT"])
 @authenticated
 def register_device():
     """
