@@ -31,7 +31,7 @@ class Hue:
             f"/hue/{bridge_name}/rooms{get_url_search_params(filters)}"
         )
         if response.status_code != ResponseStatus.OK:
-            raise APIError("An error occured getting a list of rooms")
+            raise APIError("An error occurred getting a list of rooms")
 
         rooms = []
         for room in response.json():
@@ -47,7 +47,7 @@ class Hue:
         """
         response = self._session.get(f"/hue/{bridge_name}/grouped_lights/{group_id}")
         if response.status_code != ResponseStatus.OK:
-            raise APIError("An error occured getting a grouped light state")
+            raise APIError("An error occurred getting a grouped light state")
 
         return GroupedLightState.from_dict(response.json())
 
@@ -61,7 +61,7 @@ class Hue:
             f"/hue/{bridge_name}/grouped_lights/{group_id}", json=state.to_dict()
         )
         if response.status_code != ResponseStatus.OK:
-            raise APIError("An error occured assigning a grouped light state")
+            raise APIError("An error occurred assigning a grouped light state")
 
         return True
 
@@ -75,7 +75,7 @@ class Hue:
 
         response = self._session.get(url)
         if response.status_code != ResponseStatus.OK:
-            raise APIError("An error occured getting a list of rooms")
+            raise APIError("An error occurred getting a list of rooms")
 
         return dataclass_list_from_dict(HueScene, response.json())
 
@@ -85,4 +85,4 @@ class Hue:
         """
         response = self._session.put(f"/hue/{bridge_name}/scenes/{scene_id}")
         if response.status_code != ResponseStatus.OK:
-            raise APIError("An error occured when recalling a scene")
+            raise APIError("An error occurred when recalling a scene")

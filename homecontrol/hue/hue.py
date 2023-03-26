@@ -62,6 +62,6 @@ class HueBridge:
                 )
             return bridges_conn_info
         raise ConnectionError(
-            f"An error occured trying to discover bridges. "
-            f"The status code recieved was {response.status_code}."
+            f"An error occurred trying to discover bridges. "
+            f"The status code received was {response.status_code}."
         )

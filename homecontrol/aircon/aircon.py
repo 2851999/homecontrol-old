@@ -146,7 +146,7 @@ class ACDevice:
 
             # Validate auth data was obtained correctly
             if found_device.key is None or found_device.token is None:
-                raise ACConnectionError("Unabled to obtain authentication info")
+                raise ACConnectionError("Unable to obtain authentication info")
 
             # Package the required info
             return ACConnectionConfig(
