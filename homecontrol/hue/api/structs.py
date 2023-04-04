@@ -538,3 +538,28 @@ class RoomPut(HueAPIObject):
     type: str
     metadata: Metadata
     children: List[ResourceIdentifierGet]
+
+class DeviceGetProductData(HueAPIObject):
+    """
+    Object for the Hue API
+    """
+
+    model_id: str
+    manufacturer_name: str
+    product_name: str
+    product_archetype: str
+    certified: bool
+    software_version: str
+    hardware_platform_type: str
+
+class DeviceGet(HueAPIObject):
+    """
+    Object for the Hue API
+    """
+
+    type: str
+    id: str
+    id_v1: str
+    product_data: DeviceGetProductData
+    metadata: Metadata
+    services: List[ResourceIdentifierGet]

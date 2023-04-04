@@ -29,17 +29,21 @@ class Room:
             for service in room.services:
                 if service.rtype == "grouped_light":
                     light_group = service.rid
-            devices = []
+            lights = []
             for child in room.children:
                 if child.rtype == "device":
-                    devices.append(child.rid)
+                    # Query the device
+                    device_info = self._api.device.get_device(child.rid)
+                    for service in device_info.services:
+                        if service.rtype == "light":
+                            lights.append(child.rid)
 
             room_list.append(
                 HueRoom(
                     identifier=room.id,
                     name=room.metadata.name,
                     light_group=light_group,
-                    devices=devices,
+                    lights=lights,
                 )
             )
         return room_list

@@ -34,7 +34,7 @@ class HueRoom(SubscriptableClass):
     identifier: str
     name: str
     light_group: Optional[str]
-    devices: List[str]
+    lights: List[str]
 
 
 @dataclass

@@ -67,7 +67,7 @@ class ACManager:
 
     def get_device(self, name: str) -> ACDevice:
         """
-        Retrurns a loaded ACDevice
+        Returns a loaded ACDevice
         """
         if name in self._loaded_devices:
             return self._loaded_devices[name]

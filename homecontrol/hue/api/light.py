@@ -39,7 +39,7 @@ class Light:
 
         if response.status_code != ResponseStatus.OK:
             raise HueAPIError(
-                f"An error occurred trying to get a list of lights. "
+                f"An error occurred trying to get a light. "
                 f"Status code: {response.status_code}. Content {response.content}."
             )
 
