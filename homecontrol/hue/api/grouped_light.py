@@ -20,44 +20,29 @@ class GroupedLight:
         """
         Returns a list of grouped lights
         """
-        response = self._session.get("/clip/v2/resource/grouped_light")
-
-        if response.status_code != ResponseStatus.OK:
-            raise HueAPIError(
-                f"An error occurred trying to get a list of light groups. "
-                f"Status code: {response.status_code}. Content {response.content}."
-            )
-
-        data = response.json()["data"]
-        return dicts_to_list(GroupedLightGet, data)
+        return self._session.get_resource(
+            endpoint="/clip/v2/resource/grouped_light",
+            class_type=GroupedLightGet,
+            error_message="An error occurred trying to get a list of light groups."
+        )
 
     def get_group(self, identifier: str) -> GroupedLightGet:
         """
         Returns the current state of a group of lights
         """
-        response = self._session.get(f"/clip/v2/resource/grouped_light/{identifier}")
-
-        if response.status_code != ResponseStatus.OK:
-            raise HueAPIError(
-                f"An error occurred trying to get the state of the light group with id {identifier}. "
-                f"Status code: {response.status_code}. Content {response.content}."
-            )
-
-        data = response.json()["data"]
-        return dicts_to_list(GroupedLightGet, data)[0]
+        return self._session.get_resource(
+            endpoint=f"/clip/v2/resource/grouped_light/{identifier}",
+            class_type=GroupedLightGet,
+            error_message=f"An error occurred trying to get the state of the light group with id {identifier}."
+        )[0]
 
     def put_group(self, identifier: str, grouped_light_put: GroupedLightPut):
         """
         Attempts to assign the state of a group of lights
         """
 
-        response = self._session.put(
-            f"/clip/v2/resource/grouped_light/{identifier}",
-            json=object_to_dict(grouped_light_put),
+        self._session.put_resource(
+            endpoint=f"/clip/v2/resource/grouped_light/{identifier}",
+            obj=grouped_light_put,
+            error_message=f"An error occurred trying to change the state of the light group with id {identifier}."
         )
-
-        if response.status_code != ResponseStatus.OK:
-            raise HueAPIError(
-                f"An error occurred trying to change the state of the light group with id {identifier} "
-                f"Status code: {response.status_code}. Content {response.content}."
-            )

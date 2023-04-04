@@ -21,30 +21,20 @@ class Scene:
         """
         Returns a list of available scenes
         """
-        response = self._session.get("/clip/v2/resource/scene")
 
-        if response.status_code != ResponseStatus.OK:
-            raise HueAPIError(
-                f"An error occurred trying to get scenes. "
-                f"Status code: {response.status_code}. Content {response.content}."
-            )
-
-        # Obtain the data
-        data = response.json()["data"]
-
-        return dicts_to_list(SceneGet, data)
+        return self._session.get_resource(
+            endpoint="/clip/v2/resource/scene",
+            class_type=SceneGet,
+            error_message="An error occurred trying to get scenes."
+        )
 
     def put_scene(self, identifier: str, scene_put: ScenePut):
         """
         Put request for a scene
         """
 
-        response = self._session.put(
-            f"/clip/v2/resource/scene/{identifier}", json=object_to_dict(scene_put)
+        self._session.put_resource(
+            endpoint=f"/clip/v2/resource/scene/{identifier}",
+            obj=scene_put,
+            error_message=f"An error occurred trying to assign the state of the scene with id {identifier}."
         )
-
-        if response.status_code != ResponseStatus.OK:
-            raise HueAPIError(
-                f"An error occurred trying to assign the state of the scene with id {identifier}"
-                f"Status code: {response.status_code}. Content {response.content}."
-            )

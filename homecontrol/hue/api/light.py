@@ -20,44 +20,31 @@ class Light:
         """
         Returns the current state of a group of lights
         """
-        response = self._session.get("/clip/v2/resource/light")
-
-        if response.status_code != ResponseStatus.OK:
-            raise HueAPIError(
-                f"An error occurred trying to get a list of lights. "
-                f"Status code: {response.status_code}. Content {response.content}."
-            )
-
-        data = response.json()["data"]
-        return dicts_to_list(LightGet, data)
+        
+        return self._session.get_resource(
+            endpoint="/clip/v2/resource/light",
+            class_type=LightGet,
+            error_message="An error occurred trying to get a list of lights."
+        )
 
     def get_light(self, identifier: str) -> LightGet:
         """
         Returns the current state of a group of lights
         """
-        response = self._session.get(f"/clip/v2/resource/light/{identifier}")
 
-        if response.status_code != ResponseStatus.OK:
-            raise HueAPIError(
-                f"An error occurred trying to get a light. "
-                f"Status code: {response.status_code}. Content {response.content}."
-            )
-
-        data = response.json()["data"]
-        return dicts_to_list(LightGet, data)[0]
+        return self._session.get_resource(
+            endpoint=f"/clip/v2/resource/light/{identifier}",
+            class_type=LightGet,
+            error_message=f"An error occurred trying to get the state of the light with id {identifier}."
+        )[0]
 
     def put_light(self, identifier: str, light_put: LightPut):
         """
         Attempts to assign the state of a light
         """
 
-        response = self._session.put(
-            f"/clip/v2/resource/light/{identifier}",
-            json=object_to_dict(light_put),
+        self._session.put_resource(
+            endpoint=f"/clip/v2/resource/light/{identifier}",
+            obj=light_put,
+            error_message=f"An error occurred trying to change the state of the light with id {identifier}."
         )
-
-        if response.status_code != ResponseStatus.OK:
-            raise HueAPIError(
-                f"An error occurred trying to change the state of the light with id {identifier} "
-                f"Status code: {response.status_code}. Content {response.content}."
-            )

@@ -1,6 +1,8 @@
-from typing import Optional
+from typing import Any, List, Optional, Type
 import requests
 from requests_toolbelt.adapters import host_header_ssl
+from homecontrol.helpers import ResponseStatus, dicts_to_list, object_to_dict
+from homecontrol.hue.exceptions import HueAPIError
 
 from homecontrol.hue.structs import HueBridgeAuthConfig, HueBridgeConnectionConfig
 from homecontrol.session import SessionWrapper
@@ -45,3 +47,33 @@ class HueBridgeSession(SessionWrapper):
         self._session.verify = self._ca_cert
 
         return self
+    
+    def get_resource(self, endpoint: str, class_type: Type, error_message: str) -> List:
+        """
+        Returns data from an endpoint
+        """
+        response = self.get(endpoint)
+
+        if response.status_code != ResponseStatus.OK:
+            raise HueAPIError(
+                f"{error_message} "
+                f"Status code: {response.status_code}. Content {response.content}."
+            )
+        data = response.json()["data"]
+        return dicts_to_list(class_type, data)
+    
+    def put_resource(self, endpoint: str, obj: Any, error_message: str):
+        """
+        Performs a put request for a resource
+        """
+
+        response = self.put(
+            endpoint,
+            json=object_to_dict(obj),
+        )
+
+        if response.status_code != ResponseStatus.OK:
+            raise HueAPIError(
+                f"{error_message} "
+                f"Status code: {response.status_code}. Content {response.content}."
+            )
