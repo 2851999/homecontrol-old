@@ -73,7 +73,7 @@ class HueConfig(Config):
         Updates a bridge's config after its button has been pressed
 
         :param name: Name of bridge to update
-        :param username: Username from the authetication response
+        :param username: Username from the authentication response
         :param clientkey: Clientkey from the authentication response
         """
 

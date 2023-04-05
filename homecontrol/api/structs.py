@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Optional
+from typing import List, Optional
 
 
 @dataclass
@@ -22,3 +22,4 @@ class Room:
     ac_device_name: Optional[str] = None
     hue_room_id: Optional[str] = None
     hue_light_group: Optional[str] = None
+    hue_lights: Optional[List[str]] = None

@@ -53,7 +53,7 @@ class GroupedLightState:
 
     def to_dict(self) -> Dict:
         """
-        Returns the dictionary represnetation of this object
+        Returns the dictionary representation of this object
         """
         return {
             "power": self.power,

@@ -44,6 +44,7 @@ def get_rooms():
             name=hue_room.name,
             hue_room_id=hue_room.identifier,
             hue_light_group=hue_room.light_group,
+            hue_lights=hue_room.lights,
         )
         rooms_dict[hue_room.name] = room
 
