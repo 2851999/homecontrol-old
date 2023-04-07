@@ -8,6 +8,7 @@ from homecontrol.helpers import (
 )
 from homecontrol.client.session import APISession
 from homecontrol.hue.grouped_light import GroupedLightState
+from homecontrol.hue.light import LightState
 from homecontrol.hue.structs import HueRoom, HueScene
 
 
@@ -39,9 +40,35 @@ class Hue:
 
         return rooms
 
+    def get_light_state(
+        self, bridge_name: str, light_id: str
+    ) -> LightState:
+        """
+        Returns a the current state of a light group
+        """
+        response = self._session.get(f"/hue/{bridge_name}/light/{light_id}")
+        if response.status_code != ResponseStatus.OK:
+            raise APIError("An error occurred getting a light state")
+
+        return LightState.from_dict(response.json())
+
+    def set_light_state(
+        self, bridge_name: str, light_id: str, state: LightState
+    ) -> bool:
+        """
+        Assigns the state of a light group
+        """
+        response = self._session.put(
+            f"/hue/{bridge_name}/light/{light_id}", json=state.to_dict()
+        )
+        if response.status_code != ResponseStatus.OK:
+            raise APIError("An error occurred assigning a light state")
+
+        return True
+
     def get_grouped_light_state(
         self, bridge_name: str, group_id: str
-    ) -> Dict[str, HueRoom]:
+    ) -> GroupedLightState:
         """
         Returns a the current state of a light group
         """

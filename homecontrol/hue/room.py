@@ -36,7 +36,7 @@ class Room:
                     device_info = self._api.device.get_device(child.rid)
                     for service in device_info.services:
                         if service.rtype == "light":
-                            lights.append(child.rid)
+                            lights.append(service.rid)
 
             room_list.append(
                 HueRoom(

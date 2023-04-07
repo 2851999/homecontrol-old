@@ -39,7 +39,7 @@ class HueBridgeSession(SessionWrapper):
         # Solve SSLCertVerificationError due to difference in hostname
         self._session.mount("https://", host_header_ssl.HostHeaderSSLAdapter())
         self._session.headers.update({"Host": f"{self._connection_config.identifier}"})
-        # Add acutal auth key if have it
+        # Add actual auth key if have it
         if self._auth_config is not None:
             self._session.headers.update(
                 {"hue-application-key": self._auth_config.username}
@@ -55,6 +55,7 @@ class HueBridgeSession(SessionWrapper):
         response = self.get(endpoint)
 
         if response.status_code != ResponseStatus.OK:
+            print(response.content)
             raise HueAPIError(
                 f"{error_message} "
                 f"Status code: {response.status_code}. Content {response.content}."

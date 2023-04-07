@@ -1,6 +1,7 @@
 from typing import Optional
 from homecontrol.hue.api.api import HueBridgeAPI
 from homecontrol.hue.grouped_light import GroupedLight
+from homecontrol.hue.light import Light
 from homecontrol.hue.room import Room
 from homecontrol.hue.scene import Scene
 
@@ -17,6 +18,7 @@ class HueBridgeConnection:
 
     api: HueBridgeAPI
     room: Room
+    light: Light
     grouped_light: GroupedLight
     scene: Scene
 
@@ -41,6 +43,7 @@ class HueBridgeConnection:
         self.session.start()
         self.api = HueBridgeAPI(self.session)
         self.room = Room(self.api)
+        self.light = Light(self.api)
         self.grouped_light = GroupedLight(self.api)
         self.scene = Scene(self.api)
 
