@@ -20,6 +20,8 @@ var/
 .installed.cfg
 *.egg
 
+.venv/
+
 aircon.json
 api.json
 client.json
