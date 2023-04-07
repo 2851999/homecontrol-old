@@ -23,3 +23,11 @@ class Room:
     hue_room_id: Optional[str] = None
     hue_light_group: Optional[str] = None
     hue_lights: Optional[List[str]] = None
+
+@dataclass
+class APIInfo:
+    """
+    Stores information about the homecontrol API itself
+    """
+
+    version: str

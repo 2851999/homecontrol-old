@@ -7,6 +7,7 @@ from homecontrol.api.helpers import authenticated, response_message
 from homecontrol.api.aircon import aircon_api
 from homecontrol.api.hue import hue_api
 from homecontrol.api.home import home_api
+from homecontrol.api.info import info_api
 from homecontrol.api.monitoring import construct_monitor_api_blueprint
 
 app = Flask(__name__)
@@ -23,6 +24,7 @@ app.config["APIAuthConfig"] = auth_config
 app.register_blueprint(aircon_api)
 app.register_blueprint(hue_api)
 app.register_blueprint(home_api)
+app.register_blueprint(info_api)
 
 # Monitoring
 app.register_blueprint(construct_monitor_api_blueprint())
