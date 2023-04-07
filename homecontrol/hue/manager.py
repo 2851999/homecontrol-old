@@ -104,7 +104,7 @@ class HueManager:
 
     def get_bridge(self, name: str) -> HueBridge:
         """
-        Retrurns a loaded ACDevice
+        Returns a loaded ACDevice
         """
         if name in self._loaded_bridges:
             return self._loaded_bridges[name]
