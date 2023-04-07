@@ -25,7 +25,7 @@ class Scene:
         return self._session.get_resource(
             endpoint="/clip/v2/resource/scene",
             class_type=SceneGet,
-            error_message="An error occurred trying to get scenes."
+            error_message="An error occurred trying to get scenes.",
         )
 
     def put_scene(self, identifier: str, scene_put: ScenePut):
@@ -36,5 +36,5 @@ class Scene:
         self._session.put_resource(
             endpoint=f"/clip/v2/resource/scene/{identifier}",
             obj=scene_put,
-            error_message=f"An error occurred trying to assign the state of the scene with id {identifier}."
+            error_message=f"An error occurred trying to assign the state of the scene with id {identifier}.",
         )

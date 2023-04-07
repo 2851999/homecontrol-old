@@ -23,7 +23,7 @@ class GroupedLight:
         return self._session.get_resource(
             endpoint="/clip/v2/resource/grouped_light",
             class_type=GroupedLightGet,
-            error_message="An error occurred trying to get a list of light groups."
+            error_message="An error occurred trying to get a list of light groups.",
         )
 
     def get_group(self, identifier: str) -> GroupedLightGet:
@@ -33,7 +33,7 @@ class GroupedLight:
         return self._session.get_resource(
             endpoint=f"/clip/v2/resource/grouped_light/{identifier}",
             class_type=GroupedLightGet,
-            error_message=f"An error occurred trying to get the state of the light group with id {identifier}."
+            error_message=f"An error occurred trying to get the state of the light group with id {identifier}.",
         )[0]
 
     def put_group(self, identifier: str, grouped_light_put: GroupedLightPut):
@@ -44,5 +44,5 @@ class GroupedLight:
         self._session.put_resource(
             endpoint=f"/clip/v2/resource/grouped_light/{identifier}",
             obj=grouped_light_put,
-            error_message=f"An error occurred trying to change the state of the light group with id {identifier}."
+            error_message=f"An error occurred trying to change the state of the light group with id {identifier}.",
         )

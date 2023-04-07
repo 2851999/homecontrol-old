@@ -20,11 +20,11 @@ class Light:
         """
         Returns the current state of a group of lights
         """
-        
+
         return self._session.get_resource(
             endpoint="/clip/v2/resource/light",
             class_type=LightGet,
-            error_message="An error occurred trying to get a list of lights."
+            error_message="An error occurred trying to get a list of lights.",
         )
 
     def get_light(self, identifier: str) -> LightGet:
@@ -35,7 +35,7 @@ class Light:
         return self._session.get_resource(
             endpoint=f"/clip/v2/resource/light/{identifier}",
             class_type=LightGet,
-            error_message=f"An error occurred trying to get the state of the light with id {identifier}."
+            error_message=f"An error occurred trying to get the state of the light with id {identifier}.",
         )[0]
 
     def put_light(self, identifier: str, light_put: LightPut):
@@ -46,5 +46,5 @@ class Light:
         self._session.put_resource(
             endpoint=f"/clip/v2/resource/light/{identifier}",
             obj=light_put,
-            error_message=f"An error occurred trying to change the state of the light with id {identifier}."
+            error_message=f"An error occurred trying to change the state of the light with id {identifier}.",
         )

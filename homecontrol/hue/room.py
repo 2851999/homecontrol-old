@@ -23,7 +23,6 @@ class Room:
         room_list = []
         # Data should be a list of rooms
         for room in rooms:
-
             # Attempt to get a light group
             light_group = None
             for service in room.services:

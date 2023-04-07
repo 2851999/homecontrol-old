@@ -23,7 +23,7 @@ class Room:
         return self._session.get_resource(
             endpoint="/clip/v2/resource/room",
             class_type=RoomGet,
-            error_message="An error occurred trying to get rooms."
+            error_message="An error occurred trying to get rooms.",
         )
 
     def get_room(self, identifier: str) -> RoomGet:
@@ -34,7 +34,7 @@ class Room:
         return self._session.get_resource(
             endpoint=f"/clip/v2/resource/room/{identifier}",
             class_type=RoomGet,
-            error_message=f"An error occurred trying to get status of the room with id {identifier}."
+            error_message=f"An error occurred trying to get status of the room with id {identifier}.",
         )[0]
 
     def put_room(self, identifier: str, room_put: RoomPut):
@@ -45,5 +45,5 @@ class Room:
         self._session.put_resource(
             endpoint=f"/clip/v2/resource/room/{identifier}",
             obj=room_put,
-            error_message=f"An error occurred trying to update the room with id {identifier}."
+            error_message=f"An error occurred trying to update the room with id {identifier}.",
         )

@@ -40,9 +40,7 @@ class Hue:
 
         return rooms
 
-    def get_light_state(
-        self, bridge_name: str, light_id: str
-    ) -> LightState:
+    def get_light_state(self, bridge_name: str, light_id: str) -> LightState:
         """
         Returns a the current state of a light group
         """

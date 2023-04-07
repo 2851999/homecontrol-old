@@ -23,7 +23,7 @@ class Device:
         return self._session.get_resource(
             endpoint="/clip/v2/resource/device",
             class_type=DeviceGet,
-            error_message="An error occurred trying to get devices."
+            error_message="An error occurred trying to get devices.",
         )
 
     def get_device(self, identifier: str) -> DeviceGet:
@@ -33,5 +33,5 @@ class Device:
         return self._session.get_resource(
             endpoint=f"/clip/v2/resource/device/{identifier}",
             class_type=DeviceGet,
-            error_message=f"An error occurred trying to get data about the device with id {identifier}."
+            error_message=f"An error occurred trying to get data about the device with id {identifier}.",
         )[0]

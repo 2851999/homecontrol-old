@@ -45,9 +45,7 @@ def get_light_state(bridge_name, light_id):
     bridge = device_manager.get_bridge(bridge_name)
     with bridge.start_session() as conn:
         try:
-            return response(
-                conn.light.get_state(light_id).to_dict(), ResponseStatus.OK
-            )
+            return response(conn.light.get_state(light_id).to_dict(), ResponseStatus.OK)
         except HueAPIError as err:
             return response_message(str(err), ResponseStatus.BAD_REQUEST)
 

@@ -56,7 +56,7 @@ class GroupedLightState:
         """
         Returns the dictionary representation of this object
         """
-        
+
         return {
             "power": self.power,
             "brightness": self.brightness,
@@ -69,7 +69,7 @@ class GroupedLightState:
         """
         Returns an instance of GroupedLightState from its dictionary representation
         """
-        
+
         return GroupedLightState(
             power=dictionary["power"],
             brightness=dictionary["brightness"],

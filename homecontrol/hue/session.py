@@ -47,7 +47,7 @@ class HueBridgeSession(SessionWrapper):
         self._session.verify = self._ca_cert
 
         return self
-    
+
     def get_resource(self, endpoint: str, class_type: Type, error_message: str) -> List:
         """
         Returns data from an endpoint
@@ -62,7 +62,7 @@ class HueBridgeSession(SessionWrapper):
             )
         data = response.json()["data"]
         return dicts_to_list(class_type, data)
-    
+
     def put_resource(self, endpoint: str, obj: Any, error_message: str):
         """
         Performs a put request for a resource
