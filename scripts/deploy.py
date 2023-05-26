@@ -108,6 +108,7 @@ def build_and_deploy():
 
     # Install homecontrol
     print("Installing homecontrol...")
+    run_ssh_command(f"sudo pip install -r {DEPLOY_HOMECONTROL_DIR}/requirements.txt")
     run_ssh_command(f"sudo pip install {DEPLOY_HOMECONTROL_DIR}")
 
     # Copying new config

@@ -21,6 +21,8 @@ dependencies=[
     "flask",
     "flask-cors",
     "msmart",
+    # Phillips Hue bridge has a cert without subjectAltName
+    "urllib3<2",
     "requests-toolbelt",
     "APScheduler"
 ]

@@ -1,9 +1,9 @@
 from typing import Any, List, Optional, Type
 import requests
 from requests_toolbelt.adapters import host_header_ssl
+
 from homecontrol.helpers import ResponseStatus, dicts_to_list, object_to_dict
 from homecontrol.hue.exceptions import HueAPIError
-
 from homecontrol.hue.structs import HueBridgeAuthConfig, HueBridgeConnectionConfig
 from homecontrol.session import SessionWrapper
 
