@@ -4,7 +4,7 @@ from typing import List, Optional
 from flask import Blueprint, request
 
 from homecontrol.api.helpers import authenticated, response
-from homecontrol.database.database import Database
+from homecontrol.database.sqlite.database import Database
 from homecontrol.helpers import ResponseStatus
 from homecontrol.scheduling.config import SchedulerConfig
 

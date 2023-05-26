@@ -41,6 +41,23 @@ sudo apt-get update
 sudo apt-get install apache2
 sudo apt-get install libapache2-mod-wsgi-py3
 sudo apt-get install sqlite3
+sudo apt-get install mariadb-server
+```
+
+## Setting up the database
+
+Now secure the database using
+```bash
+sudo systemctl start mysql
+sudo mysql_secure_installation
+```
+
+!!! note
+        You may need to use `sudo service mysql start` if you are using WSL.
+
+Now you may login using
+```bash
+sudo mysql -u root -p
 ```
 
 ## Installing `homecontrol`

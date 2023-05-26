@@ -24,7 +24,8 @@ dependencies=[
     # Phillips Hue bridge has a cert without subjectAltName
     "urllib3<2",
     "requests-toolbelt",
-    "APScheduler"
+    "APScheduler",
+    "mysql-connector-python"
 ]
 
 [project.scripts]
