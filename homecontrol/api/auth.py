@@ -1,22 +1,13 @@
 from flask import Blueprint, request
 
-from homecontrol.aircon.exceptions import ACConnectionError, ACInvalidStateError
-from homecontrol.aircon.manager import ACManager
-from homecontrol.aircon.structs import ACState
 from homecontrol.api.authentication.structs import User
-from homecontrol.api.authentication.user_manager import UserManager
-from homecontrol.api.config import APIConfig
-from homecontrol.api.database.client import APIDatabaseClient
 from homecontrol.api.helpers import (
-    authenticated,
     authenticated_user,
-    check_required_params,
     get_user_manager,
     response,
     response_message,
 )
-from homecontrol.exceptions import DeviceNotRegisteredError
-from homecontrol.helpers import ResponseStatus, dataclass_from_dict
+from homecontrol.helpers import ResponseStatus
 
 auth_api = Blueprint("auth_api", __name__)
 
