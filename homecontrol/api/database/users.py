@@ -86,3 +86,29 @@ class Users:
             )
         user_data = user_data[0]
         return User(username=username, uuid=user_data[0], password_hash=user_data[1])
+
+    def find_user_by_id(self, user_id: str):
+        """
+        Obtains a User object from the database given their ID
+
+        Raises:
+            ResourceNotFoundError: If the user with the given ID is not found
+            DatabaseError: If for some reason more than one user has the given
+                           ID
+        """
+        user_data = self._connection.select_values(
+            self.TABLE_USERS,
+            ["username", "password_hash"],
+            where=(f"uuid=%s", (user_id,)),
+        )
+
+        if len(user_data) == 0:
+            raise ResourceNotFoundError(
+                f"User with the UUID '{user_id}' could not be found in the database"
+            )
+        if len(user_data) > 1:
+            raise DatabaseError(
+                f"{len(user_data)} users were found to have the UUID '{user_id}' in the database"
+            )
+        user_data = user_data[0]
+        return User(username=user_data[0], uuid=user_id, password_hash=user_data[1])

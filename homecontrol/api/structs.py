@@ -10,6 +10,8 @@ class APIAuthConfig:
 
     required: bool
     key: str
+    token_key: str
+    token_expiry: int
 
 
 @dataclass

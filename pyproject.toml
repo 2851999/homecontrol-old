@@ -26,7 +26,8 @@ dependencies=[
     "requests-toolbelt",
     "APScheduler",
     "mysql-connector-python",
-    "bcrypt"
+    "bcrypt",
+    "pyjwt"
 ]
 
 [project.scripts]

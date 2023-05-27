@@ -15,4 +15,9 @@ class APIConfig(Config):
         Returns a APIAuthConfig from the loaded config
         """
         auth = self.data["auth"]
-        return APIAuthConfig(required=auth["required"], key=auth["key"])
+        return APIAuthConfig(
+            required=auth["required"],
+            key=auth["key"],
+            token_key=auth["token_key"],
+            token_expiry=auth["token_expiry"],
+        )

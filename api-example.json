@@ -1,6 +1,8 @@
 {
     "auth": {
         "required": true,
-        "key": "INSERT_KEY"
+        "key": "INSERT_KEY",
+        "token_key": "INSERT_KEY",
+        "token_expiry": 3600
     }
 }
