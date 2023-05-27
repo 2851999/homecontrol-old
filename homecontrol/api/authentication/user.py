@@ -8,3 +8,7 @@ class User:
     username: str
     uuid: str
     password_hash: str
+
+
+class UserManager:
+    """Handles users"""
