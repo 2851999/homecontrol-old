@@ -26,6 +26,7 @@ aircon.json
 api.json
 client.json
 hue.json
+database.json
 test.py
 TODO
 ReleaseNotes.txt
