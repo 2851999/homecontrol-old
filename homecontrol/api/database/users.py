@@ -1,4 +1,4 @@
-from homecontrol.api.authentication.user import User
+from homecontrol.api.authentication.user_manager import User
 from homecontrol.api.database.exceptions import (
     DatabaseError,
     UsernameAlreadyExistsError,
@@ -55,12 +55,12 @@ class Users:
         Returns whether a user with a particular username exists
         """
         try:
-            self.get_user_by_username(username)
+            self.find_user_by_username(username)
             return True
         except ResourceNotFoundError:
             return False
 
-    def get_user_by_username(self, username: str):
+    def find_user_by_username(self, username: str):
         """
         Obtains a User object from the database given their username
 

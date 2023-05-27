@@ -25,7 +25,8 @@ dependencies=[
     "urllib3<2",
     "requests-toolbelt",
     "APScheduler",
-    "mysql-connector-python"
+    "mysql-connector-python",
+    "bcrypt"
 ]
 
 [project.scripts]
