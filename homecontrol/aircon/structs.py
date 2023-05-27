@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 from enum import IntEnum
+
 from msmart.device import air_conditioning
 
 

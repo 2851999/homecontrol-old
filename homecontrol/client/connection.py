@@ -4,7 +4,6 @@ from homecontrol.client.hue import Hue
 from homecontrol.client.info import Info
 from homecontrol.client.monitoring import Monitoring
 from homecontrol.client.session import APISession
-
 from homecontrol.client.structs import APIConnectionConfig
 
 

@@ -12,7 +12,7 @@ class HueAPIObject:
     def __init__(self, dictionary: Dict):
         types = get_type_hints(self)
         for key, value in dictionary.items():
-            # Sometimes values are returned when with emtpy values and are not specefied
+            # Sometimes values are returned when with empty values and are not specified
             # in the API, so ignore them here
             # Note: This may cause things to go missing if structure is not correct
             if key in types:

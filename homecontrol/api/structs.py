@@ -24,6 +24,7 @@ class Room:
     hue_light_group: Optional[str] = None
     hue_lights: Optional[List[str]] = None
 
+
 @dataclass
 class APIInfo:
     """

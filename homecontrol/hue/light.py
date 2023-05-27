@@ -1,11 +1,10 @@
 from dataclasses import dataclass
 from typing import Dict, Optional
+
 from homecontrol.hue.api.api import HueBridgeAPI
 from homecontrol.hue.api.structs import LightGet, LightPut
 from homecontrol.hue.colour import HueColour
-from homecontrol.hue.helpers import (
-    kelvin_to_mirek,
-)
+from homecontrol.hue.helpers import kelvin_to_mirek
 
 
 @dataclass

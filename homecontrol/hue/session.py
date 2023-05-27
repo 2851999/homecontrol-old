@@ -1,4 +1,5 @@
 from typing import Any, List, Optional, Type
+
 import requests
 from requests_toolbelt.adapters import host_header_ssl
 

@@ -1,12 +1,13 @@
 from typing import Dict, List, Optional
+
 from homecontrol.client.exceptions import APIError
 from homecontrol.client.helpers import get_url_search_params
+from homecontrol.client.session import APISession
 from homecontrol.helpers import (
     ResponseStatus,
     dataclass_from_dict,
     dataclass_list_from_dict,
 )
-from homecontrol.client.session import APISession
 from homecontrol.hue.grouped_light import GroupedLightState
 from homecontrol.hue.light import LightState
 from homecontrol.hue.structs import HueRoom, HueScene

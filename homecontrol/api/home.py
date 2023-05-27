@@ -1,15 +1,10 @@
 from flask import Blueprint, request
 
 from homecontrol.api.aircon import device_manager as ac_device_manager
+from homecontrol.api.helpers import authenticated, response, response_message
 from homecontrol.api.hue import device_manager as hue_device_manager
-from homecontrol.api.helpers import (
-    authenticated,
-    response,
-    response_message,
-)
 from homecontrol.api.structs import Room
 from homecontrol.helpers import ResponseStatus, object_to_dict
-
 
 home_api = Blueprint("home_api", __name__)
 

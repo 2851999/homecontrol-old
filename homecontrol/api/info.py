@@ -1,12 +1,9 @@
 from flask import Blueprint
 
-from homecontrol.api.helpers import (
-    response,
-)
+from homecontrol.api.helpers import response
 from homecontrol.api.structs import APIInfo
 from homecontrol.helpers import ResponseStatus, object_to_dict
 from homecontrol.version import __version__
-
 
 info_api = Blueprint("info_api", __name__)
 

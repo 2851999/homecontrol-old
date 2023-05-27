@@ -1,12 +1,12 @@
 from typing import Optional
+
 from homecontrol.hue.api.api import HueBridgeAPI
 from homecontrol.hue.grouped_light import GroupedLight
 from homecontrol.hue.light import Light
 from homecontrol.hue.room import Room
 from homecontrol.hue.scene import Scene
-
-from homecontrol.hue.structs import HueBridgeAuthConfig, HueBridgeConnectionConfig
 from homecontrol.hue.session import HueBridgeSession
+from homecontrol.hue.structs import HueBridgeAuthConfig, HueBridgeConnectionConfig
 
 
 class HueBridgeConnection:

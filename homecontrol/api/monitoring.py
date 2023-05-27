@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from datetime import datetime
 from typing import List, Optional
+
 from flask import Blueprint, request
 
 from homecontrol.api.helpers import authenticated, response

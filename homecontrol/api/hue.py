@@ -12,7 +12,6 @@ from homecontrol.hue.grouped_light import GroupedLightState
 from homecontrol.hue.light import LightState
 from homecontrol.hue.manager import HueManager
 
-
 hue_api = Blueprint("hue_api", __name__)
 
 # ACManager

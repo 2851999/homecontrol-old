@@ -1,5 +1,4 @@
 from homecontrol.client.structs import APIConnectionConfig
-
 from homecontrol.config import Config
 
 

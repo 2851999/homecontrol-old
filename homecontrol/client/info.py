@@ -1,8 +1,7 @@
-from typing import List
-from homecontrol.api.structs import APIInfo, Room
+from homecontrol.api.structs import APIInfo
 from homecontrol.client.exceptions import APIError
-from homecontrol.helpers import ResponseStatus, dataclass_from_dict
 from homecontrol.client.session import APISession
+from homecontrol.helpers import ResponseStatus, dataclass_from_dict
 
 
 class Info:

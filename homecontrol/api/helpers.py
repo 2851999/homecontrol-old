@@ -1,8 +1,9 @@
 from functools import wraps
 from typing import Any, Dict, List, Optional
-from flask import current_app, request, jsonify
-from homecontrol.api.filters import Filters
 
+from flask import current_app, jsonify, request
+
+from homecontrol.api.filters import Filters
 from homecontrol.api.structs import APIAuthConfig
 from homecontrol.helpers import ResponseStatus, SubscriptableClass
 

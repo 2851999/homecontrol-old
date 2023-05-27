@@ -1,6 +1,6 @@
+import json
 from abc import ABC, abstractmethod
 from ast import Str
-import json
 from typing import Dict, List, Type
 
 from homecontrol.helpers import SubscriptableClass

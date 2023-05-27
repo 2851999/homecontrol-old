@@ -1,5 +1,5 @@
 import json
-from os.path import expanduser, exists
+from os.path import exists
 from typing import Any, Dict
 
 

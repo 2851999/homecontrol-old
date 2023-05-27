@@ -1,4 +1,5 @@
 import re
+
 from homecontrol.database.sqlite.connection import DatabaseConnection
 from homecontrol.scheduling.structs import SchedulerDatabaseConfig
 

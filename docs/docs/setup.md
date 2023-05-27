@@ -60,6 +60,15 @@ Now you may login using
 sudo mysql -u root -p
 ```
 
+You can test the connection works using `telnet localhost 3306`.
+
+Now create the database and user for homecontrol using
+```sql
+create database homecontrol;
+grant all privileges on homecontrol.* TO 'INSERT_USERNAME'@'localhost' identified by 'INSERT_PASSWORD';
+flush privileges;
+```
+
 ## Installing `homecontrol`
 ```bash
 git clone https://github.com/2851999/homecontrol.git

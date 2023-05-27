@@ -1,18 +1,16 @@
 from flask import Blueprint, request
 
 from homecontrol.aircon.exceptions import ACConnectionError, ACInvalidStateError
+from homecontrol.aircon.manager import ACManager
 from homecontrol.aircon.structs import ACState
-
 from homecontrol.api.helpers import (
     authenticated,
     check_required_params,
     response,
     response_message,
 )
-from homecontrol.aircon.manager import ACManager
 from homecontrol.exceptions import DeviceNotRegisteredError
-from homecontrol.helpers import dataclass_from_dict, ResponseStatus
-
+from homecontrol.helpers import ResponseStatus, dataclass_from_dict
 
 aircon_api = Blueprint("aircon_api", __name__)
 

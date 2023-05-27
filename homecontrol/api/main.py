@@ -1,12 +1,11 @@
 from flask import Flask
-
 from flask_cors import CORS
 
+from homecontrol.api.aircon import aircon_api
 from homecontrol.api.config import APIConfig
 from homecontrol.api.helpers import authenticated, response_message
-from homecontrol.api.aircon import aircon_api
-from homecontrol.api.hue import hue_api
 from homecontrol.api.home import home_api
+from homecontrol.api.hue import hue_api
 from homecontrol.api.info import info_api
 from homecontrol.api.monitoring import construct_monitor_api_blueprint
 

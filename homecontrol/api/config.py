@@ -1,5 +1,4 @@
 from homecontrol.api.structs import APIAuthConfig
-
 from homecontrol.config import Config
 
 

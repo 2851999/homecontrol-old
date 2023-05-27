@@ -5,11 +5,7 @@ from msmart.device import air_conditioning
 from msmart.scanner import MideaDiscovery
 
 from homecontrol.aircon.exceptions import ACConnectionError, ACInvalidStateError
-from homecontrol.aircon.structs import (
-    ACAccountConfig,
-    ACConnectionConfig,
-    ACState,
-)
+from homecontrol.aircon.structs import ACAccountConfig, ACConnectionConfig, ACState
 
 
 class ACDevice:
