@@ -50,11 +50,11 @@ def construct_monitor_api_blueprint():
 
         where = None
         if start is not None and end is not None:
-            where = f"timestamp BETWEEN '{start}' AND '{end}'"
+            where = [f"timestamp BETWEEN ? AND ?", (start, end)]
         elif start is not None:
-            where = f"timestamp >= '{start}'"
+            where = [f"timestamp >= ?", (start,)]
         elif end is not None:
-            where = f"timestamp <= '{end}'"
+            where = [f"timestamp <= ?", (end,)]
 
         # Obtain the data
         with database.start_session() as db_conn:

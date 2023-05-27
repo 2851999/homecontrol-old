@@ -56,23 +56,30 @@ class DatabaseConnection:
         self,
         table: str,
         values: List[str],
-        where: Optional[str] = None,
+        where: Optional[Tuple[str, Tuple[Any]]] = None,
         order_by: Optional[str] = None,
         limit: Optional[int] = None,
     ):
         """
         Returns values from a table
+
+        'where' is taken as a string statement and any values that will be replacing
+        ?'s to avoid SQL injection
         """
-        sql = f"SELECT {self.join_with(',', values)} FROM {table}"
+        sql = f"SELECT {','.join(values)} FROM {table}"
+        params = ()
 
         if where is not None:
-            sql += f" WHERE {where}"
+            sql += f" WHERE {where[0]}"
+            params += where[1]
         if order_by is not None:
-            sql += f" ORDER BY {order_by}"
+            sql += f" ORDER BY ?"
+            params += (order_by,)
         if limit is not None:
-            sql += f" LIMIT {limit}"
+            sql += f" LIMIT ?"
+            params += (limit,)
 
-        self._cursor.execute(sql)
+        self._cursor.execute(sql, params or None)
         return self._cursor.fetchall()
 
     def commit(self):
