@@ -2,7 +2,10 @@ from flask import Flask
 from flask_cors import CORS
 
 from homecontrol.api.aircon import aircon_api
+from homecontrol.api.auth import auth_api
+from homecontrol.api.authentication.user_manager import UserManager
 from homecontrol.api.config import APIConfig
+from homecontrol.api.database.client import APIDatabaseClient
 from homecontrol.api.helpers import authenticated, response_message
 from homecontrol.api.home import home_api
 from homecontrol.api.hue import hue_api
@@ -18,8 +21,10 @@ config = APIConfig()
 auth_config = config.get_auth()
 
 app.config["APIAuthConfig"] = auth_config
+app.config["UserManager"] = UserManager(APIConfig(), APIDatabaseClient())
 
 # Register blueprints
+app.register_blueprint(auth_api)
 app.register_blueprint(aircon_api)
 app.register_blueprint(hue_api)
 app.register_blueprint(home_api)

@@ -29,3 +29,7 @@ class APISession(SessionWrapper):
             )
 
         return self
+
+    def set_access_token(self, access_token: str):
+        """Sets up the access token header"""
+        self._session.headers.update({"Authorization": f"Bearer {access_token}"})
