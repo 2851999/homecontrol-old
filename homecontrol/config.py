@@ -1,5 +1,5 @@
 import json
-from os.path import exists
+from pathlib import Path
 from typing import Any, Dict
 
 
@@ -9,17 +9,18 @@ class Config:
     """
 
     # Path to the config file this class manages
-    _path: str
+    _path: Path
 
     # Current loaded data of this config
     data: Dict
 
-    def __init__(self, path) -> None:
+    def __init__(self, file_name: str) -> None:
         """
-        Constructor - loads the config from the given path, following the format
-        ~/CONFIG_FILEPATH/path
+        Loads the config using the given file name assuming it is either
+        in the current working directory or it is located in the general
+        config dir (currently /etc/homecontrol) - First one found is used
         """
-        self._path = path
+        self._path = Path(file_name)
 
         self.load()
 
@@ -27,55 +28,33 @@ class Config:
         """
         Saves the config
         """
-        Config.save_to_json(self._path, self.data)
+        with open(self.get_filepath(), "w", encoding="utf-8") as config_file:
+            json.dump(self.data, config_file)
 
     def load(self):
         """
         Load the config (if it exists)
         """
-        if Config.does_exist(self._path):
-            self.data = Config.load_from_json(self._path)
+        if self.does_exist():
+            with open(self.get_filepath(), encoding="utf-8") as config_file:
+                self.data = json.load(config_file)
         else:
             self.data = {}
 
-    @staticmethod
-    def get_filepath(path: str) -> str:
+    def get_filepath(self) -> Path:
         """
         Returns the path to a config file - prefers ones in the current
         working directory
         """
-        if exists(path):
+        if self._path.exists():
             # Current working dir
-            return path
+            return self._path
         else:
             # TODO: Modify for other platforms
-            return f"/etc/homecontrol/{path}"
+            return Path("/etc/homecontrol/") / self._path
 
-    @staticmethod
-    def load_from_json(path: str) -> Any:
-        """
-        Returns config from a json file located at ~/CONFIG_FILEPATH/path
-        """
-        file_path = Config.get_filepath(path)
-
-        with open(file_path, encoding="utf-8") as config_file:
-            return json.load(config_file)
-
-    @staticmethod
-    def save_to_json(path: str, data: Dict) -> Any:
-        """
-        Saves config to a json file located at ~/CONFIG_FILEPATH/path
-        """
-
-        # Obtain the home directory
-        file_path = Config.get_filepath(path)
-
-        with open(file_path, "w", encoding="utf-8") as config_file:
-            json.dump(data, config_file)
-
-    @staticmethod
-    def does_exist(path: str) -> bool:
+    def does_exist(self) -> bool:
         """
         Returns whether a config file exists
         """
-        return exists(Config.get_filepath(path))
+        return self.get_filepath().exists()
