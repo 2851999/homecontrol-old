@@ -79,7 +79,7 @@ class DatabaseConnection:
             sql += f" LIMIT ?"
             params += (limit,)
 
-        self._cursor.execute(sql, params or None)
+        self._cursor.execute(sql, params)
         return self._cursor.fetchall()
 
     def commit(self):
