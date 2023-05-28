@@ -34,4 +34,6 @@ def login():
 @auth_api.route("/login/check", methods=["GET"])
 @authenticated_user
 def login_check(user: User):
-    return response({"client_id": user.uuid}, ResponseStatus.OK)
+    return response(
+        {"client_id": user.uuid, "user_group": user.group}, ResponseStatus.OK
+    )

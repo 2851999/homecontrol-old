@@ -1,4 +1,4 @@
-from homecontrol.api.authentication.user_manager import User
+from homecontrol.api.authentication.structs import InternalUser, UserGroup
 from homecontrol.api.database.exceptions import (
     DatabaseError,
     UsernameAlreadyExistsError,
@@ -22,16 +22,17 @@ class Users:
         """
         Creates the table required for storing users in the database
         """
-        self.create_table(
+        self._connection.create_table(
             self.TABLE_USERS,
             [
                 "username VARCHAR(255)",
                 "uuid VARCHAR(255)",
                 "password_hash VARCHAR(255)",
+                "user_group VARCHAR(255)",
             ],
         )
 
-    def add_user(self, user: User):
+    def add_user(self, user: InternalUser):
         """
         Adds a user to the database
 
@@ -46,7 +47,8 @@ class Users:
             )
 
         self._connection.insert_values(
-            self.TABLE_USERS, [(user.username, user.uuid, user.password_hash)]
+            self.TABLE_USERS,
+            [(user.username, user.uuid, user.password_hash, user.group)],
         )
         self._connection.commit()
 
@@ -60,7 +62,7 @@ class Users:
         except ResourceNotFoundError:
             return False
 
-    def find_user_by_username(self, username: str):
+    def find_user_by_username(self, username: str) -> InternalUser:
         """
         Obtains a User object from the database given their username
 
@@ -72,7 +74,7 @@ class Users:
         """
         user_data = self._connection.select_values(
             self.TABLE_USERS,
-            ["uuid", "password_hash"],
+            ["uuid", "password_hash", "user_group"],
             where=(f"username=%s", (username,)),
         )
 
@@ -85,7 +87,12 @@ class Users:
                 f"{len(user_data)} users were found to have the username '{username}' in the database"
             )
         user_data = user_data[0]
-        return User(username=username, uuid=user_data[0], password_hash=user_data[1])
+        return InternalUser(
+            username=username,
+            uuid=user_data[0],
+            password_hash=user_data[1],
+            group=UserGroup(user_data[2]),
+        )
 
     def find_user_by_id(self, user_id: str):
         """
@@ -98,7 +105,7 @@ class Users:
         """
         user_data = self._connection.select_values(
             self.TABLE_USERS,
-            ["username", "password_hash"],
+            ["username", "password_hash", "user_group"],
             where=(f"uuid=%s", (user_id,)),
         )
 
@@ -111,4 +118,9 @@ class Users:
                 f"{len(user_data)} users were found to have the UUID '{user_id}' in the database"
             )
         user_data = user_data[0]
-        return User(username=user_data[0], uuid=user_id, password_hash=user_data[1])
+        return InternalUser(
+            username=user_data[0],
+            uuid=user_id,
+            password_hash=user_data[1],
+            group=UserGroup(user_data[2]),
+        )

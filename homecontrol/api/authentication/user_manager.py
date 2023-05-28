@@ -8,7 +8,12 @@ from homecontrol.api.authentication.encryption import (
     encode_jwt,
     generate_hash,
 )
-from homecontrol.api.authentication.structs import TokenPayload, User
+from homecontrol.api.authentication.structs import (
+    InternalUser,
+    TokenPayload,
+    User,
+    UserGroup,
+)
 from homecontrol.api.config import APIConfig
 from homecontrol.api.database.client import APIDatabaseClient
 from homecontrol.api.structs import APIAuthConfig
@@ -27,7 +32,7 @@ class UserManager:
         self._auth_config = api_config.get_auth()
         self._database_client = database_client
 
-    def add_user(self, username: str, password: str):
+    def add_user(self, username: str, password: str, group: UserGroup):
         """
         Adds a new user
 
@@ -36,12 +41,15 @@ class UserManager:
                                         already exists
         """
 
-        user = User(
-            username=username, uuid=str(uuid4()), password_hash=generate_hash(password)
+        internal_user = InternalUser(
+            username=username,
+            uuid=str(uuid4()),
+            password_hash=generate_hash(password),
+            group=group,
         )
 
         with self._database_client.connect() as conn:
-            conn.users.add_user(user)
+            conn.users.add_user(internal_user)
 
     def verify_login(self, username: str, password: str) -> Optional[User]:
         """
@@ -50,12 +58,12 @@ class UserManager:
         # Find the user
         try:
             with self._database_client.connect() as conn:
-                user = conn.users.find_user_by_username(username)
+                internal_user = conn.users.find_user_by_username(username)
         except ResourceNotFoundError:
             return None
         # Compare hashes
-        if check_password(password, user.password_hash):
-            return user
+        if check_password(password, internal_user.password_hash):
+            return internal_user.to_user()
         else:
             return None
 
