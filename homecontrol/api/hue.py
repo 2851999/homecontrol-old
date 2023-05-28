@@ -1,13 +1,9 @@
 from flask import Blueprint, request
-from homecontrol.api.exceptions import APIError
 
-from homecontrol.api.helpers import (
-    apply_filters,
-    authenticated,
-    response,
-)
+from homecontrol.api.exceptions import APIError
+from homecontrol.api.helpers import apply_filters, authenticated, response
 from homecontrol.helpers import ResponseStatus
-from homecontrol.hue.exceptions import HueAPIError
+from homecontrol.hue.api.exceptions import HueAPIError
 from homecontrol.hue.grouped_light import GroupedLightState
 from homecontrol.hue.light import LightState
 from homecontrol.hue.manager import HueManager

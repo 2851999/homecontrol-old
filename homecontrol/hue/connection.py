@@ -1,11 +1,11 @@
 from typing import Optional
 
 from homecontrol.hue.api.api import HueBridgeAPI
+from homecontrol.hue.api.session import HueBridgeSession
 from homecontrol.hue.grouped_light import GroupedLight
 from homecontrol.hue.light import Light
 from homecontrol.hue.room import Room
 from homecontrol.hue.scene import Scene
-from homecontrol.hue.session import HueBridgeSession
 from homecontrol.hue.structs import HueBridgeAuthConfig, HueBridgeConnectionConfig
 
 
@@ -14,7 +14,7 @@ class HueBridgeConnection:
     Handles the connection to a hue bridge
     """
 
-    session: HueBridgeSession
+    _session: HueBridgeSession
 
     api: HueBridgeAPI
     room: Room
@@ -37,15 +37,15 @@ class HueBridgeConnection:
             auth_config (Optional[HueBridgeAuthConfig]): Authentication info
                            for the bridge (may be None if not registered yet)
         """
-        self.session = HueBridgeSession(
+        self._session = HueBridgeSession(
             connection_config=connection_config,
             ca_cert=ca_cert,
             auth_config=auth_config,
         )
 
     def __enter__(self):
-        self.session.start()
-        self.api = HueBridgeAPI(self.session)
+        self._session.start()
+        self.api = HueBridgeAPI(self._session)
         self.room = Room(self.api)
         self.light = Light(self.api)
         self.grouped_light = GroupedLight(self.api)
@@ -54,4 +54,4 @@ class HueBridgeConnection:
         return self
 
     def __exit__(self, exception_type, exception_value, traceback):
-        self.session.close()
+        self._session.close()

@@ -58,6 +58,7 @@ def get_user_manager() -> UserManager:
     return current_app.config["UserManager"]
 
 
+# TODO: Move this into the authentication folder
 def authenticated(func):
     """
     Decorator function for adding authentication to an endpoint
@@ -80,6 +81,7 @@ def authenticated(func):
     return wrapper
 
 
+# TODO: Move this into the authentication folder
 def authenticated_user(func):
     """
     Decorator function for adding user authentication to an endpoint

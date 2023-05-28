@@ -16,11 +16,7 @@ class ACConfig(Config):
         """
         Returns an ACAccountConfig instance from loaded config
         """
-        account_data = self.data["account"]
-
-        return ACAccountConfig(
-            username=account_data["username"], password=account_data["password"]
-        )
+        return ACAccountConfig(**self.data["account"])
 
     def has_devices(self):
         """

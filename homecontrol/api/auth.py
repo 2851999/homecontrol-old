@@ -25,6 +25,7 @@ def login():
     else:
         # Return an access token
         return response(
+            # TODO: Put into a struct that can be parsed on the other end
             {"access_token": user_manager.generate_access_token(user)},
             ResponseStatus.OK,
         )

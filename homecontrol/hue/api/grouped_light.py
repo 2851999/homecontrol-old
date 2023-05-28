@@ -1,7 +1,7 @@
 from typing import List
 
+from homecontrol.hue.api.session import HueBridgeSession
 from homecontrol.hue.api.structs import GroupedLightGet, GroupedLightPut
-from homecontrol.hue.session import HueBridgeSession
 
 
 class GroupedLight:

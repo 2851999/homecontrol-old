@@ -124,6 +124,7 @@ WSGIPythonPath /usr/local/lib/python3.9/dist-packages/
 - `api.json`
 - `client.json`
 - `scheduler.json`
+- `database.json`
 
 These should be placed into a folder at `/etc/homecontrol`.
 

@@ -21,8 +21,9 @@ app.config["CORS_HEADERS"] = "Content-Type"
 config = APIConfig()
 auth_config = config.get_auth()
 
+# TODO: Unify with AuthManager or something
 app.config["APIAuthConfig"] = auth_config
-app.config["UserManager"] = UserManager(APIConfig(), APIDatabaseClient())
+app.config["UserManager"] = UserManager(config, APIDatabaseClient())
 
 # Register blueprints
 app.register_blueprint(auth_api)
@@ -46,6 +47,9 @@ def root():
 
 @app.errorhandler(APIError)
 def handle_api_error(err: APIError):
+    """
+    Return error messages when an APIError occurs
+    """
     return response_message(err.message, err.status_code)
 
 

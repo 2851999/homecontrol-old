@@ -1,6 +1,5 @@
-from homecontrol.client.exceptions import APIClientError
+from homecontrol.client.helpers import check_response
 from homecontrol.client.session import APISession
-from homecontrol.helpers import ResponseStatus
 
 
 class Auth:
@@ -20,14 +19,13 @@ class Auth:
         response = self._session.post(
             "/login", json={"username": username, "password": password}
         )
-        if response.status_code != ResponseStatus.OK:
-            raise APIClientError(response.json()["message"])
+        check_response(response, "Failed to login")
         self._session.set_access_token(response.json()["access_token"])
 
     def login_check(self):
         """Checks whether we are logged in"""
         response = self._session.get("/login/check")
-        if response.status_code != ResponseStatus.OK:
-            raise APIClientError(response.json()["message"])
-        else:
-            return response.json()
+        check_response(
+            response, "An error occurred while trying to check the user login"
+        )
+        return response.json()

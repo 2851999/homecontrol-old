@@ -95,6 +95,7 @@ def main():
     monitor = Monitor(scheduler_config)
 
     # Check if just being told to create any needed databases
+    # TODO: Use argparse
     if len(sys.argv) == 2 and sys.argv[1] == "init-db":
         monitor.init_db()
     else:

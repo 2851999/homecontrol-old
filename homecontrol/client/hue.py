@@ -1,13 +1,8 @@
 from typing import Dict, List, Optional
 
-from homecontrol.client.exceptions import APIClientError
-from homecontrol.client.helpers import get_url_search_params
+from homecontrol.client.helpers import check_response, get_url_search_params
 from homecontrol.client.session import APISession
-from homecontrol.helpers import (
-    ResponseStatus,
-    dataclass_from_dict,
-    dataclass_list_from_dict,
-)
+from homecontrol.helpers import dataclass_from_dict, dataclass_list_from_dict
 from homecontrol.hue.grouped_light import GroupedLightState
 from homecontrol.hue.light import LightState
 from homecontrol.hue.structs import HueRoom, HueScene
@@ -32,8 +27,7 @@ class Hue:
         response = self._session.get(
             f"/hue/{bridge_name}/rooms{get_url_search_params(filters)}"
         )
-        if response.status_code != ResponseStatus.OK:
-            raise APIClientError("An error occurred getting a list of rooms")
+        check_response(response, "An error occurred getting a list of rooms")
 
         rooms = []
         for room in response.json():
@@ -46,8 +40,7 @@ class Hue:
         Returns a the current state of a light group
         """
         response = self._session.get(f"/hue/{bridge_name}/light/{light_id}")
-        if response.status_code != ResponseStatus.OK:
-            raise APIClientError("An error occurred getting a light state")
+        check_response(response, "An error occurred getting a light state")
 
         return LightState.from_dict(response.json())
 
@@ -60,8 +53,7 @@ class Hue:
         response = self._session.put(
             f"/hue/{bridge_name}/light/{light_id}", json=state.to_dict()
         )
-        if response.status_code != ResponseStatus.OK:
-            raise APIClientError("An error occurred assigning a light state")
+        check_response(response, "An error occurred assigning a light state")
 
         return True
 
@@ -72,8 +64,7 @@ class Hue:
         Returns a the current state of a light group
         """
         response = self._session.get(f"/hue/{bridge_name}/grouped_lights/{group_id}")
-        if response.status_code != ResponseStatus.OK:
-            raise APIClientError("An error occurred getting a grouped light state")
+        check_response(response, "An error occurred getting a grouped light state")
 
         return GroupedLightState.from_dict(response.json())
 
@@ -86,8 +77,7 @@ class Hue:
         response = self._session.put(
             f"/hue/{bridge_name}/grouped_lights/{group_id}", json=state.to_dict()
         )
-        if response.status_code != ResponseStatus.OK:
-            raise APIClientError("An error occurred assigning a grouped light state")
+        check_response(response, "An error occurred assigning a grouped light state")
 
         return True
 
@@ -100,8 +90,7 @@ class Hue:
         url = f"/hue/{bridge_name}/scenes{get_url_search_params(filters)}"
 
         response = self._session.get(url)
-        if response.status_code != ResponseStatus.OK:
-            raise APIClientError("An error occurred getting a list of rooms")
+        check_response(response, "An error occurred getting a list of rooms")
 
         return dataclass_list_from_dict(HueScene, response.json())
 
@@ -110,5 +99,4 @@ class Hue:
         Returns a list of scenes
         """
         response = self._session.put(f"/hue/{bridge_name}/scenes/{scene_id}")
-        if response.status_code != ResponseStatus.OK:
-            raise APIClientError("An error occurred when recalling a scene")
+        check_response(response, "An error occurred when recalling a scene")

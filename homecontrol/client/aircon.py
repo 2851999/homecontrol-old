@@ -1,7 +1,7 @@
 from typing import List, Optional
 
 from homecontrol.aircon.structs import ACState
-from homecontrol.client.exceptions import APIClientError
+from homecontrol.client.helpers import check_response
 from homecontrol.client.session import APISession
 from homecontrol.helpers import ResponseStatus, dataclass_from_dict
 
@@ -21,8 +21,7 @@ class Aircon:
         Returns a list of registered device names
         """
         response = self._session.get("/ac/devices")
-        if response.status_code != ResponseStatus.OK:
-            raise APIClientError("An error occurred listing devices")
+        check_response(response, "An error occurred listing devices")
         return response.json()
 
     def register_device(
@@ -55,8 +54,7 @@ class Aircon:
         Returns the state of a device
         """
         response = self._session.get(f"/ac/devices/{name}")
-        if response.status_code != ResponseStatus.OK:
-            raise APIClientError(f"An error occured getting the state of {name}")
+        check_response(response, f"An error occurred getting the state of {name}")
         return dataclass_from_dict(ACState, response.json())
 
     def set_device(self, name: str, state: ACState) -> ACState:
@@ -64,8 +62,7 @@ class Aircon:
         Sets the state of a device
         """
         response = self._session.put(f"/ac/devices/{name}", json=state.__dict__)
-        if response.status_code != ResponseStatus.OK:
-            raise APIClientError(
-                f"An error occured while attempting to set the state of {name}"
-            )
+        check_response(
+            response, f"An error occurred while attempting to set the state of {name}"
+        )
         return dataclass_from_dict(ACState, response.json())
