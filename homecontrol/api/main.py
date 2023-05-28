@@ -6,6 +6,7 @@ from homecontrol.api.auth import auth_api
 from homecontrol.api.authentication.user_manager import UserManager
 from homecontrol.api.config import APIConfig
 from homecontrol.api.database.client import APIDatabaseClient
+from homecontrol.api.exceptions import APIError
 from homecontrol.api.helpers import authenticated, response_message
 from homecontrol.api.home import home_api
 from homecontrol.api.hue import hue_api
@@ -41,6 +42,11 @@ def root():
     Default root
     """
     return response_message("OK: Authorised", 200)
+
+
+@app.errorhandler(APIError)
+def handle_api_error(err: APIError):
+    return response_message(err.message, err.status_code)
 
 
 if __name__ == "__main__":

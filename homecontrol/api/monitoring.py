@@ -3,6 +3,7 @@ from datetime import datetime
 from typing import List, Optional
 
 from flask import Blueprint, request
+from homecontrol.api.exceptions import APIError
 
 from homecontrol.api.helpers import authenticated, response
 from homecontrol.database.sqlite.database import Database
@@ -103,7 +104,7 @@ def construct_monitor_api_blueprint():
             start = convert_to_datetime(start)
             end = convert_to_datetime(end)
         except ValueError:
-            return response(
+            raise APIError(
                 "Invalid 'start' or 'end' date given", ResponseStatus.BAD_REQUEST
             )
 

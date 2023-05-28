@@ -1,7 +1,7 @@
 from typing import List, Optional
 
 from homecontrol.aircon.structs import ACState
-from homecontrol.client.exceptions import APIError
+from homecontrol.client.exceptions import APIClientError
 from homecontrol.client.session import APISession
 from homecontrol.helpers import ResponseStatus, dataclass_from_dict
 
@@ -22,7 +22,7 @@ class Aircon:
         """
         response = self._session.get("/ac/devices")
         if response.status_code != ResponseStatus.OK:
-            raise APIError("An error occured listing devices")
+            raise APIClientError("An error occurred listing devices")
         return response.json()
 
     def register_device(
@@ -31,10 +31,12 @@ class Aircon:
         """
         Registers a device with the API
 
-        :param name: Name of the device to register
-        :param ip_address: IP address of the device to register
-        :param retries: Number of times to try
-        :return: Whether registration was successful or not
+        Args:
+            name (str): Name of the device to register
+            ip_address (str): IP address of the device to register
+            retries (Optional[int]): Number of times to try
+        Returns:
+            bool: Whether registration was successful or not
         """
         attempts = 1 if retries is None else retries
         current_attempt = 0
@@ -54,7 +56,7 @@ class Aircon:
         """
         response = self._session.get(f"/ac/devices/{name}")
         if response.status_code != ResponseStatus.OK:
-            raise APIError(f"An error occured getting the state of {name}")
+            raise APIClientError(f"An error occured getting the state of {name}")
         return dataclass_from_dict(ACState, response.json())
 
     def set_device(self, name: str, state: ACState) -> ACState:
@@ -63,7 +65,7 @@ class Aircon:
         """
         response = self._session.put(f"/ac/devices/{name}", json=state.__dict__)
         if response.status_code != ResponseStatus.OK:
-            raise APIError(
+            raise APIClientError(
                 f"An error occured while attempting to set the state of {name}"
             )
         return dataclass_from_dict(ACState, response.json())

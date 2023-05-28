@@ -1,5 +1,5 @@
 from homecontrol.api.structs import APIInfo
-from homecontrol.client.exceptions import APIError
+from homecontrol.client.exceptions import APIClientError
 from homecontrol.client.session import APISession
 from homecontrol.helpers import ResponseStatus, dataclass_from_dict
 
@@ -20,5 +20,7 @@ class Info:
         """
         response = self._session.get("/info")
         if response.status_code != ResponseStatus.OK:
-            raise APIError("An error occurred obtaining info from the homecontrol API")
+            raise APIClientError(
+                "An error occurred obtaining info from the homecontrol API"
+            )
         return dataclass_from_dict(APIInfo, response.json())

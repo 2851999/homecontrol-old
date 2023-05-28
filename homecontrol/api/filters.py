@@ -59,7 +59,8 @@ class Filters:
 
         Expects a format e.g. {"room[eq]": "room_id", "name[eq]": "room_name"}
 
-        :param filters: JSON representing the filters from the URL
+        Args:
+            filters_json (str): JSON representing the filters from the URL
         """
         self._filters = []
 

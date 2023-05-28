@@ -11,7 +11,7 @@ from homecontrol.helpers import ResponseStatus, SubscriptableClass
 
 def response(data: Dict, code: int):
     """
-    Helper function that returns a repsonse
+    Helper function that returns a response
     """
     return jsonify(data), code
 

@@ -1,12 +1,8 @@
 from flask import Blueprint, request
 
 from homecontrol.api.authentication.structs import User
-from homecontrol.api.helpers import (
-    authenticated_user,
-    get_user_manager,
-    response,
-    response_message,
-)
+from homecontrol.api.helpers import authenticated_user, get_user_manager, response
+from homecontrol.api.exceptions import APIError
 from homecontrol.helpers import ResponseStatus
 
 auth_api = Blueprint("auth_api", __name__)
@@ -25,9 +21,7 @@ def login():
     user = user_manager.verify_login(username, password)
 
     if not user:
-        return response_message(
-            "ERROR: Invalid username or password", ResponseStatus.UNAUTHORIZED
-        )
+        raise APIError("Invalid username or password", ResponseStatus.UNAUTHORIZED)
     else:
         # Return an access token
         return response(
