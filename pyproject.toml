@@ -31,6 +31,7 @@ dependencies=[
 ]
 
 [project.scripts]
+homecontrol-management = "homecontrol.management.main:main"
 homecontrol-scheduler = "homecontrol.scheduling.scheduler:main"
 
 [tool.setuptools.dynamic]
