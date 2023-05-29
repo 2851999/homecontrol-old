@@ -41,6 +41,32 @@ sudo apt-get update
 sudo apt-get install apache2
 sudo apt-get install libapache2-mod-wsgi-py3
 sudo apt-get install sqlite3
+sudo apt-get install mariadb-server
+```
+
+## Setting up the database
+
+Now secure the database using
+```bash
+sudo systemctl start mysql
+sudo mysql_secure_installation
+```
+
+!!! note
+        You may need to use `sudo service mysql start` if you are using WSL.
+
+Now you may login using
+```bash
+sudo mysql -u root -p
+```
+
+You can test the connection works using `telnet localhost 3306`.
+
+Now create the database and user for homecontrol using
+```sql
+create database homecontrol;
+grant all privileges on homecontrol.* TO 'INSERT_USERNAME'@'localhost' identified by 'INSERT_PASSWORD';
+flush privileges;
 ```
 
 ## Installing `homecontrol`
@@ -50,6 +76,27 @@ git clone https://github.com/2851999/homecontrol.git
 cd ./homecontrol
 pip install .
 ```
+
+### Adding configuration files
+
+'homecontrol' requires several config files to function. Examples are found in the source for
+
+- `aircon.json`
+- `hue.json`
+- `api.json`
+- `client.json`
+- `scheduler.json`
+- `database.json`
+
+These should be placed into a folder at `/etc/homecontrol`.
+
+### Initialising the database and adding an admin user
+
+```bash
+homecontrol-management init-db
+homecontrol-management add user admin --group admin
+```
+
 
 ## Copying the built website
 
@@ -88,18 +135,6 @@ WSGIPythonPath /usr/local/lib/python3.9/dist-packages/
         </Directory>
 </VirtualHost>
 ```
-
-### `homecontrol`
-
-'homecontrol' requires several config files to function. Examples are found in the source for
-
-- `aircon.json`
-- `hue.json`
-- `api.json`
-- `client.json`
-- `scheduler.json`
-
-These should be placed into a folder at `/etc/homecontrol`.
 
 ## Starting the site
 

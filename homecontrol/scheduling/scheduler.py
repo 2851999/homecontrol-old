@@ -1,12 +1,12 @@
-from datetime import datetime
 import sys
+from datetime import datetime
 
 from apscheduler.schedulers.blocking import BlockingScheduler
 from apscheduler.triggers.cron import CronTrigger
-from homecontrol.aircon.config import ACConfig
 
+from homecontrol.aircon.config import ACConfig
 from homecontrol.client.client import Client
-from homecontrol.database.database import Database
+from homecontrol.database.sqlite.database import Database
 from homecontrol.scheduling.config import SchedulerConfig
 from homecontrol.scheduling.structs import SchedulerMonitoringConfig
 
@@ -95,6 +95,7 @@ def main():
     monitor = Monitor(scheduler_config)
 
     # Check if just being told to create any needed databases
+    # TODO: Use argparse
     if len(sys.argv) == 2 and sys.argv[1] == "init-db":
         monitor.init_db()
     else:

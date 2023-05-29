@@ -1,12 +1,12 @@
-import os
+from pathlib import Path
 import subprocess
 
 # Values specific to my setup
 DEPLOY_USER = "joel"
 DEPLOY_DOMAIN = "homecontrol"
 
-LOCAL_HOMECONTROL_DIR = os.path.expanduser("~/homecontrol")
-LOCAL_HOMECONTROL_UI_DIR = os.path.expanduser("~/homecontrol-ui")
+LOCAL_HOMECONTROL_DIR = Path("~/homecontrol").expanduser()
+LOCAL_HOMECONTROL_UI_DIR = Path("~/homecontrol-ui").expanduser()
 
 DEPLOY_HOMECONTROL_DIR = "~/homecontrol"
 DEPLOY_HOMECONTROL_UI_BUILD_TEMP_DIR = "~/homecontrol-ui-build"
@@ -18,6 +18,7 @@ DEPLOY_HOMECONTROL_CONFIG_FILES = [
     "api.json",
     "client.json",
     "scheduler.json",
+    "database.json",
 ]
 
 VERBOSE = False

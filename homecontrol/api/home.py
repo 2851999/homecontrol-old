@@ -1,15 +1,11 @@
 from flask import Blueprint, request
 
 from homecontrol.api.aircon import device_manager as ac_device_manager
+from homecontrol.api.exceptions import APIError
+from homecontrol.api.helpers import authenticated, response
 from homecontrol.api.hue import device_manager as hue_device_manager
-from homecontrol.api.helpers import (
-    authenticated,
-    response,
-    response_message,
-)
 from homecontrol.api.structs import Room
 from homecontrol.helpers import ResponseStatus, object_to_dict
-
 
 home_api = Blueprint("home_api", __name__)
 
@@ -26,7 +22,7 @@ def get_rooms():
     bridge_name = args.get("bridge_name")
 
     if bridge_name is None:
-        return response_message(
+        raise APIError(
             "bridge_name must be given for this request", ResponseStatus.BAD_REQUEST
         )
 

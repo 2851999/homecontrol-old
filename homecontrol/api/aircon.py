@@ -1,18 +1,16 @@
 from flask import Blueprint, request
 
 from homecontrol.aircon.exceptions import ACConnectionError, ACInvalidStateError
+from homecontrol.aircon.manager import ACManager
 from homecontrol.aircon.structs import ACState
-
+from homecontrol.api.exceptions import APIError
 from homecontrol.api.helpers import (
     authenticated,
     check_required_params,
     response,
-    response_message,
 )
-from homecontrol.aircon.manager import ACManager
 from homecontrol.exceptions import DeviceNotRegisteredError
-from homecontrol.helpers import dataclass_from_dict, ResponseStatus
-
+from homecontrol.helpers import ResponseStatus, dataclass_from_dict
 
 aircon_api = Blueprint("aircon_api", __name__)
 
@@ -37,12 +35,12 @@ def register_device():
     """
     data = request.get_json()
     if not check_required_params(data, ["name", "ip"]):
-        return response_message("Must give a name and ip", ResponseStatus.BAD_REQUEST)
+        raise APIError("Must give a name and ip", ResponseStatus.BAD_REQUEST)
 
     try:
         device_manager.register_device(data["name"], data["ip"])
     except ACConnectionError as err:
-        return response_message(str(err), ResponseStatus.BAD_REQUEST)
+        raise APIError(str(err), ResponseStatus.BAD_REQUEST)
 
     return response(None, ResponseStatus.CREATED)
 
@@ -58,9 +56,9 @@ def get_device(name):
         try:
             return response(device.get_state().__dict__, ResponseStatus.OK)
         except ACConnectionError as err:
-            return response_message(str(err), ResponseStatus.BAD_REQUEST)
+            raise APIError(str(err), ResponseStatus.BAD_REQUEST)
     except DeviceNotRegisteredError as err:
-        return response_message(str(err), ResponseStatus.BAD_REQUEST)
+        raise APIError(str(err), ResponseStatus.BAD_REQUEST)
 
 
 @aircon_api.route("/ac/devices/<name>", methods=["PUT"])
@@ -80,6 +78,6 @@ def set_device(name):
             device.set_state(new_state)
             return response(device.get_state().__dict__, ResponseStatus.OK)
         except (ACConnectionError, ACInvalidStateError) as err:
-            return response_message(str(err), ResponseStatus.BAD_REQUEST)
+            raise APIError(str(err), ResponseStatus.BAD_REQUEST)
     except DeviceNotRegisteredError as err:
-        return response_message(str(err), ResponseStatus.BAD_REQUEST)
+        raise APIError(str(err), ResponseStatus.BAD_REQUEST)

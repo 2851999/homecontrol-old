@@ -1,10 +1,12 @@
 from dataclasses import dataclass
 from datetime import datetime
 from typing import List, Optional
+
 from flask import Blueprint, request
+from homecontrol.api.exceptions import APIError
 
 from homecontrol.api.helpers import authenticated, response
-from homecontrol.database.database import Database
+from homecontrol.database.sqlite.database import Database
 from homecontrol.helpers import ResponseStatus
 from homecontrol.scheduling.config import SchedulerConfig
 
@@ -49,11 +51,11 @@ def construct_monitor_api_blueprint():
 
         where = None
         if start is not None and end is not None:
-            where = f"timestamp BETWEEN '{start}' AND '{end}'"
+            where = [f"timestamp BETWEEN ? AND ?", (start, end)]
         elif start is not None:
-            where = f"timestamp >= '{start}'"
+            where = [f"timestamp >= ?", (start,)]
         elif end is not None:
-            where = f"timestamp <= '{end}'"
+            where = [f"timestamp <= ?", (end,)]
 
         # Obtain the data
         with database.start_session() as db_conn:
@@ -102,7 +104,7 @@ def construct_monitor_api_blueprint():
             start = convert_to_datetime(start)
             end = convert_to_datetime(end)
         except ValueError:
-            return response(
+            raise APIError(
                 "Invalid 'start' or 'end' date given", ResponseStatus.BAD_REQUEST
             )
 

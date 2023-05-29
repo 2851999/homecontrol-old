@@ -35,7 +35,8 @@ class HueConfig(Config):
         """
         Returns the config of a bridge
 
-        :param name: Bridge name
+        Args:
+            name (str): Bridge name
         """
         return self.data["bridges"][name]
 
@@ -44,7 +45,8 @@ class HueConfig(Config):
         Returns true if the given bridge is currently waiting for
         the user to press the button
 
-        :param name: Bridge to check
+        Args:
+            name (str): Bridge to check
         """
         return "waiting" in self.data["bridges"][name]
 
@@ -72,12 +74,13 @@ class HueConfig(Config):
         """
         Updates a bridge's config after its button has been pressed
 
-        :param name: Name of bridge to update
-        :param username: Username from the authentication response
-        :param clientkey: Clientkey from the authentication response
+        Args:
+            name (str): Name of bridge to update
+            username (str): Username from the authentication response
+            clientkey (str): Clientkey from the authentication response
         """
 
-        # Overwite any existing config (including the waiting value)
+        # Overwrite any existing config (including the waiting value)
         bridge_config = self.get_bridge(name)
         bridge_config.update(
             {

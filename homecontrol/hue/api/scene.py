@@ -1,10 +1,7 @@
 from typing import List
 
-from homecontrol.helpers import ResponseStatus, dicts_to_list, object_to_dict
-from homecontrol.hue.api.structs import ScenePut
-from homecontrol.hue.api.structs import SceneGet
-from homecontrol.hue.exceptions import HueAPIError
-from homecontrol.hue.session import HueBridgeSession
+from homecontrol.hue.api.session import HueBridgeSession
+from homecontrol.hue.api.structs import SceneGet, ScenePut
 
 
 class Scene:

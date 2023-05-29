@@ -1,4 +1,5 @@
 from typing import List
+
 from homecontrol.hue.api.api import HueBridgeAPI
 from homecontrol.hue.structs import HueRoom
 

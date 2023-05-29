@@ -5,11 +5,7 @@ from msmart.device import air_conditioning
 from msmart.scanner import MideaDiscovery
 
 from homecontrol.aircon.exceptions import ACConnectionError, ACInvalidStateError
-from homecontrol.aircon.structs import (
-    ACAccountConfig,
-    ACConnectionConfig,
-    ACState,
-)
+from homecontrol.aircon.structs import ACAccountConfig, ACConnectionConfig, ACState
 
 
 class ACDevice:
@@ -84,24 +80,26 @@ class ACDevice:
         """
         Refreshes the device and returns the current state
 
-        :raises ACConnectionError: When there is a connection issue
+        Raises:
+            ACConnectionError: When there is a connection issue
         """
         # Attempt to refresh the device
         try:
             self.device.refresh()
 
             return self._get_state_from_device()
-        except UnboundLocalError as exc:
+        except UnboundLocalError as err:
             raise ACConnectionError(
                 "An error occurred while attempting to refresh a unit's state"
-            ) from exc
+            ) from err
 
     def set_state(self, state: ACState) -> Optional[ACState]:
         """
         Attempts to assign the devices state
 
-        :raises ACConnectionError: When there is a connection issue
-        :raises ACInvalidState: When the given state is invalid
+        Raises:
+            ACConnectionError: When there is a connection issue
+            ACInvalidState: When the given state is invalid
         """
         self._validate_state(state)
         self._assign_state_to_device(state)
@@ -111,10 +109,10 @@ class ACDevice:
             self.device.apply()
 
             return state
-        except UnboundLocalError as exc:
+        except UnboundLocalError as err:
             raise ACConnectionError(
                 "An error occurred while attempting to apply a state to a unit"
-            ) from exc
+            ) from err
 
     @staticmethod
     def discover(
@@ -123,7 +121,8 @@ class ACDevice:
         """
         Obtains connection information for air conditioning unit given its ip address
 
-        :raises ACConnectionError: When there is a connection issue
+        Raises:
+            ACConnectionError: When there is a connection issue
         """
         found_devices = None
         try:
@@ -135,10 +134,10 @@ class ACDevice:
             loop = asyncio.new_event_loop()
             found_devices = loop.run_until_complete(discovery.get(ip_address))
             loop.close()
-        except Exception as exc:
+        except Exception as err:
             raise ACConnectionError(
                 "An error occurred while attempting to discover a device"
-            ) from exc
+            ) from err
 
         if found_devices:
             # Only looked for one anyway

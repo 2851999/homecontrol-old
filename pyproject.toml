@@ -24,10 +24,14 @@ dependencies=[
     # Phillips Hue bridge has a cert without subjectAltName
     "urllib3<2",
     "requests-toolbelt",
-    "APScheduler"
+    "APScheduler",
+    "mysql-connector-python",
+    "bcrypt",
+    "pyjwt"
 ]
 
 [project.scripts]
+homecontrol-management = "homecontrol.management.main:main"
 homecontrol-scheduler = "homecontrol.scheduling.scheduler:main"
 
 [tool.setuptools.dynamic]

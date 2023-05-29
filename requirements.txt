@@ -1,5 +1,6 @@
 APScheduler==3.10.1
 backports.zoneinfo==0.2.1
+bcrypt==4.0.1
 blinker==1.6.2
 certifi==2023.5.7
 charset-normalizer==3.1.0
@@ -13,7 +14,10 @@ itsdangerous==2.1.2
 Jinja2==3.1.2
 MarkupSafe==2.1.2
 msmart==0.2.5
+mysql-connector-python==8.0.33
+protobuf==3.20.3
 pycryptodome==3.18.0
+PyJWT==2.7.0
 pytz==2023.3
 requests==2.31.0
 requests-toolbelt==1.0.0

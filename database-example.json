@@ -1,0 +1,7 @@
+{
+    "homecontrol": {
+        "host": "localhost",
+        "username": "homecontrol",
+        "password": "password"
+    }
+}
