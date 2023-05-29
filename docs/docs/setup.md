@@ -77,6 +77,27 @@ cd ./homecontrol
 pip install .
 ```
 
+### Adding configuration files
+
+'homecontrol' requires several config files to function. Examples are found in the source for
+
+- `aircon.json`
+- `hue.json`
+- `api.json`
+- `client.json`
+- `scheduler.json`
+- `database.json`
+
+These should be placed into a folder at `/etc/homecontrol`.
+
+### Initialising the database and adding an admin user
+
+```bash
+homecontrol-management init-db
+homecontrol-management add user admin --group admin
+```
+
+
 ## Copying the built website
 
 Copy the the built site files to `/var/www/html` so they can be served by Apache.
@@ -114,19 +135,6 @@ WSGIPythonPath /usr/local/lib/python3.9/dist-packages/
         </Directory>
 </VirtualHost>
 ```
-
-### `homecontrol`
-
-'homecontrol' requires several config files to function. Examples are found in the source for
-
-- `aircon.json`
-- `hue.json`
-- `api.json`
-- `client.json`
-- `scheduler.json`
-- `database.json`
-
-These should be placed into a folder at `/etc/homecontrol`.
 
 ## Starting the site
 

@@ -18,6 +18,7 @@ DEPLOY_HOMECONTROL_CONFIG_FILES = [
     "api.json",
     "client.json",
     "scheduler.json",
+    "database.json",
 ]
 
 VERBOSE = False
