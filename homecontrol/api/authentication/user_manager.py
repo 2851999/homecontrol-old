@@ -1,5 +1,5 @@
 from datetime import datetime, timedelta
-from typing import Optional
+from typing import List, Optional
 from uuid import uuid4
 
 from homecontrol.api.authentication.encryption import (
@@ -90,5 +90,20 @@ class UserManager:
 
         # Obtain the user
         with self._database_client.connect() as conn:
-            user = conn.users.find_user_by_id(token_payload.client_id)
+            user = conn.users.find_user_by_id(token_payload.client_id).to_user()
         return user
+
+    def get_users(self) -> List[User]:
+        """
+        Returns the list of users
+        """
+        with self._database_client.connect() as conn:
+            internal_users = conn.users.get_users()
+        return [internal_user.to_user() for internal_user in internal_users]
+
+    def get_user(self, user_id: str) -> User:
+        """
+        Return information about a user given their UUID
+        """
+        with self._database_client.connect() as conn:
+            return conn.users.find_user_by_id(user_id).to_user()

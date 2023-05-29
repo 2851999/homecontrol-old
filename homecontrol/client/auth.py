@@ -1,5 +1,9 @@
+from typing import List
+
+from homecontrol.api.authentication.structs import User
 from homecontrol.client.helpers import check_response
 from homecontrol.client.session import APISession
+from homecontrol.helpers import dataclass_from_dict, dataclass_list_from_dict
 
 
 class Auth:
@@ -24,8 +28,25 @@ class Auth:
 
     def login_check(self):
         """Checks whether we are logged in"""
-        response = self._session.get("/login/check")
+        response = self._session.get("/login")
         check_response(
             response, "An error occurred while trying to check the user login"
         )
-        return response.json()
+        return dataclass_from_dict(User, response.json())
+
+    def get_users(self) -> List[User]:
+        """Returns a list of users (admin only)"""
+        response = self._session.get("/auth/users")
+        check_response(
+            response, "An error occurred while trying to get a list of users"
+        )
+        return dataclass_list_from_dict(User, response.json())
+
+    def get_user(self, user_id: str) -> User:
+        """Returns a list of users (admin only)"""
+        response = self._session.get(f"/auth/user/{user_id}")
+        check_response(
+            response,
+            f"An error occurred while trying to get the user with id '{user_id}'",
+        )
+        return dataclass_from_dict(User, response.json())

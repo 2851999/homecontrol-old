@@ -1,9 +1,10 @@
 from flask import Blueprint, request
 
 from homecontrol.api.authentication.structs import User
-from homecontrol.api.helpers import authenticated_user, get_user_manager, response
 from homecontrol.api.exceptions import APIError
-from homecontrol.helpers import ResponseStatus
+from homecontrol.api.helpers import authenticated_user, get_user_manager, response
+from homecontrol.exceptions import ResourceNotFoundError
+from homecontrol.helpers import ResponseStatus, object_to_dict
 
 auth_api = Blueprint("auth_api", __name__)
 
@@ -31,9 +32,29 @@ def login():
         )
 
 
-@auth_api.route("/login/check", methods=["GET"])
+@auth_api.route("/login", methods=["GET"])
 @authenticated_user
 def login_check(user: User):
-    return response(
-        {"client_id": user.uuid, "user_group": user.group}, ResponseStatus.OK
-    )
+    """Returns information about the current user"""
+    return response(object_to_dict(user), ResponseStatus.OK)
+
+
+@auth_api.route("/auth/users", methods=["GET"])
+@authenticated_user(require_admin=True)
+def get_users(user: User):
+    user_manager = get_user_manager()
+    users = user_manager.get_users()
+    return response(object_to_dict(users), ResponseStatus.OK)
+
+
+@auth_api.route("/auth/user/<user_id>", methods=["GET"])
+@authenticated_user(require_admin=True)
+def get_user(user: User, user_id):
+    user_manager = get_user_manager()
+    try:
+        user = user_manager.get_user(user_id)
+    except ResourceNotFoundError:
+        raise APIError(
+            f"User with the id '{user_id}' was not found", ResponseStatus.NOT_FOUND
+        )
+    return response(object_to_dict(user), ResponseStatus.OK)

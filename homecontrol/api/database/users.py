@@ -1,3 +1,5 @@
+from typing import List
+
 from homecontrol.api.authentication.structs import InternalUser, UserGroup
 from homecontrol.api.database.exceptions import (
     DatabaseError,
@@ -94,7 +96,7 @@ class Users:
             group=UserGroup(user_data[2]),
         )
 
-    def find_user_by_id(self, user_id: str):
+    def find_user_by_id(self, user_id: str) -> InternalUser:
         """
         Obtains a User object from the database given their ID
 
@@ -124,3 +126,22 @@ class Users:
             password_hash=user_data[1],
             group=UserGroup(user_data[2]),
         )
+
+    def get_users(self) -> List[InternalUser]:
+        """
+        Returns a list of the registered users
+        """
+        users_data = self._connection.select_values(
+            self.TABLE_USERS, ["username", "uuid", "password_hash", "user_group"]
+        )
+        users = []
+        for user_data in users_data:
+            users.append(
+                InternalUser(
+                    username=user_data[0],
+                    uuid=user_data[1],
+                    password_hash=user_data[2],
+                    group=UserGroup(user_data[3]),
+                )
+            )
+        return users
