@@ -1,15 +1,11 @@
 from flask import Blueprint, request
 
-from homecontrol.aircon.exceptions import ACConnectionError, ACInvalidStateError
+from homecontrol.aircon.exceptions import ACInvalidStateError
 from homecontrol.aircon.manager import ACManager
 from homecontrol.aircon.structs import ACState
 from homecontrol.api.exceptions import APIError
-from homecontrol.api.helpers import (
-    authenticated,
-    check_required_params,
-    response,
-)
-from homecontrol.exceptions import DeviceNotRegisteredError
+from homecontrol.api.helpers import authenticated, check_required_params, response
+from homecontrol.exceptions import DeviceConnectionError, DeviceNotRegisteredError
 from homecontrol.helpers import ResponseStatus, dataclass_from_dict
 
 aircon_api = Blueprint("aircon_api", __name__)
@@ -39,7 +35,7 @@ def register_device():
 
     try:
         device_manager.register_device(data["name"], data["ip"])
-    except ACConnectionError as err:
+    except DeviceConnectionError as err:
         raise APIError(str(err), ResponseStatus.BAD_REQUEST)
 
     return response(None, ResponseStatus.CREATED)
@@ -55,10 +51,10 @@ def get_device(name):
         device = device_manager.get_device(name)
         try:
             return response(device.get_state().__dict__, ResponseStatus.OK)
-        except ACConnectionError as err:
+        except DeviceConnectionError as err:
             raise APIError(str(err), ResponseStatus.BAD_REQUEST)
     except DeviceNotRegisteredError as err:
-        raise APIError(str(err), ResponseStatus.BAD_REQUEST)
+        raise APIError(str(err), ResponseStatus.NOT_FOUND)
 
 
 @aircon_api.route("/ac/devices/<name>", methods=["PUT"])
@@ -77,7 +73,7 @@ def set_device(name):
         try:
             device.set_state(new_state)
             return response(device.get_state().__dict__, ResponseStatus.OK)
-        except (ACConnectionError, ACInvalidStateError) as err:
+        except (DeviceConnectionError, ACInvalidStateError) as err:
             raise APIError(str(err), ResponseStatus.BAD_REQUEST)
     except DeviceNotRegisteredError as err:
-        raise APIError(str(err), ResponseStatus.BAD_REQUEST)
+        raise APIError(str(err), ResponseStatus.NOT_FOUND)

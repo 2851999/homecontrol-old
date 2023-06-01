@@ -6,7 +6,7 @@ from homecontrol.hue.grouped_light import GroupedLight
 from homecontrol.hue.light import Light
 from homecontrol.hue.room import Room
 from homecontrol.hue.scene import Scene
-from homecontrol.hue.structs import HueBridgeAuthConfig, HueBridgeConnectionConfig
+from homecontrol.hue.structs import HueBridgeAuthConfig, HueBridgeConnectionInfo
 
 
 class HueBridgeConnection:
@@ -24,21 +24,21 @@ class HueBridgeConnection:
 
     def __init__(
         self,
-        connection_config: HueBridgeConnectionConfig,
+        connection_info: HueBridgeConnectionInfo,
         ca_cert: str,
         auth_config: Optional[HueBridgeAuthConfig] = None,
     ) -> None:
         """
         Args:
-            connection_config (HueBridgeConnectionConfig):
-                           HueBridgeConnectionConfig instance for the bridge
+            connection_info (HueBridgeConnectionInfo):
+                           HueBridgeConnectionInfo instance for the bridge
             ca_cert (str): Path to the CA certificate for authenticating with
                            the bridge
             auth_config (Optional[HueBridgeAuthConfig]): Authentication info
                            for the bridge (may be None if not registered yet)
         """
         self._session = HueBridgeSession(
-            connection_config=connection_config,
+            connection_info=connection_info,
             ca_cert=ca_cert,
             auth_config=auth_config,
         )

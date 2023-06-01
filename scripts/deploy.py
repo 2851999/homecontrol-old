@@ -19,6 +19,7 @@ DEPLOY_HOMECONTROL_CONFIG_FILES = [
     "client.json",
     "scheduler.json",
     "database.json",
+    "broadlink.json",
 ]
 
 VERBOSE = False
@@ -85,7 +86,7 @@ def build_and_deploy():
     run_ssh_command(
         [
             "sudo pip uninstall -y homecontrol",
-            "rm -rf homecontrol",
+            "sudo rm -rf homecontrol",
             "rm -rf homecontrol-ui-build/*",
         ]
     )

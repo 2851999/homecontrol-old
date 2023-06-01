@@ -27,6 +27,7 @@ api.json
 client.json
 hue.json
 database.json
+broadlink.json
 test.py
 TODO
 ReleaseNotes.txt

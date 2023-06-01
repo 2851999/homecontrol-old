@@ -17,7 +17,7 @@ class ACManager:
         self._config = ACConfig()
 
         # Load all registered devices immediately
-        self.load_devices()
+        self._load_devices()
 
     def list_devices(self) -> List[str]:
         """
@@ -29,7 +29,8 @@ class ACManager:
         """
         Attempts to register a device
 
-        :raises ACConnectionError: When there is a connection issue
+        Raises:
+            DeviceConnectionError: When there is a connection issue
         """
         result = ACDevice.discover(
             name=name, ip_address=ip_address, account_config=self._config.get_account()
@@ -44,17 +45,18 @@ class ACManager:
         """
         Loads a device from the config
 
-        :raises: ACDeviceNotRegisteredError if the device has not been registered
+        Raises
+            DeviceNotRegisteredError: If the device has not been registered
         """
         if not self._config.has_device(name):
             raise DeviceNotRegisteredError(
-                f"The device with name '{name}' has not been registered"
+                f"Aircon device with name '{name}' has not been registered"
             )
-        connection_config = self._config.get_device(name=name)
-        device = ACDevice(connection_config)
+        connection_info = self._config.get_device(name=name)
+        device = ACDevice(connection_info)
         self._loaded_devices.update({name: device})
 
-    def load_devices(self):
+    def _load_devices(self):
         """
         Loads all registered devices from config
         """
@@ -71,4 +73,4 @@ class ACManager:
         """
         if name in self._loaded_devices:
             return self._loaded_devices[name]
-        raise DeviceNotRegisteredError("Device is not registered")
+        raise DeviceNotRegisteredError(f"Aircon device '{name}' is not registered")

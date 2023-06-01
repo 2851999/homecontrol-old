@@ -4,7 +4,7 @@ from typing import Dict
 from homecontrol.exceptions import DeviceNotRegisteredError
 from homecontrol.hue.config import HueConfig
 from homecontrol.hue.hue import HueBridge
-from homecontrol.hue.structs import HueBridgeConnectionConfig
+from homecontrol.hue.structs import HueBridgeConnectionInfo
 
 
 class HueManager:
@@ -21,7 +21,7 @@ class HueManager:
         # Load all registered bridges immediately
         self.load_bridges()
 
-    def register_bridge(self, name: str, connection_config: HueBridgeConnectionConfig):
+    def register_bridge(self, name: str, connection_info: HueBridgeConnectionInfo):
         """
         Attempts to register a device if it hasn't been already
         """
@@ -29,7 +29,7 @@ class HueManager:
             name
         ) or self._config.is_bridge_waiting_for_button(name):
             bridge = HueBridge(
-                ca_cert=self._config.get_ca_cert(), connection_config=connection_config
+                ca_cert=self._config.get_ca_cert(), connection_info=connection_info
             )
 
             with bridge.start_session() as conn:
@@ -47,14 +47,14 @@ class HueManager:
                     ):
                         # Waiting for link button to be pressed
                         self._config.add_bridge_waiting(
-                            name=name, connection_config=connection_config
+                            name=name, connection_info=connection_info
                         )
                         self._config.save()
 
                         # Waiting for link button to be pressed
                         sys.exit(
                             f"Press the link button on the bridge with ip "
-                            f"{connection_config.ip_address} and run again"
+                            f"{connection_info.ip_address} and run again"
                         )
                     elif "success" in response_json:
                         # Success
@@ -68,7 +68,7 @@ class HueManager:
                         self._config.save()
 
                         sys.exit(
-                            f"Successfully registered bridge with ip {connection_config.ip_address}"
+                            f"Successfully registered bridge with ip {connection_info.ip_address}"
                         )
 
     def _load_bridge(self, name: str) -> HueBridge:
@@ -83,11 +83,11 @@ class HueManager:
             )
 
         if not self._config.is_bridge_waiting_for_button(name):
-            connection_config = self._config.get_bridge_connection_config(name=name)
+            connection_info = self._config.get_bridge_connection_info(name=name)
             auth_config = self._config.get_bridge_auth_config(name=name)
             bridge = HueBridge(
                 ca_cert=self._config.get_ca_cert(),
-                connection_config=connection_config,
+                connection_info=connection_info,
                 connection_auth=auth_config,
             )
             self._loaded_bridges.update({name: bridge})

@@ -1,5 +1,5 @@
 from homecontrol.config import Config
-from homecontrol.hue.structs import HueBridgeAuthConfig, HueBridgeConnectionConfig
+from homecontrol.hue.structs import HueBridgeAuthConfig, HueBridgeConnectionInfo
 
 
 class HueConfig(Config):
@@ -50,9 +50,7 @@ class HueConfig(Config):
         """
         return "waiting" in self.data["bridges"][name]
 
-    def add_bridge_waiting(
-        self, name: str, connection_config: HueBridgeConnectionConfig
-    ):
+    def add_bridge_waiting(self, name: str, connection_info: HueBridgeConnectionInfo):
         """
         Adds a bridge to the config in the waiting state
         """
@@ -62,9 +60,9 @@ class HueConfig(Config):
             {
                 name: {
                     "waiting": True,
-                    "identifier": connection_config.identifier,
-                    "ip": connection_config.ip_address,
-                    "port": connection_config.port,
+                    "identifier": connection_info.identifier,
+                    "ip_address": connection_info.ip_address,
+                    "port": connection_info.port,
                 }
             }
         )
@@ -91,14 +89,14 @@ class HueConfig(Config):
         del bridge_config["waiting"]
         self.data["bridges"].update({name: bridge_config})
 
-    def get_bridge_connection_config(self, name: str) -> HueBridgeConnectionConfig:
+    def get_bridge_connection_info(self, name: str) -> HueBridgeConnectionInfo:
         """
         Returns HueBridgeAuthConfig given the bridge
         """
         bridge_info = self.get_bridge(name)
-        return HueBridgeConnectionConfig(
+        return HueBridgeConnectionInfo(
             identifier=bridge_info["identifier"],
-            ip_address=bridge_info["ip"],
+            ip_address=bridge_info["ip_address"],
             port=bridge_info["port"],
         )
 
@@ -111,7 +109,7 @@ class HueConfig(Config):
             username=bridge_info["username"], clientkey=bridge_info["clientkey"]
         )
 
-    def get_ca_cert(self):
+    def get_ca_cert(self) -> str:
         """
         Returns the ca_cert parameter from the config
         """

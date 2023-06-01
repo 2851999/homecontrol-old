@@ -27,7 +27,8 @@ dependencies=[
     "APScheduler",
     "mysql-connector-python",
     "bcrypt",
-    "pyjwt"
+    "pyjwt",
+    "broadlink"
 ]
 
 [project.scripts]

@@ -18,5 +18,5 @@ class Client:
         e.g. 'with client.start_session() as session'
         """
         return APIConnection(
-            connection_config=self._config.get_api_connection_config(),
+            connection_info=self._config.get_api_connection_info(),
         )

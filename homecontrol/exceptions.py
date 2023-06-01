@@ -4,6 +4,12 @@ class DeviceNotRegisteredError(Exception):
     """
 
 
+class DeviceConnectionError(Exception):
+    """
+    Raised when the connection to some device fails
+    """
+
+
 class ResourceNotFoundError(Exception):
     """
     Raised when a particular resource is not found

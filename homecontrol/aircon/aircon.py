@@ -4,8 +4,9 @@ from typing import Optional
 from msmart.device import air_conditioning
 from msmart.scanner import MideaDiscovery
 
-from homecontrol.aircon.exceptions import ACConnectionError, ACInvalidStateError
-from homecontrol.aircon.structs import ACAccountConfig, ACConnectionConfig, ACState
+from homecontrol.aircon.exceptions import ACInvalidStateError
+from homecontrol.aircon.structs import ACAccountConfig, ACConnectionInfo, ACState
+from homecontrol.exceptions import DeviceConnectionError
 
 
 class ACDevice:
@@ -14,21 +15,19 @@ class ACDevice:
     """
 
     device: air_conditioning
-    connection_config: ACConnectionConfig
+    connection_info: ACConnectionInfo
 
-    def __init__(self, connection_config: ACConnectionConfig) -> None:
+    def __init__(self, connection_info: ACConnectionInfo) -> None:
         """
         Creates the msmart device instance and authenticates it
         """
-        self.connection_config = connection_config
+        self.connection_info = connection_info
         self.device = air_conditioning(
-            self.connection_config.ip_address,
-            self.connection_config.identifier,
-            self.connection_config.port,
+            self.connection_info.ip_address,
+            self.connection_info.identifier,
+            self.connection_info.port,
         )
-        self.device.authenticate(
-            self.connection_config.key, self.connection_config.token
-        )
+        self.device.authenticate(self.connection_info.key, self.connection_info.token)
         self.device.get_capabilities()
 
     def _get_state_from_device(self) -> ACState:
@@ -81,7 +80,7 @@ class ACDevice:
         Refreshes the device and returns the current state
 
         Raises:
-            ACConnectionError: When there is a connection issue
+            DeviceConnectionError: When there is a connection issue
         """
         # Attempt to refresh the device
         try:
@@ -89,8 +88,8 @@ class ACDevice:
 
             return self._get_state_from_device()
         except UnboundLocalError as err:
-            raise ACConnectionError(
-                "An error occurred while attempting to refresh a unit's state"
+            raise DeviceConnectionError(
+                "An error occurred while attempting to refresh an AC unit's state"
             ) from err
 
     def set_state(self, state: ACState) -> Optional[ACState]:
@@ -98,7 +97,7 @@ class ACDevice:
         Attempts to assign the devices state
 
         Raises:
-            ACConnectionError: When there is a connection issue
+            DeviceConnectionError: When there is a connection issue
             ACInvalidState: When the given state is invalid
         """
         self._validate_state(state)
@@ -110,19 +109,19 @@ class ACDevice:
 
             return state
         except UnboundLocalError as err:
-            raise ACConnectionError(
-                "An error occurred while attempting to apply a state to a unit"
+            raise DeviceConnectionError(
+                "An error occurred while attempting to apply a state to a AC unit"
             ) from err
 
     @staticmethod
     def discover(
         name: str, ip_address: str, account_config: ACAccountConfig
-    ) -> ACConnectionConfig:
+    ) -> ACConnectionInfo:
         """
         Obtains connection information for air conditioning unit given its ip address
 
         Raises:
-            ACConnectionError: When there is a connection issue
+            DeviceConnectionError: When there is a connection issue
         """
         found_devices = None
         try:
@@ -135,8 +134,8 @@ class ACDevice:
             found_devices = loop.run_until_complete(discovery.get(ip_address))
             loop.close()
         except Exception as err:
-            raise ACConnectionError(
-                "An error occurred while attempting to discover a device"
+            raise DeviceConnectionError(
+                "An error occurred while attempting to discover an AC unit"
             ) from err
 
         if found_devices:
@@ -145,10 +144,10 @@ class ACDevice:
 
             # Validate auth data was obtained correctly
             if found_device.key is None or found_device.token is None:
-                raise ACConnectionError("Unable to obtain authentication info")
+                raise DeviceConnectionError("Unable to obtain authentication info")
 
             # Package the required info
-            return ACConnectionConfig(
+            return ACConnectionInfo(
                 name=name,
                 ip_address=found_device.ip,
                 port=found_device.port,
@@ -156,4 +155,4 @@ class ACDevice:
                 key=found_device.key,
                 token=found_device.token,
             )
-        raise ACConnectionError(f"Unable to find the device with ip {ip_address}")
+        raise DeviceConnectionError(f"Unable to find the AC unit with ip {ip_address}")
