@@ -5,7 +5,7 @@ from msmart.device import air_conditioning
 from msmart.scanner import MideaDiscovery
 
 from homecontrol.aircon.exceptions import ACConnectionError, ACInvalidStateError
-from homecontrol.aircon.structs import ACAccountConfig, ACConnectionConfig, ACState
+from homecontrol.aircon.structs import ACAccountConfig, ACConnectionInfo, ACState
 
 
 class ACDevice:
@@ -14,21 +14,19 @@ class ACDevice:
     """
 
     device: air_conditioning
-    connection_config: ACConnectionConfig
+    connection_info: ACConnectionInfo
 
-    def __init__(self, connection_config: ACConnectionConfig) -> None:
+    def __init__(self, connection_info: ACConnectionInfo) -> None:
         """
         Creates the msmart device instance and authenticates it
         """
-        self.connection_config = connection_config
+        self.connection_info = connection_info
         self.device = air_conditioning(
-            self.connection_config.ip_address,
-            self.connection_config.identifier,
-            self.connection_config.port,
+            self.connection_info.ip_address,
+            self.connection_info.identifier,
+            self.connection_info.port,
         )
-        self.device.authenticate(
-            self.connection_config.key, self.connection_config.token
-        )
+        self.device.authenticate(self.connection_info.key, self.connection_info.token)
         self.device.get_capabilities()
 
     def _get_state_from_device(self) -> ACState:
@@ -117,7 +115,7 @@ class ACDevice:
     @staticmethod
     def discover(
         name: str, ip_address: str, account_config: ACAccountConfig
-    ) -> ACConnectionConfig:
+    ) -> ACConnectionInfo:
         """
         Obtains connection information for air conditioning unit given its ip address
 
@@ -148,7 +146,7 @@ class ACDevice:
                 raise ACConnectionError("Unable to obtain authentication info")
 
             # Package the required info
-            return ACConnectionConfig(
+            return ACConnectionInfo(
                 name=name,
                 ip_address=found_device.ip,
                 port=found_device.port,

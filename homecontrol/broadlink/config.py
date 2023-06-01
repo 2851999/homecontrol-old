@@ -34,21 +34,21 @@ class BroadlinkConfig(Config):
 
     def get_device(self, name: str) -> BroadlinkConnectionInfo:
         """
-        Returns an ACConnectionConfig instance from loaded config given the
+        Returns an ACConnectionInfo instance from loaded config given the
         name of the device
         """
         device_data = self.data["devices"][name]
         return BroadlinkConnectionInfo(name=name, ip_address=device_data["ip"])
 
-    def register_device(self, connection_config: BroadlinkConnectionInfo):
+    def register_device(self, connection_info: BroadlinkConnectionInfo):
         """
         Registers a device by updating the config
         """
         devices = self.data["devices"] if self.has_devices() else {}
         devices.update(
             {
-                connection_config.name: {
-                    "ip": connection_config.ip_address,
+                connection_info.name: {
+                    "ip": connection_info.ip_address,
                 }
             }
         )

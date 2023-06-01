@@ -3,7 +3,7 @@ from typing import List, Optional
 import requests
 
 from homecontrol.hue.connection import HueBridgeConnection
-from homecontrol.hue.structs import HueBridgeAuthConfig, HueBridgeConnectionConfig
+from homecontrol.hue.structs import HueBridgeAuthConfig, HueBridgeConnectionInfo
 
 
 class HueBridge:
@@ -15,20 +15,20 @@ class HueBridge:
     DISCOVERY_URL: str = "https://discovery.meethue.com/"
 
     _ca_cert: str
-    _connection_config: HueBridgeConnectionConfig
+    _connection_info: HueBridgeConnectionInfo
     _connection_auth: Optional[HueBridgeAuthConfig]
 
     def __init__(
         self,
         ca_cert: str,
-        connection_config: HueBridgeConnectionConfig,
+        connection_info: HueBridgeConnectionInfo,
         connection_auth: Optional[HueBridgeAuthConfig] = None,
     ) -> None:
         """
         Creates the msmart device instance and authenticates it
         """
         self._ca_cert = ca_cert
-        self._connection_config = connection_config
+        self._connection_info = connection_info
         self._connection_auth = connection_auth
 
     def start_session(self) -> HueBridgeConnection:
@@ -37,13 +37,13 @@ class HueBridge:
         e.g. 'with bridge.start_session() as session'
         """
         return HueBridgeConnection(
-            connection_config=self._connection_config,
+            connection_info=self._connection_info,
             ca_cert=self._ca_cert,
             auth_config=self._connection_auth,
         )
 
     @staticmethod
-    def discover() -> List[HueBridgeConnectionConfig]:
+    def discover() -> List[HueBridgeConnectionInfo]:
         """
         Obtains connection information for a hue bridge
 
@@ -56,7 +56,7 @@ class HueBridge:
             bridges_conn_info = []
             for bridge in bridges:
                 bridges_conn_info.append(
-                    HueBridgeConnectionConfig(
+                    HueBridgeConnectionInfo(
                         identifier=bridge["id"],
                         ip_address=bridge["internalipaddress"],
                         port=bridge["port"],

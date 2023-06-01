@@ -16,7 +16,7 @@ class ACAccountConfig:
 
 
 @dataclass
-class ACConnectionConfig:
+class ACConnectionInfo:
     """
     For storing information required to connect to a device
     """

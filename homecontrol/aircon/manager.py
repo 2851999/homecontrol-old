@@ -52,8 +52,8 @@ class ACManager:
             raise DeviceNotRegisteredError(
                 f"The aircon device with name '{name}' has not been registered"
             )
-        connection_config = self._config.get_device(name=name)
-        device = ACDevice(connection_config)
+        connection_info = self._config.get_device(name=name)
+        device = ACDevice(connection_info)
         self._loaded_devices.update({name: device})
 
     def load_devices(self):
