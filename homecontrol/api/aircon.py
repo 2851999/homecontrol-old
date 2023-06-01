@@ -54,7 +54,7 @@ def get_device(name):
         except DeviceConnectionError as err:
             raise APIError(str(err), ResponseStatus.BAD_REQUEST)
     except DeviceNotRegisteredError as err:
-        raise APIError(str(err), ResponseStatus.BAD_REQUEST)
+        raise APIError(str(err), ResponseStatus.NOT_FOUND)
 
 
 @aircon_api.route("/ac/devices/<name>", methods=["PUT"])
@@ -76,4 +76,4 @@ def set_device(name):
         except (DeviceConnectionError, ACInvalidStateError) as err:
             raise APIError(str(err), ResponseStatus.BAD_REQUEST)
     except DeviceNotRegisteredError as err:
-        raise APIError(str(err), ResponseStatus.BAD_REQUEST)
+        raise APIError(str(err), ResponseStatus.NOT_FOUND)

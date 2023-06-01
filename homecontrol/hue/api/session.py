@@ -54,7 +54,6 @@ class HueBridgeSession(SessionWrapper):
         response = self.get(endpoint)
 
         if response.status_code != ResponseStatus.OK:
-            print(response.content)
             raise HueAPIError(
                 f"{error_message} "
                 f"Status code: {response.status_code}. Content {response.content}."
