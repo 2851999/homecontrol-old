@@ -2,6 +2,7 @@ from typing import List, Optional
 
 import requests
 
+from homecontrol.exceptions import DeviceConnectionError
 from homecontrol.hue.connection import HueBridgeConnection
 from homecontrol.hue.structs import HueBridgeAuthConfig, HueBridgeConnectionInfo
 
@@ -47,7 +48,7 @@ class HueBridge:
         """
         Obtains connection information for a hue bridge
 
-        :raises ConnectionError: When there is a connection issue
+        :raises DeviceConnectionError: When there is a connection issue
         """
 
         response = requests.get(url=HueBridge.DISCOVERY_URL)
@@ -63,7 +64,7 @@ class HueBridge:
                     )
                 )
             return bridges_conn_info
-        raise ConnectionError(
+        raise DeviceConnectionError(
             f"An error occurred trying to discover bridges. "
             f"The status code received was {response.status_code}."
         )

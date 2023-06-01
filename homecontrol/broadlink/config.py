@@ -38,17 +38,22 @@ class BroadlinkConfig(Config):
         name of the device
         """
         device_data = self.data["devices"][name]
-        return BroadlinkConnectionInfo(name=name, ip_address=device_data["ip"])
+        return BroadlinkConnectionInfo(name=name, **device_data)
 
     def register_device(self, connection_info: BroadlinkConnectionInfo):
         """
         Registers a device by updating the config
         """
+
+        # No need to store the name as it's in the key
+        connection_info_data = connection_info.__dict__.copy()
+        del connection_info_data["name"]
+
         devices = self.data["devices"] if self.has_devices() else {}
         devices.update(
             {
                 connection_info.name: {
-                    "ip": connection_info.ip_address,
+                    **connection_info_data,
                 }
             }
         )

@@ -44,29 +44,17 @@ class ACConfig(Config):
         name of the device
         """
         device_data = self.data["devices"][name]
-        return ACConnectionInfo(
-            name=name,
-            ip_address=device_data["ip"],
-            identifier=device_data["id"],
-            port=device_data["port"],
-            key=device_data["key"],
-            token=device_data["token"],
-        )
+        return ACConnectionInfo(name=name, **device_data)
 
     def register_device(self, connection_info: ACConnectionInfo):
         """
         Registers a device by updating the config
         """
         devices = self.data["devices"] if self.has_devices() else {}
-        devices.update(
-            {
-                connection_info.name: {
-                    "ip": connection_info.ip_address,
-                    "id": connection_info.identifier,
-                    "port": connection_info.port,
-                    "key": connection_info.key,
-                    "token": connection_info.token,
-                }
-            }
-        )
+
+        # No need to store the name as it's in the key
+        connection_info_data = connection_info.__dict__.copy()
+        del connection_info_data["name"]
+
+        devices.update({connection_info.name: connection_info_data})
         self.data.update({"devices": devices})

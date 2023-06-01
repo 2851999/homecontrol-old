@@ -5,7 +5,7 @@ import broadlink
 from homecontrol.broadlink.config import BroadlinkConfig
 from homecontrol.broadlink.device import BroadlinkDevice
 from homecontrol.broadlink.structs import BroadlinkConnectionInfo
-from homecontrol.exceptions import DeviceNotRegisteredError
+from homecontrol.exceptions import DeviceConnectionError, DeviceNotRegisteredError
 
 
 class BroadlinkManager:
@@ -20,7 +20,7 @@ class BroadlinkManager:
         self._config = BroadlinkConfig()
 
         # Load all registered devices immediately
-        self.load_devices()
+        self._load_devices()
 
     def list_devices(self) -> List[str]:
         """
@@ -33,16 +33,24 @@ class BroadlinkManager:
         Attempts to register a device
 
         Raises:
-            broadlink.exceptions.NetworkTimeoutError: When there is a
-                                connection issue
+            DeviceConnectionError: When there is a connection issue
         """
-        # TODO: Check it can connect before saving to config
+        # Check connection works
+        try:
+            device = BroadlinkDevice(
+                connection_info=BroadlinkConnectionInfo(name, ip_address)
+            )
+        except broadlink.exceptions.NetworkTimeoutError as err:
+            raise DeviceConnectionError(
+                f"Failed to connect to the broadlink device with ip '{ip_address}'"
+            ) from err
+
         self._config.register_device(
             BroadlinkConnectionInfo(name=name, ip_address=ip_address)
         )
         self._config.save()
 
-        self._load_device(name)
+        self._loaded_devices.update({name: device})
 
     def _load_device(self, name: str) -> broadlink.Device:
         """
@@ -59,7 +67,7 @@ class BroadlinkManager:
         device = BroadlinkDevice(connection_info=connection_info)
         self._loaded_devices.update({name: device})
 
-    def load_devices(self):
+    def _load_devices(self):
         """
         Loads all registered devices from config
         """
