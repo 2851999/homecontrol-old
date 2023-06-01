@@ -19,6 +19,7 @@ DEPLOY_HOMECONTROL_CONFIG_FILES = [
     "client.json",
     "scheduler.json",
     "database.json",
+    "broadlink.json",
 ]
 
 VERBOSE = False

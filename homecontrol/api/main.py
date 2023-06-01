@@ -4,6 +4,7 @@ from flask_cors import CORS
 from homecontrol.api.aircon import aircon_api
 from homecontrol.api.auth import auth_api
 from homecontrol.api.authentication.user_manager import UserManager
+from homecontrol.api.broadlink import broadlink_api
 from homecontrol.api.config import APIConfig
 from homecontrol.api.database.client import APIDatabaseClient
 from homecontrol.api.exceptions import APIError
@@ -29,6 +30,7 @@ app.config["UserManager"] = UserManager(config, APIDatabaseClient())
 app.register_blueprint(auth_api)
 app.register_blueprint(aircon_api)
 app.register_blueprint(hue_api)
+app.register_blueprint(broadlink_api)
 app.register_blueprint(home_api)
 app.register_blueprint(info_api)
 
