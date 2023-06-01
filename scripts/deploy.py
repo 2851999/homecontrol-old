@@ -86,7 +86,7 @@ def build_and_deploy():
     run_ssh_command(
         [
             "sudo pip uninstall -y homecontrol",
-            "rm -rf homecontrol",
+            "sudo rm -rf homecontrol",
             "rm -rf homecontrol-ui-build/*",
         ]
     )

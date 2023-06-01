@@ -61,7 +61,7 @@ class HueConfig(Config):
                 name: {
                     "waiting": True,
                     "identifier": connection_info.identifier,
-                    "ip": connection_info.ip_address,
+                    "ip_address": connection_info.ip_address,
                     "port": connection_info.port,
                 }
             }
@@ -96,7 +96,7 @@ class HueConfig(Config):
         bridge_info = self.get_bridge(name)
         return HueBridgeConnectionInfo(
             identifier=bridge_info["identifier"],
-            ip_address=bridge_info["ip"],
+            ip_address=bridge_info["ip_address"],
             port=bridge_info["port"],
         )
 
@@ -109,7 +109,7 @@ class HueConfig(Config):
             username=bridge_info["username"], clientkey=bridge_info["clientkey"]
         )
 
-    def get_ca_cert(self):
+    def get_ca_cert(self) -> str:
         """
         Returns the ca_cert parameter from the config
         """
