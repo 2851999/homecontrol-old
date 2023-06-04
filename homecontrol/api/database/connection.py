@@ -1,4 +1,5 @@
 from homecontrol.api.database.aircon import Aircon
+from homecontrol.api.database.rooms import Rooms
 from homecontrol.api.database.users import Users
 from homecontrol.database.mysql.connection import DatabaseConnection
 from homecontrol.database.mysql.structs import DatabaseConnectionInfo
@@ -11,6 +12,7 @@ class APIDatabaseConnection(DatabaseConnection):
 
     users: Users
     aircon: Aircon
+    rooms: Rooms
 
     def __init__(self, connection_info: DatabaseConnectionInfo) -> None:
         super().__init__(connection_info)
@@ -20,6 +22,7 @@ class APIDatabaseConnection(DatabaseConnection):
 
         self.users = Users(self)
         self.aircon = Aircon(self)
+        self.rooms = Rooms(self)
         return self
 
     def init_db(self):
@@ -28,3 +31,4 @@ class APIDatabaseConnection(DatabaseConnection):
         """
         self.users.create_table()
         self.aircon.create_table()
+        self.rooms.create_table()

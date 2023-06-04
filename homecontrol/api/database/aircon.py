@@ -1,10 +1,5 @@
-from typing import List
-
 from homecontrol.aircon.structs import ACFanSpeed, ACMode, ACState, ACSwingMode
-from homecontrol.api.authentication.structs import InternalUser, UserGroup
-from homecontrol.api.database.exceptions import (
-    DatabaseError,
-)
+from homecontrol.api.database.exceptions import DatabaseError
 from homecontrol.database.mysql.connection import DatabaseConnection
 from homecontrol.exceptions import ResourceNotFoundError
 
@@ -65,7 +60,7 @@ class Aircon:
         )
         self._connection.commit()
 
-    def find_state_by_id(self, state_id: str) -> InternalUser:
+    def find_state_by_id(self, state_id: str) -> ACState:
         """
         Obtains an ACState object from the database given its ID
 
@@ -92,7 +87,7 @@ class Aircon:
 
         if len(state_data) == 0:
             raise ResourceNotFoundError(
-                f"State with the UUID '{state_id}' could not be found in the database"
+                f"Aircon state with the UUID '{state_id}' could not be found in the database"
             )
         if len(state_data) > 1:
             raise DatabaseError(

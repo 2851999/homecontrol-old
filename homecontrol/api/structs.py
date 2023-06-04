@@ -34,3 +34,20 @@ class APIInfo:
     """
 
     version: str
+
+
+@dataclass
+class RoomState:
+    """
+    Stores information about a room state
+    """
+
+    state_id: str
+    name: str
+    icon: str
+    room_name: str
+    ac_device_name: str
+    ac_state_id: str
+    hue_scene_id: str
+    broadlink_device_name: str
+    broadlink_actions: List[str]
