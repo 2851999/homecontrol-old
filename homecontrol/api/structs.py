@@ -45,7 +45,6 @@ class RoomState:
     state_id: str
     name: str
     icon: str
-    room_name: str
     ac_device_name: str
     ac_state_id: str
     hue_scene_id: str

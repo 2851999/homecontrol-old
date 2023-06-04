@@ -4,6 +4,7 @@ from homecontrol.aircon.aircon import ACDevice
 from homecontrol.aircon.exceptions import ACInvalidStateError
 from homecontrol.aircon.manager import ACManager
 from homecontrol.aircon.structs import ACState
+from homecontrol.api.aircon.state import find_device
 from homecontrol.api.authentication.helpers import authenticated
 from homecontrol.api.exceptions import APIError
 from homecontrol.api.helpers import check_required_params, response
