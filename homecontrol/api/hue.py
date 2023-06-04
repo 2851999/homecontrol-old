@@ -1,7 +1,8 @@
 from flask import Blueprint, request
 
+from homecontrol.api.authentication.helpers import authenticated
 from homecontrol.api.exceptions import APIError
-from homecontrol.api.helpers import apply_filters, authenticated, response
+from homecontrol.api.helpers import apply_filters, response
 from homecontrol.helpers import ResponseStatus
 from homecontrol.hue.api.exceptions import HueAPIError
 from homecontrol.hue.grouped_light import GroupedLightState
@@ -12,6 +13,14 @@ hue_api = Blueprint("hue_api", __name__)
 
 # ACManager
 device_manager = HueManager()
+
+
+@hue_api.errorhandler(HueAPIError)
+def handle_hue_api_error(err: HueAPIError):
+    """
+    Handle any errors from the Hue API
+    """
+    raise APIError(str(err), ResponseStatus.BAD_REQUEST)
 
 
 @hue_api.route("/hue/<bridge_name>/rooms", methods=["GET"])
@@ -39,10 +48,7 @@ def get_light_state(bridge_name, light_id):
     """
     bridge = device_manager.get_bridge(bridge_name)
     with bridge.start_session() as conn:
-        try:
-            return response(conn.light.get_state(light_id).to_dict(), ResponseStatus.OK)
-        except HueAPIError as err:
-            raise APIError(str(err), ResponseStatus.BAD_REQUEST)
+        return response(conn.light.get_state(light_id).to_dict(), ResponseStatus.OK)
 
 
 @hue_api.route("/hue/<bridge_name>/light/<light_id>", methods=["PUT"])
@@ -55,12 +61,9 @@ def set_light_state(bridge_name, light_id):
     bridge = device_manager.get_bridge(bridge_name)
     state = LightState.from_dict(payload)
     with bridge.start_session() as conn:
-        try:
-            conn.light.set_state(light_id, state)
+        conn.light.set_state(light_id, state)
 
-            return response("Success", ResponseStatus.OK)
-        except HueAPIError as err:
-            raise APIError(str(err), ResponseStatus.BAD_REQUEST)
+        return response("Success", ResponseStatus.OK)
 
 
 @hue_api.route("/hue/<bridge_name>/grouped_lights/<group_id>", methods=["GET"])
@@ -71,12 +74,9 @@ def get_grouped_light_state(bridge_name, group_id):
     """
     bridge = device_manager.get_bridge(bridge_name)
     with bridge.start_session() as conn:
-        try:
-            return response(
-                conn.grouped_light.get_state(group_id).to_dict(), ResponseStatus.OK
-            )
-        except HueAPIError as err:
-            raise APIError(str(err), ResponseStatus.BAD_REQUEST)
+        return response(
+            conn.grouped_light.get_state(group_id).to_dict(), ResponseStatus.OK
+        )
 
 
 @hue_api.route("/hue/<bridge_name>/grouped_lights/<group_id>", methods=["PUT"])
@@ -89,12 +89,9 @@ def set_grouped_light_state(bridge_name, group_id):
     bridge = device_manager.get_bridge(bridge_name)
     state = GroupedLightState.from_dict(payload)
     with bridge.start_session() as conn:
-        try:
-            conn.grouped_light.set_state(group_id, state)
+        conn.grouped_light.set_state(group_id, state)
 
-            return response("Success", ResponseStatus.OK)
-        except HueAPIError as err:
-            raise APIError(str(err), ResponseStatus.BAD_REQUEST)
+        return response("Success", ResponseStatus.OK)
 
 
 @hue_api.route("/hue/<bridge_name>/scenes", methods=["GET"])
@@ -106,13 +103,10 @@ def get_scenes(bridge_name):
 
     bridge = device_manager.get_bridge(bridge_name)
     with bridge.start_session() as conn:
-        try:
-            scenes = conn.scene.get_scenes()
-            scenes = apply_filters(scenes)
+        scenes = conn.scene.get_scenes()
+        scenes = apply_filters(scenes)
 
-            return response(scenes, ResponseStatus.OK)
-        except HueAPIError as err:
-            raise APIError(str(err), ResponseStatus.BAD_REQUEST)
+        return response(scenes, ResponseStatus.OK)
 
 
 @hue_api.route("/hue/<bridge_name>/scenes/<scene_id>", methods=["PUT"])
@@ -123,9 +117,6 @@ def recall_scene(bridge_name, scene_id):
     """
     bridge = device_manager.get_bridge(bridge_name)
     with bridge.start_session() as conn:
-        try:
-            conn.scene.recall_scene(scene_id)
+        conn.scene.recall_scene(scene_id)
 
-            return response("Success", ResponseStatus.OK)
-        except HueAPIError as err:
-            raise APIError(str(err), ResponseStatus.BAD_REQUEST)
+        return response("Success", ResponseStatus.OK)

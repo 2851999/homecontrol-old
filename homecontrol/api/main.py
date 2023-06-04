@@ -3,12 +3,13 @@ from flask_cors import CORS
 
 from homecontrol.api.aircon import aircon_api
 from homecontrol.api.auth import auth_api
+from homecontrol.api.authentication.helpers import authenticated
 from homecontrol.api.authentication.user_manager import UserManager
 from homecontrol.api.broadlink import broadlink_api
 from homecontrol.api.config import APIConfig
 from homecontrol.api.database.client import APIDatabaseClient
 from homecontrol.api.exceptions import APIError
-from homecontrol.api.helpers import authenticated, response_message
+from homecontrol.api.helpers import response_message
 from homecontrol.api.home import home_api
 from homecontrol.api.hue import hue_api
 from homecontrol.api.info import info_api

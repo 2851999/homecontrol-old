@@ -3,9 +3,10 @@ from datetime import datetime
 from typing import List, Optional
 
 from flask import Blueprint, request
-from homecontrol.api.exceptions import APIError
 
-from homecontrol.api.helpers import authenticated, response
+from homecontrol.api.authentication.helpers import authenticated
+from homecontrol.api.exceptions import APIError
+from homecontrol.api.helpers import response
 from homecontrol.database.sqlite.database import Database
 from homecontrol.helpers import ResponseStatus
 from homecontrol.scheduling.config import SchedulerConfig

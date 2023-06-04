@@ -1,6 +1,7 @@
 from flask import Blueprint
 
-from homecontrol.api.helpers import authenticated, response
+from homecontrol.api.authentication.helpers import authenticated
+from homecontrol.api.helpers import response
 from homecontrol.broadlink.manager import BroadlinkManager
 from homecontrol.helpers import ResponseStatus
 

@@ -1,8 +1,9 @@
 from flask import Blueprint, request
 
+from homecontrol.api.authentication.helpers import authenticated_user
 from homecontrol.api.authentication.structs import User
 from homecontrol.api.exceptions import APIError
-from homecontrol.api.helpers import authenticated_user, get_user_manager, response
+from homecontrol.api.helpers import get_user_manager, response
 from homecontrol.exceptions import ResourceNotFoundError
 from homecontrol.helpers import ResponseStatus, object_to_dict
 
