@@ -70,7 +70,7 @@ class Aircon:
                            ID
         """
         state_data = self._connection.select_values(
-            self.TABLE_USERS,
+            self.TABLE_AIRCON_STATES,
             [
                 "power",
                 "prompt_tone",
