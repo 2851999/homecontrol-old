@@ -100,7 +100,11 @@ class Command_Add_RoomState(Command):
 
     def add_arguments(self, parser):
         parser.add_argument("name", help="Name of the room state to add")
-        parser.add_argument("icon", help="Icon of the room state to add")
+        parser.add_argument(
+            "icon",
+            choices=ICON_NAMES,
+            help=f"Icon of the room state to add",
+        )
         parser.add_argument("room_name", help="Name of the room the state will act on")
         parser.add_argument(
             "--ac_device_name", help="Name of the aircon device the state acts on"
@@ -119,12 +123,6 @@ class Command_Add_RoomState(Command):
         )
 
     def run(self, args: argparse.Namespace):
-        # Validate
-        if not args.icon in ICON_NAMES:
-            print(
-                f"Invalid icon '{args.icon}', valid options are {','.join(ICON_NAMES)}"
-            )
-
         database_client = APIDatabaseClient()
         aircon_manager = ACManager()
 
