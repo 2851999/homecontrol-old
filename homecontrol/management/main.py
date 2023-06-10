@@ -103,17 +103,19 @@ class Command_Add_RoomState(Command):
         parser.add_argument("icon", help="Icon of the room state to add")
         parser.add_argument("room_name", help="Name of the room the state will act on")
         parser.add_argument(
-            "ac_device_name", help="Name of the aircon device the state acts on"
+            "--ac_device_name", help="Name of the aircon device the state acts on"
         )
         parser.add_argument(
-            "hue_scene_name", help="Name of the hue scene this should activate"
+            "--hue_scene_name", help="Name of the hue scene this should activate"
         )
         parser.add_argument(
-            "broadlink_device_name",
+            "--broadlink_device_name",
             help="Name of the broadlink device any actions should run on",
         )
         parser.add_argument(
-            "broadlink_action", help="IR action to activate with this state"
+            "--broadlink_action",
+            action="append",
+            help="IR action to activate with this state",
         )
 
     def run(self, args: argparse.Namespace):
@@ -125,36 +127,46 @@ class Command_Add_RoomState(Command):
 
         database_client = APIDatabaseClient()
         aircon_manager = ACManager()
-        ac_state_id = save_state(
-            database_client, args.name, aircon_manager.get_device(args.ac_device_name)
-        )
 
-        hue_manager = HueManager()
-        hue_bridge: HueBridge = hue_manager.get_bridge("Home")
-        with hue_bridge.start_session() as conn:
-            rooms = conn.room.get_rooms()
-            scenes = conn.scene.get_scenes()
-        # Select room with the right name
-        selected_room = None
-        for room in rooms:
-            if room.name == args.room_name:
-                selected_room = room
-                break
-        if not selected_room:
-            print(f"Failed to find the hue room with name '{args.room_name}'")
-            raise SystemExit(1)
-        # Now try and find the scene
-        selected_scene = None
-        for scene in scenes:
-            if (
-                scene.room == selected_room.identifier
-                and scene.name == args.hue_scene_name
-            ):
-                selected_scene = scene
-                break
-        if not selected_room:
-            print(f"Failed to find the hue scene with name '{args.hue_scene_name}'")
-            raise SystemExit(1)
+        # Save AC state if requested
+        ac_state_id = None
+        if args.ac_device_name:
+            ac_state_id = save_state(
+                database_client,
+                args.name,
+                aircon_manager.get_device(args.ac_device_name),
+            )
+
+        # Find the scene ID if requested
+        hue_scene_id = None
+        if args.hue_scene_name:
+            hue_manager = HueManager()
+            hue_bridge: HueBridge = hue_manager.get_bridge("Home")
+            with hue_bridge.start_session() as conn:
+                rooms = conn.room.get_rooms()
+                scenes = conn.scene.get_scenes()
+            # Select room with the right name
+            selected_room = None
+            for room in rooms:
+                if room.name == args.room_name:
+                    selected_room = room
+                    break
+            if not selected_room:
+                print(f"Failed to find the hue room with name '{args.room_name}'")
+                raise SystemExit(1)
+            # Now try and find the scene
+            selected_scene = None
+            for scene in scenes:
+                if (
+                    scene.room == selected_room.identifier
+                    and scene.name == args.hue_scene_name
+                ):
+                    selected_scene = scene
+                    break
+            if not selected_room:
+                print(f"Failed to find the hue scene with name '{args.hue_scene_name}'")
+                raise SystemExit(1)
+            hue_scene_id = selected_scene.identifier
 
         room_state = RoomState(
             state_id=str(uuid4()),
@@ -163,9 +175,9 @@ class Command_Add_RoomState(Command):
             icon=args.icon,
             ac_device_name=args.ac_device_name,
             ac_state_id=ac_state_id,
-            hue_scene_id=selected_scene.identifier,
+            hue_scene_id=hue_scene_id,
             broadlink_device_name=args.broadlink_device_name,
-            broadlink_actions=[args.broadlink_action],
+            broadlink_actions=args.broadlink_action,
         )
         with database_client.connect() as conn:
             conn.rooms.add_state(room_state)

@@ -51,7 +51,9 @@ class Rooms:
                     state.ac_state_id,
                     state.hue_scene_id,
                     state.broadlink_device_name,
-                    ",".join(state.broadlink_actions),
+                    ",".join(state.broadlink_actions)
+                    if state.broadlink_actions is not None
+                    else None,
                 )
             ],
         )
@@ -99,7 +101,7 @@ class Rooms:
             ac_state_id=state_data[4],
             hue_scene_id=state_data[5],
             broadlink_device_name=state_data[6],
-            broadlink_actions=state_data[7].split(","),
+            broadlink_actions=state_data[7].split(",") if state_data[7] else None,
         )
 
     def find_states_in_room(self, room_name: str) -> List[RoomState]:
@@ -137,7 +139,9 @@ class Rooms:
                     ac_state_id=state_data[4],
                     hue_scene_id=state_data[5],
                     broadlink_device_name=state_data[6],
-                    broadlink_actions=state_data[7].split(","),
+                    broadlink_actions=state_data[7].split(",")
+                    if state_data[7]
+                    else None,
                 )
             )
         return states

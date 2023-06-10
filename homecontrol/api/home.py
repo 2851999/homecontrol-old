@@ -101,25 +101,30 @@ def recall_room_state(state_id: str):
     Recalls a room state with a given ID
     """
 
-    # Obtain the room and AC states
+    # Obtain the room and AC state
     database_client = get_database_client()
+    ac_state = None
     with database_client.connect() as conn:
         room_state = conn.rooms.find_state_by_id(state_id)
-        ac_state = conn.aircon.find_state_by_id(room_state.ac_state_id)
+        if room_state.ac_device_name and room_state.ac_state_id:
+            ac_state = conn.aircon.find_state_by_id(room_state.ac_state_id)
 
-    # Apply the AC state
-    ac_device = find_device(room_state.ac_device_name)
-    ac_device.set_state(ac_state)
+    # Apply the AC state if required
+    if ac_state:
+        ac_device = find_device(room_state.ac_device_name)
+        ac_device.set_state(ac_state)
 
-    # Apply the Hue scene
-    hue_bridge = hue_device_manager.get_bridge("Home")
-    with hue_bridge.start_session() as conn:
-        conn.scene.recall_scene(room_state.hue_scene_id)
+    # Apply the Hue scene if required
+    if room_state.hue_scene_id:
+        hue_bridge = hue_device_manager.get_bridge("Home")
+        with hue_bridge.start_session() as conn:
+            conn.scene.recall_scene(room_state.hue_scene_id)
 
-    # Apply the broadlink actions
-    for action in room_state.broadlink_actions:
-        broadlink_device_manager.playback_ir_command(
-            room_state.broadlink_device_name, action
-        )
+    # Apply the broadlink actions if required
+    if room_state.broadlink_device_name and room_state.broadlink_actions:
+        for action in room_state.broadlink_actions:
+            broadlink_device_manager.playback_ir_command(
+                room_state.broadlink_device_name, action
+            )
 
     return response(object_to_dict(room_state), ResponseStatus.OK)

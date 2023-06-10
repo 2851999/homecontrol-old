@@ -46,8 +46,8 @@ class RoomState:
     name: str
     room_name: str
     icon: str
-    ac_device_name: str
-    ac_state_id: str
-    hue_scene_id: str
-    broadlink_device_name: str
-    broadlink_actions: List[str]
+    ac_device_name: Optional[str]
+    ac_state_id: Optional[str]
+    hue_scene_id: Optional[str]
+    broadlink_device_name: Optional[str]
+    broadlink_actions: Optional[List[str]]
