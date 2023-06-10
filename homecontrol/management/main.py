@@ -9,6 +9,7 @@ from homecontrol.api.aircon.state import save_state
 from homecontrol.api.authentication.structs import UserGroup
 from homecontrol.api.authentication.user_manager import UserManager
 from homecontrol.api.config import APIConfig
+from homecontrol.api.consts import ICON_NAMES
 from homecontrol.api.database.client import APIDatabaseClient
 from homecontrol.api.structs import RoomState
 from homecontrol.hue.hue import HueBridge
@@ -116,6 +117,12 @@ class Command_Add_RoomState(Command):
         )
 
     def run(self, args: argparse.Namespace):
+        # Validate
+        if not args.icon in ICON_NAMES:
+            print(
+                f"Invalid icon '{args.icon}', valid options are {','.join(ICON_NAMES)}"
+            )
+
         database_client = APIDatabaseClient()
         aircon_manager = ACManager()
         ac_state_id = save_state(
