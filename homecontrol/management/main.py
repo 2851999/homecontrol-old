@@ -152,6 +152,7 @@ class Command_Add_RoomState(Command):
         room_state = RoomState(
             state_id=str(uuid4()),
             name=args.name,
+            room_name=args.room_name,
             icon=args.icon,
             ac_device_name=args.ac_device_name,
             ac_state_id=ac_state_id,

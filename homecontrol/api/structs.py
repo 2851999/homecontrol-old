@@ -44,6 +44,7 @@ class RoomState:
 
     state_id: str
     name: str
+    room_name: str
     icon: str
     ac_device_name: str
     ac_state_id: str

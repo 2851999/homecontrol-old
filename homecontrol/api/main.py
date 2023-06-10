@@ -1,7 +1,7 @@
 from flask import Flask
 from flask_cors import CORS
 
-from homecontrol.api.aircon import aircon_api
+from homecontrol.api.aircon.aircon import aircon_api
 from homecontrol.api.auth import auth_api
 from homecontrol.api.authentication.helpers import authenticated
 from homecontrol.api.authentication.user_manager import UserManager

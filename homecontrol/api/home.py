@@ -1,9 +1,9 @@
 from flask import Blueprint, request
 
-from homecontrol.api.aircon import device_manager as ac_device_manager
+from homecontrol.api.aircon.aircon import device_manager as ac_device_manager
 from homecontrol.api.authentication.helpers import authenticated
 from homecontrol.api.exceptions import APIError
-from homecontrol.api.helpers import response
+from homecontrol.api.helpers import get_database_client, response
 from homecontrol.api.hue import device_manager as hue_device_manager
 from homecontrol.api.structs import Room
 from homecontrol.helpers import ResponseStatus, object_to_dict
@@ -75,3 +75,18 @@ def get_outdoor_temp():
         outdoor_temp = ac_device_manager.get_device(ac_devices[0]).get_state().outdoor
 
     return response(outdoor_temp, ResponseStatus.OK)
+
+
+@home_api.route("/home/room/<name>/states", methods=["GET"])
+@authenticated
+def get_room_states(name: str):
+    """
+    Returns a list of room states for a given room
+    """
+
+    # Obtain the room states for the room
+    database_client = get_database_client()
+    with database_client.connect() as conn:
+        room_states = conn.rooms.find_states_in_room(name)
+
+    return response(object_to_dict(room_states), ResponseStatus.OK)

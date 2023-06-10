@@ -15,4 +15,4 @@ class APIConfig(Config):
         Returns a APIAuthConfig from the loaded config
         """
         auth = self.data["auth"]
-        return APIAuthConfig(*auth)
+        return APIAuthConfig(**auth)
