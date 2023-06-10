@@ -1,9 +1,11 @@
 from flask import Blueprint, request
 
-from homecontrol.api.aircon import device_manager as ac_device_manager
+from homecontrol.api.aircon.aircon import device_manager as ac_device_manager
+from homecontrol.api.broadlink import broadlink_device_manager
+from homecontrol.api.aircon.aircon import find_device
 from homecontrol.api.authentication.helpers import authenticated
 from homecontrol.api.exceptions import APIError
-from homecontrol.api.helpers import response
+from homecontrol.api.helpers import get_database_client, response
 from homecontrol.api.hue import device_manager as hue_device_manager
 from homecontrol.api.structs import Room
 from homecontrol.helpers import ResponseStatus, object_to_dict
@@ -75,3 +77,54 @@ def get_outdoor_temp():
         outdoor_temp = ac_device_manager.get_device(ac_devices[0]).get_state().outdoor
 
     return response(outdoor_temp, ResponseStatus.OK)
+
+
+@home_api.route("/home/room/<name>/states", methods=["GET"])
+@authenticated
+def get_room_states(name: str):
+    """
+    Returns a list of room states for a given room
+    """
+
+    # Obtain the room states for the room
+    database_client = get_database_client()
+    with database_client.connect() as conn:
+        room_states = conn.rooms.find_states_in_room(name)
+
+    return response(object_to_dict(room_states), ResponseStatus.OK)
+
+
+@home_api.route("/home/rooms/state/<state_id>", methods=["PUT"])
+@authenticated
+def recall_room_state(state_id: str):
+    """
+    Recalls a room state with a given ID
+    """
+
+    # Obtain the room and AC state
+    database_client = get_database_client()
+    ac_state = None
+    with database_client.connect() as conn:
+        room_state = conn.rooms.find_state_by_id(state_id)
+        if room_state.ac_device_name and room_state.ac_state_id:
+            ac_state = conn.aircon.find_state_by_id(room_state.ac_state_id)
+
+    # Apply the AC state if required
+    if ac_state:
+        ac_device = find_device(room_state.ac_device_name)
+        ac_device.set_state(ac_state)
+
+    # Apply the Hue scene if required
+    if room_state.hue_scene_id:
+        hue_bridge = hue_device_manager.get_bridge("Home")
+        with hue_bridge.start_session() as conn:
+            conn.scene.recall_scene(room_state.hue_scene_id)
+
+    # Apply the broadlink actions if required
+    if room_state.broadlink_device_name and room_state.broadlink_actions:
+        for action in room_state.broadlink_actions:
+            broadlink_device_manager.playback_ir_command(
+                room_state.broadlink_device_name, action
+            )
+
+    return response(object_to_dict(room_state), ResponseStatus.OK)

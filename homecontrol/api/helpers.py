@@ -3,6 +3,7 @@ from typing import Any, Dict, List, Optional
 from flask import current_app, jsonify, request
 
 from homecontrol.api.authentication.user_manager import UserManager
+from homecontrol.api.database.client import APIDatabaseClient
 from homecontrol.api.filters import Filters
 from homecontrol.api.structs import APIAuthConfig
 from homecontrol.helpers import SubscriptableClass
@@ -55,3 +56,7 @@ def get_auth_config() -> APIAuthConfig:
 
 def get_user_manager() -> UserManager:
     return current_app.config["UserManager"]
+
+
+def get_database_client() -> APIDatabaseClient:
+    return current_app.config["APIDatabaseClient"]

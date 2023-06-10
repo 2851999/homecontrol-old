@@ -1,7 +1,7 @@
 from flask import Flask
 from flask_cors import CORS
 
-from homecontrol.api.aircon import aircon_api
+from homecontrol.api.aircon.aircon import aircon_api
 from homecontrol.api.auth import auth_api
 from homecontrol.api.authentication.helpers import authenticated
 from homecontrol.api.authentication.user_manager import UserManager
@@ -23,9 +23,12 @@ app.config["CORS_HEADERS"] = "Content-Type"
 config = APIConfig()
 auth_config = config.get_auth()
 
+api_database_client = APIDatabaseClient()
+
 # TODO: Unify with AuthManager or something
 app.config["APIAuthConfig"] = auth_config
-app.config["UserManager"] = UserManager(config, APIDatabaseClient())
+app.config["APIDatabaseClient"] = api_database_client
+app.config["UserManager"] = UserManager(config, api_database_client)
 
 # Register blueprints
 app.register_blueprint(auth_api)
